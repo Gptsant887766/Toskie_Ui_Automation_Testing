@@ -69,7 +69,7 @@ public class ReportManager {
 
     // ── Report initialisation ─────────────────────────────────────────────────
     public static synchronized void createExtentReport() {
-        String dt = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss").format(new Date());
+        String dt = new SimpleDateFormat("dd_MMM_yyyy_HH_mm_ss").format(new Date());
         new File(BASE + "/Reports/HTML").mkdirs();
         reportPath = BASE + "/Reports/HTML/Toskie_Web_Playwright_Report_" + dt + ".html";
 
@@ -88,6 +88,8 @@ public class ReportManager {
         extentReports.setSystemInfo("Playwright Version",    "1.53.0");
         extentReports.setSystemInfo("Java Version",          System.getProperty("java.version"));
         extentReports.setSystemInfo("OS",                    System.getProperty("os.name"));
+        extentReports.setSystemInfo("Execution Date",        new SimpleDateFormat("dd-MMM-yyyy").format(new Date()));
+        extentReports.setSystemInfo("Execution Time",        new SimpleDateFormat("HH:mm:ss z").format(new Date()));
         extentReports.setSystemInfo("Report To",             "Abhishek Satyam");
         extentReports.setSystemInfo("QA Automation Tester",  "Santosh Kumar Gupta");
     }
@@ -152,7 +154,7 @@ public class ReportManager {
             generatePieChart(passed, failed, skipped);
             generateBarChart(passed, failed, skipped);
 
-            String ts = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss").format(new Date());
+            String ts = new SimpleDateFormat("dd_MMM_yyyy_HH_mm_ss").format(new Date());
             pdfPath   = BASE + "/Reports/PDF/Playwright_Report_" + ts + ".pdf";
 
             PdfWriter   writer = new PdfWriter(pdfPath);
