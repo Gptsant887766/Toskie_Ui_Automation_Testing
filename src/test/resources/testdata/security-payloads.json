@@ -1,0 +1,30 @@
+{
+  "xss": [
+    "<script>alert('XSS')</script>",
+    "<img src=x onerror=alert(document.cookie)>",
+    "javascript:alert(1)",
+    "<svg onload=alert(1)>",
+    "'\"><script>alert(1)</script>",
+    "<iframe src=javascript:alert(1)>",
+    "<body onload=alert('XSS')>",
+    "%3Cscript%3Ealert('XSS')%3C/script%3E"
+  ],
+  "sqli": [
+    "' OR '1'='1",
+    "'; DROP TABLE users; --",
+    "' UNION SELECT * FROM users --",
+    "1' AND SLEEP(5)--",
+    "admin'--",
+    "' OR 1=1--"
+  ],
+  "payloads": [
+    { "payload": "<script>alert('XSS')</script>",        "field": "firstName",   "expectedResult": "sanitized" },
+    { "payload": "<img src=x onerror=alert(1)>",          "field": "lastName",    "expectedResult": "sanitized" },
+    { "payload": "' OR '1'='1",                           "field": "phoneNumber", "expectedResult": "rejected" },
+    { "payload": "'; DROP TABLE users; --",               "field": "search",      "expectedResult": "sanitized" },
+    { "payload": "javascript:alert(1)",                   "field": "email",       "expectedResult": "rejected" },
+    { "payload": "../../../etc/passwd",                   "field": "search",      "expectedResult": "sanitized" },
+    { "payload": "{{7*7}}",                               "field": "firstName",   "expectedResult": "sanitized" },
+    { "payload": "${7*7}",                                "field": "firstName",   "expectedResult": "sanitized" }
+  ]
+}

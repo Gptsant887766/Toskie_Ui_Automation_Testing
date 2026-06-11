@@ -1,0 +1,26 @@
+[
+  {
+    "firstName": "Sontosh",
+    "lastName": "Gupta",
+    "email": "gptsant@gmail.com",
+    "gender": "MALE",
+    "dob": "1997-05-25",
+    "testType": "valid_complete_profile"
+  },
+  {
+    "firstName": "Priya",
+    "lastName": "Sharma",
+    "email": "priya.test@example.com",
+    "gender": "FEMALE",
+    "dob": "1995-08-15",
+    "testType": "valid_female_profile"
+  },
+  {
+    "firstName": "Alex",
+    "lastName": "Kumar",
+    "email": "alex.test@example.com",
+    "gender": "OTHER",
+    "dob": "2000-01-10",
+    "testType": "valid_other_gender_profile"
+  }
+]

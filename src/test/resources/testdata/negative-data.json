@@ -1,0 +1,22 @@
+[
+  { "input": "",          "field": "phoneNumber",  "expectedError": "required",          "testType": "empty_phone" },
+  { "input": "123",       "field": "phoneNumber",  "expectedError": "invalid",           "testType": "short_phone" },
+  { "input": "abcdefghij","field": "phoneNumber",  "expectedError": "invalid",           "testType": "alpha_phone" },
+  { "input": "99999999999999","field": "phoneNumber","expectedError": "invalid",         "testType": "long_phone" },
+  { "input": "+1-800-555-0000","field": "phoneNumber","expectedError": "invalid",        "testType": "special_chars_phone" },
+  { "input": "0000",      "field": "otp",          "expectedError": "invalid OTP",       "testType": "wrong_otp" },
+  { "input": "9999",      "field": "otp",          "expectedError": "invalid OTP",       "testType": "wrong_otp_2" },
+  { "input": "",          "field": "otp",          "expectedError": "required",          "testType": "empty_otp" },
+  { "input": "12",        "field": "otp",          "expectedError": "invalid",           "testType": "short_otp" },
+  { "input": "",          "field": "firstName",    "expectedError": "required",          "testType": "empty_firstname" },
+  { "input": "A",         "field": "firstName",    "expectedError": "min length",        "testType": "single_char_firstname" },
+  { "input": "123",       "field": "firstName",    "expectedError": "invalid",           "testType": "numeric_firstname" },
+  { "input": "notanemail","field": "email",        "expectedError": "invalid email",     "testType": "invalid_email_format" },
+  { "input": "@domain.com","field": "email",       "expectedError": "invalid email",     "testType": "missing_username_email" },
+  { "input": "user@",     "field": "email",        "expectedError": "invalid email",     "testType": "missing_domain_email" },
+  { "input": "",          "field": "email",        "expectedError": "required",          "testType": "empty_email" },
+  { "input": "under18dob","field": "dob",          "expectedError": "must be 18+",       "testType": "underage_dob" },
+  { "input": "future_date","field": "dob",         "expectedError": "invalid date",      "testType": "future_dob" },
+  { "input": "",          "field": "search",       "expectedError": "no results",        "testType": "empty_search" },
+  { "input": "   ",       "field": "search",       "expectedError": "no results",        "testType": "whitespace_search" }
+]

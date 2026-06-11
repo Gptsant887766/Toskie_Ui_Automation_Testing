@@ -1,0 +1,254 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ================= PROJECT DETAILS ================= -->
+
+    <groupId>com.toskie</groupId>
+    <artifactId>Toskie_Web_Automation_Framework</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <name>Toskie Playwright Automation Framework</name>
+
+    <!-- ================= PROPERTIES ================= -->
+
+    <properties>
+
+        <!-- JAVA VERSION -->
+        <java.version>21</java.version>
+
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- ENCODING -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Default suite: override with -DsuiteXmlFile=testng-smoke.xml etc. -->
+        <suiteXmlFile>testng-master.xml</suiteXmlFile>
+
+        <!-- DEPENDENCY VERSIONS -->
+        <playwright.version>1.53.0</playwright.version>
+<testng.version>7.9.0</testng.version>
+        <extent.version>5.0.9</extent.version>
+        <lombok.version>1.18.38</lombok.version>
+
+    </properties>
+
+    <!-- ================= DEPENDENCIES ================= -->
+
+    <dependencies>
+
+        <!-- ================================================= -->
+        <!-- PLAYWRIGHT -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- TESTNG -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- EXTENT REPORT -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extent.version}</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- LOMBOK -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- APACHE COMMONS IO -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.16.1</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- APACHE COMMONS LANG -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- JSON -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- LOGGING -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.13</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- PDF REPORT -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- CHART REPORT -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- ITEXT PDF -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>io</artifactId>
+            <version>7.2.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ================= BUILD ================= -->
+
+    <build>
+
+        <plugins>
+
+            <!-- ================================================= -->
+            <!-- MAVEN COMPILER -->
+            <!-- ================================================= -->
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+
+                <configuration>
+
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+
+                    <compilerArgs>
+
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.lang=ALL-UNNAMED</arg>
+
+                    </compilerArgs>
+
+                    <!-- LOMBOK -->
+                    <annotationProcessorPaths>
+
+                        <path>
+
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+
+                        </path>
+
+                    </annotationProcessorPaths>
+
+                </configuration>
+
+            </plugin>
+
+            <!-- ================================================= -->
+            <!-- MAVEN SUREFIRE -->
+            <!-- ================================================= -->
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+
+                <configuration>
+
+                    <!-- TESTNG XML -->
+                    <suiteXmlFiles>
+
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+
+                    </suiteXmlFiles>
+
+                    <!-- JVM ARG -->
+                    <argLine>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                    </argLine>
+
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

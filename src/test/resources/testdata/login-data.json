@@ -1,0 +1,20 @@
+[
+  {
+    "mobile": "9919011050",
+    "expectedResult": "success",
+    "testType": "valid_qa_user",
+    "description": "Primary QA test account"
+  },
+  {
+    "mobile": "9876543210",
+    "expectedResult": "success",
+    "testType": "valid_user_2",
+    "description": "Secondary test account"
+  },
+  {
+    "mobile": "1234567890",
+    "expectedResult": "success",
+    "testType": "valid_user_3",
+    "description": "Third test account"
+  }
+]

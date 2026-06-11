@@ -1,0 +1,9 @@
+[
+  { "query": "plumber",    "expectedMinResults": "1", "expectedCategory": "Home Services",    "testType": "trade_search" },
+  { "query": "electrician","expectedMinResults": "1", "expectedCategory": "Home Services",    "testType": "trade_search_2" },
+  { "query": "tutor",      "expectedMinResults": "1", "expectedCategory": "Education",        "testType": "education_search" },
+  { "query": "photographer","expectedMinResults": "1","expectedCategory": "Creative",         "testType": "creative_search" },
+  { "query": "chef",       "expectedMinResults": "1", "expectedCategory": "Food & Beverage",  "testType": "food_search" },
+  { "query": "carpenter",  "expectedMinResults": "1", "expectedCategory": "Home Services",    "testType": "trade_search_3" },
+  { "query": "xyznotexistingtalent999", "expectedMinResults": "0", "expectedCategory": "", "testType": "no_results_search" }
+]

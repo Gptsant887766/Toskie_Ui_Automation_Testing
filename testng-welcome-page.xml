@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!-- Dedicated suite: run ONLY WelcomePageTestCases (TC-WP-001 to TC-WP-008).
+     Execute: mvn clean test -Dsuite.xml.file=testng-welcome-page.xml -->
+<suite name="Welcome Page Suite" parallel="none" thread-count="1" verbose="2">
+
+    <parameter name="browser" value="chrome"/>
+    <parameter name="baseUrl"  value="https://dev.app.toskie.com/"/>
+
+    <test name="Welcome Page Tests">
+        <classes>
+            <class name="com.toskie.WelcomePageTestCases"/>
+        </classes>
+    </test>
+
+</suite>

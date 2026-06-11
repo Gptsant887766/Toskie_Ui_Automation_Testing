@@ -1,0 +1,51 @@
+﻿{
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-21",
+            "default": true
+        }
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.project.sourcePaths": [
+        "src/main/java",
+        "src/test/java"
+    ],
+    "java.project.outputPath": "target/classes",
+    "java.project.referencedLibraries": [
+        "target/dependency/**/*.jar"
+    ],
+    "maven.executable.preferMavenWrapper": false,
+    "maven.terminal.useJavaHome": true,
+    "java.test.config": {
+        "name": "Toskie TestNG Suite",
+        "workingDirectory": "${workspaceFolder}",
+        "vmArgs": [
+            "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+        ]
+    },
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.rulers": [120],
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java"
+    },
+    "files.exclude": {
+        "**/.settings": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/target/classes": true,
+        "**/target/test-classes": true,
+        "**/target/maven-status": true,
+        "**/.github": true
+    },
+    "files.watcherExclude": {
+        "**/target/**": true
+    },
+    "search.exclude": {
+        "**/target": true,
+        "**/test-output": true,
+        "**/.github": true
+    }
+}

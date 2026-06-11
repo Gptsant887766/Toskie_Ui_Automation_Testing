@@ -1,0 +1,23 @@
+# Build output
+target/
+
+# Test output
+test-output/
+ExecutionReports/
+Reports/
+
+# Eclipse IDE
+.classpath
+.project
+.settings/
+
+# Debug screenshots
+debug_*.png
+SnapShots/
+
+# Run logs
+*.txt
+where
+
+# Sensitive config (add back explicitly if needed)
+# src/test/resources/config.properties

@@ -1,0 +1,18 @@
+[
+  { "field": "firstName",    "input": "José",                                    "expectedBehavior": "accepted",   "testType": "unicode_name" },
+  { "field": "firstName",    "input": "O'Brien",                                 "expectedBehavior": "accepted",   "testType": "apostrophe_name" },
+  { "field": "firstName",    "input": "Anna-Marie",                              "expectedBehavior": "accepted",   "testType": "hyphen_name" },
+  { "field": "firstName",    "input": "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "expectedBehavior": "truncated_or_rejected", "testType": "max_length_name" },
+  { "field": "email",        "input": "test+tag@example.com",                    "expectedBehavior": "accepted",   "testType": "plus_tag_email" },
+  { "field": "email",        "input": "user@subdomain.example.co.uk",            "expectedBehavior": "accepted",   "testType": "subdomain_email" },
+  { "field": "search",       "input": "  plumber  ",                             "expectedBehavior": "trimmed_search", "testType": "whitespace_search" },
+  { "field": "search",       "input": "PLUMBER",                                 "expectedBehavior": "case_insensitive", "testType": "uppercase_search" },
+  { "field": "search",       "input": "plumb*",                                  "expectedBehavior": "wildcard_or_literal", "testType": "wildcard_search" },
+  { "field": "phoneNumber",  "input": "9919011050",                              "expectedBehavior": "accepted",   "testType": "valid_10_digit" },
+  { "field": "phoneNumber",  "input": "+919919011050",                           "expectedBehavior": "accepted",   "testType": "intl_format" },
+  { "field": "dob",          "input": "2008-01-01",                              "expectedBehavior": "rejected_under18", "testType": "boundary_age_17" },
+  { "field": "dob",          "input": "2006-01-01",                              "expectedBehavior": "accepted",   "testType": "boundary_age_18" },
+  { "field": "message",      "input": "Hello! 😊🎉",                             "expectedBehavior": "accepted",   "testType": "emoji_message" },
+  { "field": "message",      "input": "مرحبا",                                   "expectedBehavior": "accepted",   "testType": "arabic_message" },
+  { "field": "message",      "input": "नमस्ते",                                  "expectedBehavior": "accepted",   "testType": "hindi_message" }
+]
