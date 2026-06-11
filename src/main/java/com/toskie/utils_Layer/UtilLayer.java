@@ -1326,26 +1326,28 @@ public class UtilLayer<RouteHandler> {
     // ═════════════════════════════════════════════════════════════════════════
 
     public String captureScreenshot(String imageName, ITestResult result) {
-        DateFormat df = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss_a");
+        DateFormat df = new SimpleDateFormat("dd_MMM_yyyy_HH_mm_ss");
         String ts = df.format(new Date());
 
         String base = System.getProperty("user.dir");
         new File(base + "/SnapShots").mkdirs();
-        String path = base + "/SnapShots/" + imageName + "_" + ts + ".png";
+        String fileName    = imageName + "_" + ts + ".png";
+        String absPath     = base + "/SnapShots/" + fileName;
+        String relativePath = "../../SnapShots/" + fileName;
 
         try {
             Page page = BrowserManager.getPage();
             page.screenshot(new Page.ScreenshotOptions()
-                    .setPath(Paths.get(path)).setFullPage(true));
+                    .setPath(Paths.get(absPath)).setFullPage(true));
 
             if (result.getStatus() == ITestResult.FAILURE) {
                 getTest().fail("Test Failed");
-                getTest().addScreenCaptureFromPath(path);
+                getTest().addScreenCaptureFromPath(relativePath);
             } else {
                 getTest().info("Screenshot captured.");
-                getTest().addScreenCaptureFromPath(path);
+                getTest().addScreenCaptureFromPath(relativePath);
             }
-            return path;
+            return absPath;
         } catch (PlaywrightException e) {
             getTest().fail("Screenshot failed: " + e.getMessage());
             return null;
