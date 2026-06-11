@@ -19,5 +19,8 @@ SnapShots/
 *.txt
 where
 
+# Claude Code session artifact
+claude
+
 # Sensitive config (add back explicitly if needed)
 # src/test/resources/config.properties
