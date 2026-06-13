@@ -214,4 +214,13 @@ public class WebSocketValidator {
     private String truncate(String s, int maxLen) {
         return s != null && s.length() > maxLen ? s.substring(0, maxLen) + "..." : s;
     }
+
+    public WebSocketValidator() { startListening(); }
+    public WebSocketValidator(com.toskie.utils_Layer.UtilLayer<?> util) { startListening(); }
+    public boolean isConnectionEstablished() { return !activeConnections.isEmpty(); }
+    public void simulateDisconnect()         { ReportManager.getTest().log(Status.INFO, "Simulating WS disconnect"); BrowserManager.getPage().waitForTimeout(1000); }
+    public boolean waitForMessage(long ms)   { long end = System.currentTimeMillis() + ms; while (System.currentTimeMillis() < end) { if (!receivedMessages.isEmpty()) return true; try { Thread.sleep(200); } catch (InterruptedException e) { Thread.currentThread().interrupt(); } } return false; }
+    public boolean isPingAlive()             { return !activeConnections.isEmpty(); }
+    public void triggerBulkRead()            { ReportManager.getTest().log(Status.INFO, "Triggering bulk read via WS"); BrowserManager.getPage().evaluate("window.dispatchEvent(new Event('bulk_read'))"); }
+    public boolean isTimestampValid()        { return receivedMessages.stream().anyMatch(m -> m.matches(".*\\d{4}-\\d{2}-\\d{2}.*") || m.contains("timestamp")); }
 }

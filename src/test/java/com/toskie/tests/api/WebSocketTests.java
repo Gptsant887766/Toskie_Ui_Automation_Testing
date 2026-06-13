@@ -9,10 +9,11 @@ import com.toskie.pages.WelcomePage;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.WebSocketValidator;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
 /**
- * WEBSOCKET TESTS — Real-time chat, notifications, connection management
+ * WEBSOCKET TESTS â€” Real-time chat, notifications, connection management
  * TC-WS-001 through TC-WS-010
  */
 public class WebSocketTests extends BaseTest {
@@ -27,7 +28,7 @@ public class WebSocketTests extends BaseTest {
         return hp;
     }
 
-    // ─── TC-WS-001: WebSocket connection established ──────────────────────────
+    // â”€â”€â”€ TC-WS-001: WebSocket connection established â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 1,
           description = "WebSocket connection should be established after login")
     public void testWebSocketConnectionEstablished() {
@@ -41,7 +42,7 @@ public class WebSocketTests extends BaseTest {
         wsv.assertWebSocketConnected();
     }
 
-    // ─── TC-WS-002: WebSocket connects to chat endpoint ──────────────────────
+    // â”€â”€â”€ TC-WS-002: WebSocket connects to chat endpoint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 2,
           description = "WebSocket should connect to the real-time/chat endpoint")
     public void testWebSocketConnectsToChatEndpoint() {
@@ -53,7 +54,7 @@ public class WebSocketTests extends BaseTest {
         BrowserManager.getPage().waitForTimeout(5000);
 
         wsv.stopListening();
-        // Accept any WS connection — we can't know exact URL without running it
+        // Accept any WS connection â€” we can't know exact URL without running it
         if (wsv.getConnectionCount() > 0) {
             com.toskie.utils_Layer.ReportManager.getTest().log(
                 com.aventstack.extentreports.Status.PASS,
@@ -61,11 +62,11 @@ public class WebSocketTests extends BaseTest {
         } else {
             com.toskie.utils_Layer.ReportManager.getTest().log(
                 com.aventstack.extentreports.Status.WARNING,
-                "No WebSocket connections detected — real-time features may use polling");
+                "No WebSocket connections detected â€” real-time features may use polling");
         }
     }
 
-    // ─── TC-WS-003: Send chat message → WS event emitted ────────────────────
+    // â”€â”€â”€ TC-WS-003: Send chat message â†’ WS event emitted â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 3,
           description = "Sending a chat message should emit a WebSocket send event")
     public void testSendChatMessageEmitsWSEvent() {
@@ -100,7 +101,7 @@ public class WebSocketTests extends BaseTest {
         }
     }
 
-    // ─── TC-WS-004: WS no error messages ─────────────────────────────────────
+    // â”€â”€â”€ TC-WS-004: WS no error messages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 4,
           description = "WebSocket messages should not contain error frames during normal flow")
     public void testNoWSErrorMessages() {
@@ -114,7 +115,7 @@ public class WebSocketTests extends BaseTest {
         wsv.assertNoErrorMessages();
     }
 
-    // ─── TC-WS-005: Chat input disabled until connected ───────────────────────
+    // â”€â”€â”€ TC-WS-005: Chat input disabled until connected â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 5,
           description = "Chat input should only be enabled when WebSocket is connected")
     public void testChatInputEnabledWhenConnected() {
@@ -135,7 +136,7 @@ public class WebSocketTests extends BaseTest {
         }
     }
 
-    // ─── TC-WS-006: Typing indicator sent ────────────────────────────────────
+    // â”€â”€â”€ TC-WS-006: Typing indicator sent â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 6,
           description = "Typing in chat input should trigger typing indicator WS event")
     public void testTypingIndicatorWSEvent() {
@@ -154,7 +155,7 @@ public class WebSocketTests extends BaseTest {
             BrowserManager.getPage().waitForTimeout(2000);
 
             wsv.stopListening();
-            // Typing indicator is implementation-specific — just check WS is active
+            // Typing indicator is implementation-specific â€” just check WS is active
             com.toskie.utils_Layer.ReportManager.getTest().log(
                 com.aventstack.extentreports.Status.INFO,
                 "WS events during typing: " + wsv.getSentMessages().size());
@@ -163,7 +164,7 @@ public class WebSocketTests extends BaseTest {
         }
     }
 
-    // ─── TC-WS-007: WS reconnects after going offline/online ─────────────────
+    // â”€â”€â”€ TC-WS-007: WS reconnects after going offline/online â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 7,
           description = "WebSocket should reconnect after network interruption")
     public void testWSReconnectsAfterOffline() {
@@ -182,13 +183,13 @@ public class WebSocketTests extends BaseTest {
         } catch (Exception ignored) {}
 
         wsv.stopListening();
-        // Just log — actual reconnection depends on app implementation
+        // Just log â€” actual reconnection depends on app implementation
         com.toskie.utils_Layer.ReportManager.getTest().log(
             com.aventstack.extentreports.Status.INFO,
             "Offline/Online simulation completed. WS connections: " + wsv.getConnectionCount());
     }
 
-    // ─── TC-WS-008: Message count after send ──────────────────────────────────
+    // â”€â”€â”€ TC-WS-008: Message count after send â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 8,
           description = "After sending a message, message count in chat should increase by 1")
     public void testMessageCountIncreases() {
@@ -209,12 +210,12 @@ public class WebSocketTests extends BaseTest {
 
             AssertionHelper a = new AssertionHelper();
             a.assertTrue(countAfter >= countBefore,
-                "Sent message count should be ≥ before (" + countBefore + " → " + countAfter + ")");
+                "Sent message count should be â‰¥ before (" + countBefore + " â†’ " + countAfter + ")");
             a.assertAll();
         }
     }
 
-    // ─── TC-WS-009: Empty message not sent ────────────────────────────────────
+    // â”€â”€â”€ TC-WS-009: Empty message not sent â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 9,
           description = "Sending an empty message should not be allowed")
     public void testEmptyMessageNotSent() {
@@ -242,7 +243,7 @@ public class WebSocketTests extends BaseTest {
         }
     }
 
-    // ─── TC-WS-010: Chat history loads on open ────────────────────────────────
+    // â”€â”€â”€ TC-WS-010: Chat history loads on open â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 10,
           description = "Opening a chat should load previous conversation history")
     public void testChatHistoryLoadsOnOpen() {
@@ -263,3 +264,4 @@ public class WebSocketTests extends BaseTest {
         }
     }
 }
+

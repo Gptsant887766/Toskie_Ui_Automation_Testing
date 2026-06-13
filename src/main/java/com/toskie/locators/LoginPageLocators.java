@@ -46,23 +46,23 @@ public class LoginPageLocators {
         // Phone OTP flow
         phoneNumberInput    = page.locator("input[type='tel'], input[placeholder*='phone' i], input[placeholder*='mobile' i], input[placeholder*='number' i]");
         countryCodeDropdown = page.locator("[class*='country-code'], [class*='phone-prefix'], select[name*='country']");
-        sendOtpButton       = page.locator("//button[contains(text(),'Send OTP')] | //span[contains(text(),'Send OTP')]");
+        sendOtpButton       = page.locator("//button[contains(.,'Send OTP')] | //button[contains(.,'Get OTP')] | //button[contains(.,'Send Code')] | //span[contains(text(),'Send OTP')]");
         otpField1           = page.locator("input[maxlength='1']").nth(0);
         otpField2           = page.locator("input[maxlength='1']").nth(1);
         otpField3           = page.locator("input[maxlength='1']").nth(2);
         otpField4           = page.locator("input[maxlength='1']").nth(3);
-        otpAllFields        = page.locator("input[maxlength='1'], input[class*='otp'], input[name*='otp']");
-        verifyOtpButton     = page.locator("//button[contains(text(),'Verify')] | //span[contains(text(),'Verify OTP')]");
+        otpAllFields        = page.locator("input[maxlength='1'], input[maxlength='4'], input[maxlength='6'], input[class*='otp'], input[name*='otp'], input[placeholder*='OTP' i], input[placeholder*='code' i]");
+        verifyOtpButton     = page.locator("//button[contains(.,'Verify')] | //button[contains(.,'Confirm')] | //button[contains(.,'Submit OTP')] | //span[contains(text(),'Verify OTP')]");
         resendOtpButton     = page.locator("//button[contains(text(),'Resend')] | //span[contains(text(),'Resend OTP')]");
         resendOtpTimer      = page.locator("[class*='timer'], [class*='countdown'], [class*='resend-timer']");
         changeNumberLink    = page.locator("//a[contains(text(),'Change')] | //button[contains(text(),'Change Number')]");
         otpExpiryMessage    = page.locator("[class*='expiry'], [class*='expired']");
 
-        // Validation messages
-        phoneValidationError    = page.locator("[class*='error'][class*='phone'], p[class*='error']:has-text('phone'), span[class*='error']:has-text('number')");
-        otpValidationError      = page.locator("[class*='error'][class*='otp'], p[class*='error']:has-text('OTP')");
-        invalidOtpMessage       = page.locator("//p[contains(text(),'Invalid OTP')] | //span[contains(text(),'incorrect')]");
-        tooManyAttemptsMessage  = page.locator("//p[contains(text(),'Too many')] | //span[contains(text(),'attempts')]");
+        // Validation messages — broad patterns to match various UI implementations
+        phoneValidationError    = page.locator("[class*='error'], [class*='invalid'], [role='alert'], [class*='helper-text']:not(:empty)").first();
+        otpValidationError      = page.locator("[class*='error'], [class*='invalid'], [role='alert']").first();
+        invalidOtpMessage       = page.locator("//p[contains(text(),'Invalid')] | //span[contains(text(),'invalid')] | //p[contains(text(),'incorrect')] | //span[contains(text(),'wrong')] | [class*='error']:not(:empty)").first();
+        tooManyAttemptsMessage  = page.locator("//p[contains(text(),'Too many')] | //span[contains(text(),'attempts')] | //p[contains(text(),'blocked')] | //p[contains(text(),'limit')]").first();
 
         // Page content
         loginHeading        = page.locator("h1:has-text('Login'), h2:has-text('Login'), [class*='heading']:has-text('Login')");

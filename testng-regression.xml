@@ -1,76 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Toskie Regression Suite" verbose="1" parallel="classes" thread-count="4">
+    <parameter name="browser" value="chromium"/>
 
-<!-- Full Regression Suite: All functional tests. Parallel by methods. -->
-<suite name="Toskie Regression Suite" parallel="methods" thread-count="4" verbose="1">
-
-    <parameter name="browser" value="chrome"/>
-    <parameter name="baseUrl"  value="https://dev.app.toskie.com/"/>
-
-    <test name="Onboarding &amp; Login">
-        <classes>
-            <class name="com.toskie.tests.regression.LoginTests"/>
-        </classes>
+    <test name="Auth Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.auth"/></packages>
     </test>
 
-    <test name="Profile Creation">
-        <classes>
-            <class name="com.toskie.tests.regression.ProfileTests"/>
-        </classes>
+    <test name="Profile Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.profile"/></packages>
     </test>
 
-    <test name="Home &amp; Discovery">
-        <classes>
-            <class name="com.toskie.tests.regression.HomeTests"/>
-        </classes>
+    <test name="Search Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.search"/></packages>
     </test>
 
-    <test name="Search">
-        <classes>
-            <class name="com.toskie.tests.regression.SearchTests"/>
-        </classes>
+    <test name="Dashboard Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.dashboard"/></packages>
     </test>
 
-    <test name="Booking">
-        <classes>
-            <class name="com.toskie.tests.regression.BookingTests"/>
-        </classes>
+    <test name="Messaging Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.messaging"/></packages>
     </test>
 
-    <test name="Chat">
-        <classes>
-            <class name="com.toskie.tests.regression.ChatTests"/>
-        </classes>
+    <test name="Posts Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.posts"/></packages>
     </test>
 
-    <test name="Notifications">
-        <classes>
-            <class name="com.toskie.tests.regression.NotificationTests"/>
-        </classes>
+    <test name="Reviews Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.reviews"/></packages>
     </test>
 
-    <test name="Settings">
-        <classes>
-            <class name="com.toskie.tests.regression.SettingsTests"/>
-        </classes>
+    <test name="AI Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.ai"/></packages>
     </test>
 
-    <test name="Logout">
-        <classes>
-            <class name="com.toskie.tests.regression.LogoutTests"/>
-        </classes>
+    <test name="Activity Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.activity"/></packages>
     </test>
 
-    <test name="Negative Tests">
-        <classes>
-            <class name="com.toskie.tests.negative.NegativeTests"/>
-        </classes>
+    <test name="Misc Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.misc"/></packages>
     </test>
 
-    <test name="Edge Cases">
-        <classes>
-            <class name="com.toskie.tests.edge.EdgeCaseTests"/>
-        </classes>
+    <test name="Blog Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.blog"/></packages>
     </test>
 
+    <test name="Landing Regression">
+        <groups><run><include name="regression"/></run></groups>
+        <packages><package name="com.toskie.tests.landing"/></packages>
+    </test>
 </suite>
