@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Toskie WebSocket Suite" verbose="1" parallel="methods" thread-count="2">
+    <parameter name="browser" value="chromium"/>
+
+    <test name="WebSocket Tests">
+        <groups>
+            <run>
+                <include name="websocket"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="com.toskie.tests.websocket"/>
+        </packages>
+    </test>
+</suite>

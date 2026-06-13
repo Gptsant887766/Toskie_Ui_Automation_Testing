@@ -5,19 +5,20 @@ import com.toskie.pages.*;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.NetworkValidator;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
 import com.aventstack.extentreports.Status;
 
 /**
- * END-TO-END TESTS — TC_RG_001 to TC_RG_007
+ * END-TO-END TESTS â€” TC_RG_001 to TC_RG_007
  * Full user journeys spanning multiple modules in a single flow.
  */
 public class EndToEndTests extends BaseTest {
 
-    // ─── TC_RG_001: Complete new-user registration ────────────────────────────
+    // â”€â”€â”€ TC_RG_001: Complete new-user registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 1,
-          description = "TC_RG_001: New user — onboarding → login → profile creation → home")
+          description = "TC_RG_001: New user â€” onboarding â†’ login â†’ profile creation â†’ home")
     public void testCompleteNewUserRegistrationFlow() {
         AssertionHelper a = new AssertionHelper();
         com.toskie.utils_Layer.ReportManager.getTest().log(Status.INFO, "E2E: New user registration journey");
@@ -45,9 +46,9 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── TC_RG_002: Returning user login ──────────────────────────────────────
+    // â”€â”€â”€ TC_RG_002: Returning user login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 2,
-          description = "TC_RG_002: Returning user — onboarding → login → direct to home")
+          description = "TC_RG_002: Returning user â€” onboarding â†’ login â†’ direct to home")
     public void testReturningUserLoginFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -67,9 +68,9 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── TC_RG_003: Talent discovery → booking ───────────────────────────────
+    // â”€â”€â”€ TC_RG_003: Talent discovery â†’ booking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 3,
-          description = "TC_RG_003: Search talent → view profile → book service")
+          description = "TC_RG_003: Search talent â†’ view profile â†’ book service")
     public void testTalentDiscoveryAndBookingFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -98,17 +99,17 @@ public class EndToEndTests extends BaseTest {
                 a.assertTrue(bp.isBookingConfirmed() || !BrowserManager.getPage().url().isEmpty(),
                     "TC_RG_003 PASS: Booking flow completed end-to-end");
             } else {
-                a.assertTrue(true, "TC_RG_003: Booking form not available — discovery flow completed");
+                a.assertTrue(true, "TC_RG_003: Booking form not available â€” discovery flow completed");
             }
         } else {
-            a.assertTrue(true, "TC_RG_003: No search results — discovery flow exercised");
+            a.assertTrue(true, "TC_RG_003: No search results â€” discovery flow exercised");
         }
         a.assertAll();
     }
 
-    // ─── TC_RG_004: Chat initiation from profile ──────────────────────────────
+    // â”€â”€â”€ TC_RG_004: Chat initiation from profile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 4,
-          description = "TC_RG_004: View talent profile → initiate chat → send message")
+          description = "TC_RG_004: View talent profile â†’ initiate chat â†’ send message")
     public void testChatInitiationFromProfile() {
         AssertionHelper a = new AssertionHelper();
 
@@ -134,7 +135,7 @@ public class EndToEndTests extends BaseTest {
                 cp.sendMessage("Hi, I'm interested in your services.");
                 a.assertTrue(true, "TC_RG_004 PASS: Chat initiated and message sent from profile");
             } catch (Exception e) {
-                a.assertTrue(true, "TC_RG_004: Chat CTA not present on profile — flow exercised");
+                a.assertTrue(true, "TC_RG_004: Chat CTA not present on profile â€” flow exercised");
             }
         } else {
             a.assertTrue(true, "TC_RG_004: No talent cards to start chat with");
@@ -142,9 +143,9 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── TC_RG_005: Notification → chat flow ─────────────────────────────────
+    // â”€â”€â”€ TC_RG_005: Notification â†’ chat flow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 5,
-          description = "TC_RG_005: Tap chat notification → land in the correct conversation")
+          description = "TC_RG_005: Tap chat notification â†’ land in the correct conversation")
     public void testNotificationToChatFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -165,14 +166,14 @@ public class EndToEndTests extends BaseTest {
             BrowserManager.getPage().waitForTimeout(2000);
             a.assertNotEmpty(BrowserManager.getPage().url(), "TC_RG_005 PASS: Navigated from notification");
         } catch (Exception e) {
-            a.assertTrue(true, "TC_RG_005: No chat notification available — flow exercised");
+            a.assertTrue(true, "TC_RG_005: No chat notification available â€” flow exercised");
         }
         a.assertAll();
     }
 
-    // ─── TC_RG_006: Search + filter → profile view ───────────────────────────
+    // â”€â”€â”€ TC_RG_006: Search + filter â†’ profile view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 6,
-          description = "TC_RG_006: Search with filter → click result → view full profile")
+          description = "TC_RG_006: Search with filter â†’ click result â†’ view full profile")
     public void testSearchFilterAndProfileViewFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -196,12 +197,12 @@ public class EndToEndTests extends BaseTest {
             a.assertNotEmpty(BrowserManager.getPage().url(),
                 "TC_RG_006 PASS: Profile opened after search + filter");
         } else {
-            a.assertTrue(true, "TC_RG_006: No results for filtered search — flow exercised");
+            a.assertTrue(true, "TC_RG_006: No results for filtered search â€” flow exercised");
         }
         a.assertAll();
     }
 
-    // ─── TC_RG_007: Logout and re-login ───────────────────────────────────────
+    // â”€â”€â”€ TC_RG_007: Logout and re-login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 7,
           description = "TC_RG_007: Log out then log back in successfully")
     public void testLogoutAndReloginFlow() {
@@ -244,3 +245,4 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 }
+

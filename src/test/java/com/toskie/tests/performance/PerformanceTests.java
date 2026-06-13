@@ -7,23 +7,24 @@ import com.toskie.utils.NetworkValidator;
 import com.toskie.utils.PerformanceUtils;
 import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ConfigManager;
+import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
 /**
- * PERFORMANCE TESTS — Core Web Vitals, SLA thresholds, API response times
+ * PERFORMANCE TESTS â€” Core Web Vitals, SLA thresholds, API response times
  * TC-PF-001 through TC-PF-010
  */
 public class PerformanceTests extends BaseTest {
 
-    // ─── TC-PF-001: Welcome page load time ────────────────────────────────────
+    // â”€â”€â”€ TC-PF-001: Welcome page load time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 1,
-          description = "Welcome page must load within 5 seconds (LCP ≤ 4s, FCP ≤ 2.5s)")
+          description = "Welcome page must load within 5 seconds (LCP â‰¤ 4s, FCP â‰¤ 2.5s)")
     public void testWelcomePageLoadTime() {
         PerformanceUtils perf = new PerformanceUtils();
         perf.logFullPerformanceReport("Welcome Page");
     }
 
-    // ─── TC-PF-002: Login API response time ──────────────────────────────────
+    // â”€â”€â”€ TC-PF-002: Login API response time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 2,
           description = "QA_Bypass_Login API must respond within 2 seconds")
     public void testLoginAPIResponseTime() {
@@ -40,7 +41,7 @@ public class PerformanceTests extends BaseTest {
             "Login API response time: " + responseTime + "ms");
     }
 
-    // ─── TC-PF-003: Profile creation page load ────────────────────────────────
+    // â”€â”€â”€ TC-PF-003: Profile creation page load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 3,
           description = "Profile creation page must reach DOM interactive state within 3s")
     public void testProfilePageLoadTime() {
@@ -55,7 +56,7 @@ public class PerformanceTests extends BaseTest {
         perf.logFullPerformanceReport("Post-Login Page");
     }
 
-    // ─── TC-PF-004: All API calls finish within SLA ───────────────────────────
+    // â”€â”€â”€ TC-PF-004: All API calls finish within SLA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 4,
           description = "All API calls during onboarding must respond within 2s SLA")
     public void testAllAPIsWithinSLA() {
@@ -75,7 +76,7 @@ public class PerformanceTests extends BaseTest {
             "Average API response time: " + String.format("%.0f", avg) + "ms");
     }
 
-    // ─── TC-PF-005: Time to First Byte ───────────────────────────────────────
+    // â”€â”€â”€ TC-PF-005: Time to First Byte â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 5,
           description = "TTFB (Time to First Byte) should be under 600ms")
     public void testTimeToFirstByte() {
@@ -86,11 +87,11 @@ public class PerformanceTests extends BaseTest {
             if (ttfb <= 600) {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.PASS,
-                    "TTFB: " + ttfb + "ms ✓ (threshold: 600ms)");
+                    "TTFB: " + ttfb + "ms âœ“ (threshold: 600ms)");
             } else {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.WARNING,
-                    "TTFB: " + ttfb + "ms (threshold: 600ms) — investigate server response");
+                    "TTFB: " + ttfb + "ms (threshold: 600ms) â€” investigate server response");
             }
         } else {
             com.toskie.utils_Layer.ReportManager.getTest().log(
@@ -98,9 +99,9 @@ public class PerformanceTests extends BaseTest {
         }
     }
 
-    // ─── TC-PF-006: First Contentful Paint ───────────────────────────────────
+    // â”€â”€â”€ TC-PF-006: First Contentful Paint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 6,
-          description = "First Contentful Paint must be ≤ 2.5s (Google Core Web Vitals)")
+          description = "First Contentful Paint must be â‰¤ 2.5s (Google Core Web Vitals)")
     public void testFirstContentfulPaint() {
         PerformanceUtils perf = new PerformanceUtils();
         long fcp = perf.getFirstContentfulPaint();
@@ -109,7 +110,7 @@ public class PerformanceTests extends BaseTest {
             if (fcp <= PerformanceUtils.FIRST_CONTENTFUL_PAINT) {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.PASS,
-                    "FCP: " + fcp + "ms ✓");
+                    "FCP: " + fcp + "ms âœ“");
             } else {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.FAIL,
@@ -118,7 +119,7 @@ public class PerformanceTests extends BaseTest {
         }
     }
 
-    // ─── TC-PF-007: DOM Content Loaded time ──────────────────────────────────
+    // â”€â”€â”€ TC-PF-007: DOM Content Loaded time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 7,
           description = "DOMContentLoaded event must fire within 3 seconds")
     public void testDOMContentLoadedTime() {
@@ -129,7 +130,7 @@ public class PerformanceTests extends BaseTest {
             if (dom <= PerformanceUtils.DOM_CONTENT_LOADED) {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.PASS,
-                    "DOM ContentLoaded: " + dom + "ms ✓");
+                    "DOM ContentLoaded: " + dom + "ms âœ“");
             } else {
                 com.toskie.utils_Layer.ReportManager.getTest().log(
                     com.aventstack.extentreports.Status.WARNING,
@@ -138,7 +139,7 @@ public class PerformanceTests extends BaseTest {
         }
     }
 
-    // ─── TC-PF-008: Email OTP bypass API response time ────────────────────────
+    // â”€â”€â”€ TC-PF-008: Email OTP bypass API response time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 8,
           description = "QA_Bypass_Verify_Email_Otp API must respond within 2s")
     public void testEmailOTPAPIResponseTime() {
@@ -157,7 +158,7 @@ public class PerformanceTests extends BaseTest {
         perf.stopTimerAndAssert("email_otp_api", PerformanceUtils.API_RESPONSE_THRESHOLD * 3);
     }
 
-    // ─── TC-PF-009: Search results load time ─────────────────────────────────
+    // â”€â”€â”€ TC-PF-009: Search results load time â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 9,
           description = "Search results page must render within 3s of submitting query")
     public void testSearchResultsLoadTime() {
@@ -174,9 +175,9 @@ public class PerformanceTests extends BaseTest {
         perf.stopTimerAndAssert("search_results", 3000);
     }
 
-    // ─── TC-PF-010: Memory usage check ────────────────────────────────────────
+    // â”€â”€â”€ TC-PF-010: Memory usage check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 10,
-          description = "Check for memory leaks — heap usage should not exceed 100MB")
+          description = "Check for memory leaks â€” heap usage should not exceed 100MB")
     public void testMemoryUsage() {
         PerformanceUtils perf = new PerformanceUtils();
         new WelcomePage(utilLayer).completeOnboarding();
@@ -198,3 +199,4 @@ public class PerformanceTests extends BaseTest {
         }
     }
 }
+

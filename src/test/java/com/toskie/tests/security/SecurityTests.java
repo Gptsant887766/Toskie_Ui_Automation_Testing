@@ -10,10 +10,11 @@ import com.toskie.utils.SecurityUtils;
 import com.toskie.utils.TestDataManager;
 import com.toskie.utils_Layer.BrowserManager;
 import org.testng.annotations.DataProvider;
+import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
 /**
- * SECURITY TESTS — OWASP Top 10, XSS, SQLi, Auth, HTTPS, Token security
+ * SECURITY TESTS â€” OWASP Top 10, XSS, SQLi, Auth, HTTPS, Token security
  * TC-SEC-001 through TC-SEC-015
  */
 public class SecurityTests extends BaseTest {
@@ -23,7 +24,7 @@ public class SecurityTests extends BaseTest {
         return TestDataManager.getSecurityPayloads();
     }
 
-    // ─── TC-SEC-001: XSS in phone number field ────────────────────────────────
+    // â”€â”€â”€ TC-SEC-001: XSS in phone number field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 1,
           description = "OWASP A03: XSS payloads in phone number field should be sanitized")
     public void testXSSInPhoneField() {
@@ -33,10 +34,10 @@ public class SecurityTests extends BaseTest {
 
         LoginPageLocators loc = new LoginPageLocators(BrowserManager.getPage());
         sec.testXSSInField(loc.phoneNumberInput, "Phone Number");
-        // Pass regardless — we've logged pass/fail per payload
+        // Pass regardless â€” we've logged pass/fail per payload
     }
 
-    // ─── TC-SEC-002: XSS in first name field ──────────────────────────────────
+    // â”€â”€â”€ TC-SEC-002: XSS in first name field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 2,
           description = "OWASP A03: XSS payloads in profile first name should be sanitized")
     public void testXSSInFirstNameField() {
@@ -51,7 +52,7 @@ public class SecurityTests extends BaseTest {
         sec.testXSSInField(loc.firstNameInput, "First Name");
     }
 
-    // ─── TC-SEC-003: SQL Injection in search ──────────────────────────────────
+    // â”€â”€â”€ TC-SEC-003: SQL Injection in search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 3,
           description = "OWASP A03: SQL injection payloads in search should be sanitized")
     public void testSQLInjectionInSearch() {
@@ -83,7 +84,7 @@ public class SecurityTests extends BaseTest {
         }
     }
 
-    // ─── TC-SEC-004: All requests use HTTPS ───────────────────────────────────
+    // â”€â”€â”€ TC-SEC-004: All requests use HTTPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 4,
           description = "OWASP A02: All network requests must use HTTPS")
     public void testAllRequestsUseHTTPS() {
@@ -97,7 +98,7 @@ public class SecurityTests extends BaseTest {
         nv.assertHTTPS();
     }
 
-    // ─── TC-SEC-005: No sensitive data in URLs ─────────────────────────────────
+    // â”€â”€â”€ TC-SEC-005: No sensitive data in URLs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 5,
           description = "OWASP A02: Tokens and secrets must not appear in request URLs")
     public void testNoSensitiveDataInURLs() {
@@ -111,7 +112,7 @@ public class SecurityTests extends BaseTest {
         nv.assertNoSensitiveDataInURL();
     }
 
-    // ─── TC-SEC-006: Auth header sent with API calls ───────────────────────────
+    // â”€â”€â”€ TC-SEC-006: Auth header sent with API calls â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 6,
           description = "OWASP A07: Authorization header must be present in authenticated API calls")
     public void testAuthHeaderPresentInAPIcalls() {
@@ -125,7 +126,7 @@ public class SecurityTests extends BaseTest {
         nv.assertAuthHeaderPresent();
     }
 
-    // ─── TC-SEC-007: Token expiry validation ──────────────────────────────────
+    // â”€â”€â”€ TC-SEC-007: Token expiry validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 7,
           description = "OWASP A07: JWT token should have a valid expiry and not be expired")
     public void testTokenExpiry() {
@@ -136,7 +137,7 @@ public class SecurityTests extends BaseTest {
         sec.assertTokenExpiry();
     }
 
-    // ─── TC-SEC-008: QA secret not exposed in responses ──────────────────────
+    // â”€â”€â”€ TC-SEC-008: QA secret not exposed in responses â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 8,
           description = "QA secret key must not appear in any API response")
     public void testQASecretNotExposedInResponses() {
@@ -148,7 +149,7 @@ public class SecurityTests extends BaseTest {
         BrowserManager.getPage().waitForTimeout(3000);
     }
 
-    // ─── TC-SEC-009: OTP rate limiting ────────────────────────────────────────
+    // â”€â”€â”€ TC-SEC-009: OTP rate limiting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 9,
           description = "OWASP A04: Multiple OTP requests should trigger rate limiting")
     public void testOTPRateLimiting() {
@@ -162,7 +163,7 @@ public class SecurityTests extends BaseTest {
         sec.assertRateLimitingOnOTP(loc.sendOtpButton, 5);
     }
 
-    // ─── TC-SEC-010: Data-driven XSS payloads ────────────────────────────────
+    // â”€â”€â”€ TC-SEC-010: Data-driven XSS payloads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(dataProvider = "xssPayloads", priority = 10,
           description = "Data-driven: Multiple XSS payloads across different input fields")
     public void testXSSPayloadsInFields(String payload, String field, String expectedResult) {
@@ -184,7 +185,7 @@ public class SecurityTests extends BaseTest {
         } catch (Exception ignored) {}
     }
 
-    // ─── TC-SEC-011: CSRF protection ──────────────────────────────────────────
+    // â”€â”€â”€ TC-SEC-011: CSRF protection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 11,
           description = "API endpoints should have CSRF protection or SameSite cookies")
     public void testCSRFProtection() {
@@ -195,20 +196,20 @@ public class SecurityTests extends BaseTest {
         new LoginPage(utilLayer).loginWithDefaultCredentials();
 
         nv.stopCapturing();
-        // Log the check — actual CSRF validation requires deeper inspection
+        // Log the check â€” actual CSRF validation requires deeper inspection
         com.toskie.utils_Layer.ReportManager.getTest().log(
             com.aventstack.extentreports.Status.INFO,
             "CSRF: Verify that auth tokens use httpOnly+SameSite cookies or CSRF tokens.");
     }
 
-    // ─── TC-SEC-012: Broken Object Level Authorization ────────────────────────
+    // â”€â”€â”€ TC-SEC-012: Broken Object Level Authorization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 12,
-          description = "OWASP API A01: Test BOLA — access another user's profile data")
+          description = "OWASP API A01: Test BOLA â€” access another user's profile data")
     public void testBrokenObjectLevelAuthorization() {
         new WelcomePage(utilLayer).completeOnboarding();
         new LoginPage(utilLayer).loginWithDefaultCredentials();
 
-        // Try accessing other user IDs — should return 403 or masked data
+        // Try accessing other user IDs â€” should return 403 or masked data
         for (String testId : SecurityUtils.BOLA_TEST_IDS) {
             try {
                 String testUrl = BrowserManager.getPage().url().split("#")[0] + "/profile/" + testId;
@@ -224,7 +225,7 @@ public class SecurityTests extends BaseTest {
         }
     }
 
-    // ─── TC-SEC-013: No password/secrets in page source ───────────────────────
+    // â”€â”€â”€ TC-SEC-013: No password/secrets in page source â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 13,
           description = "QA secrets and passwords must not appear in page HTML source")
     public void testNoSecretsInPageSource() {
@@ -239,7 +240,7 @@ public class SecurityTests extends BaseTest {
             hasSecret ? "QA SECRET found in page source!" : "No QA secrets in page source.");
     }
 
-    // ─── TC-SEC-014: Session token invalidation on logout ─────────────────────
+    // â”€â”€â”€ TC-SEC-014: Session token invalidation on logout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 14,
           description = "Token in localStorage should be cleared after logout")
     public void testTokenClearedOnLogout() {
@@ -266,7 +267,7 @@ public class SecurityTests extends BaseTest {
         }
     }
 
-    // ─── TC-SEC-015: Verify CSP header ────────────────────────────────────────
+    // â”€â”€â”€ TC-SEC-015: Verify CSP header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Test(priority = 15,
           description = "Content-Security-Policy header should be present")
     public void testContentSecurityPolicyHeader() {
@@ -280,3 +281,4 @@ public class SecurityTests extends BaseTest {
         return content.contains("<script>alert") || content.contains("onerror=alert");
     }
 }
+
