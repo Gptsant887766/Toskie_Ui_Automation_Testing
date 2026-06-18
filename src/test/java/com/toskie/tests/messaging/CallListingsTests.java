@@ -20,10 +20,14 @@ public class CallListingsTests extends BaseTest {
         a.assertAll();
     }
 
-    @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Call history items are displayed")
+    @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Call history shows items or empty state")
     public void testCallHistoryItems() {
         init();
-        a.assertTrue(callPage.getCallCount() >= 0, "Call history loaded without error");
+        int count = callPage.getCallCount();
+        boolean listVisible = callPage.isCallListVisible();
+        ReportManager.getTest().log(Status.INFO, "CALL-2: Call count=" + count + " | list visible=" + listVisible);
+        a.assertTrue(listVisible,
+                "CALL-2: Call listings container must be visible regardless of call history count (count=" + count + ")");
         a.assertAll();
     }
 }

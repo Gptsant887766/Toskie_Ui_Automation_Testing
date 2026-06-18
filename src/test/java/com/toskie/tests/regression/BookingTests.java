@@ -1,5 +1,7 @@
 package com.toskie.tests.regression;
+import com.microsoft.playwright.options.LoadState;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.*;
 import com.toskie.utils.AssertionHelper;
@@ -8,7 +10,7 @@ import com.toskie.utils_Layer.BrowserManager;
 import org.testng.annotations.Test;
 
 /**
- * BOOKING TESTS — TC_BK_001 to TC_BK_010
+ * BOOKING TESTS -- TC_BK_001 to TC_BK_010
  * Covers: Book Now flow, date/time selection, confirmation, My Bookings, validation
  */
 public class BookingTests extends BaseTest {
@@ -17,20 +19,20 @@ public class BookingTests extends BaseTest {
         new LoginPage(utilLayer).loginWithDefaultCredentials();
         BrowserManager.getPage().navigate(com.toskie.utils_Layer.ConfigManager.getBaseUrl());
         com.toskie.utils_Layer.WaitManager.safePageLoad();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
         if (pp.isProfileCreationPageVisible()) {
             try { pp.createProfileWithDefaultData(); } catch (Exception ignored) {}
             BrowserManager.getPage().navigate(com.toskie.utils_Layer.ConfigManager.getBaseUrl());
             com.toskie.utils_Layer.WaitManager.safePageLoad();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
         }
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
         // Find and click first talent card
         if (hp.getTalentCardCount() > 0) {
             hp.clickFirstTalentCard();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
         }
     }
 
@@ -64,9 +66,9 @@ public class BookingTests extends BaseTest {
         bp.clickBookNow();
         if (bp.isBookingFormVisible()) {
             bp.selectFirstAvailableDate();
-            a.assertTrue(true, "TC_BK_002 PASS: Date selected without error");
+            a.assertTrue(bp.isBookingFormVisible(), "TC_BK_002: After date selection, booking form should still be visible");
         } else {
-            a.assertTrue(true, "TC_BK_002: Booking form not available – test N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_002: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -83,9 +85,9 @@ public class BookingTests extends BaseTest {
         if (bp.isBookingFormVisible()) {
             bp.selectFirstAvailableDate();
             bp.selectFirstAvailableTimeSlot();
-            a.assertTrue(true, "TC_BK_003 PASS: Time slot selected");
+            a.assertTrue(bp.isBookingFormVisible(), "TC_BK_003: After time slot selection, booking form should still be visible");
         } else {
-            a.assertTrue(true, "TC_BK_003: Booking form not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_003: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -101,9 +103,9 @@ public class BookingTests extends BaseTest {
         bp.clickBookNow();
         if (bp.isBookingFormVisible()) {
             bp.enterBookingNotes("Please bring equipment for bathroom plumbing.");
-            a.assertTrue(true, "TC_BK_004 PASS: Notes entered");
+            a.assertTrue(bp.isBookingFormVisible(), "TC_BK_004: After entering notes, booking form should still be visible");
         } else {
-            a.assertTrue(true, "TC_BK_004: Booking form not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_004: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -134,7 +136,7 @@ public class BookingTests extends BaseTest {
                 "TC_BK_005: Booking confirmation screen or message must be shown after confirming");
         } else {
             nv.stopCapturing();
-            a.assertTrue(true, "TC_BK_005: Booking flow not available in current app state");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_005: Booking flow not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -158,7 +160,7 @@ public class BookingTests extends BaseTest {
             a.assertTrue(formGone,
                 "TC_BK_006: Booking form must be dismissed after cancellation");
         } else {
-            a.assertTrue(true, "TC_BK_006: Booking form not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_006: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -174,15 +176,15 @@ public class BookingTests extends BaseTest {
         bp.clickBookNow();
         if (bp.isBookingFormVisible()) {
             bp.completeBookingDefault();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             bp.navigateToMyBookings();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
 
             int count = bp.getBookingCount();
             a.assertTrue(count > 0 || bp.isEmptyBookingsVisible(),
                 "TC_BK_007: My Bookings page loaded (count=" + count + ")");
         } else {
-            a.assertTrue(true, "TC_BK_007: Booking flow not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_007: Booking flow not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -200,7 +202,7 @@ public class BookingTests extends BaseTest {
             boolean pastDisabled = bp.isPastDateDisabled();
             a.assertTrue(pastDisabled, "TC_BK_008 PASS: Past dates are disabled in booking calendar");
         } else {
-            a.assertTrue(true, "TC_BK_008: Booking form not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_008: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -223,7 +225,7 @@ public class BookingTests extends BaseTest {
                 || !bp.isBookingConfirmed();
             a.assertTrue(hasError, "TC_BK_009 PASS: Booking without date should show error or not complete");
         } else {
-            a.assertTrue(true, "TC_BK_009: Booking form not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_009: Booking form not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -239,7 +241,7 @@ public class BookingTests extends BaseTest {
         bp.clickBookNow();
         if (bp.isBookingFormVisible()) {
             bp.completeBookingDefault();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
 
             // Navigate to notifications and check
             try {
@@ -251,10 +253,10 @@ public class BookingTests extends BaseTest {
                 a.assertTrue(hasBookingNotif,
                     "TC_BK_010: Notification section should contain booking confirmation after booking");
             } catch (Exception e) {
-                a.assertTrue(true, "TC_BK_010: Notification check attempted");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_010: After notification check exception, should be on toskie.com");
             }
         } else {
-            a.assertTrue(true, "TC_BK_010: Booking flow not available");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_010: Booking flow not available -- should be on toskie.com");
         }
         a.assertAll();
     }

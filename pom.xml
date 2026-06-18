@@ -28,8 +28,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Default suite: override with -DsuiteXmlFile=testng-smoke.xml etc. -->
-        <suiteXmlFile>testng-master.xml</suiteXmlFile>
+        <!-- Default suite: override with -DsuiteXmlFile=testng-master.xml etc. -->
+        <!-- FullRegressionSuite.xml covers all 94 modern test classes -->
+        <suiteXmlFile>src/test/resources/FullRegressionSuite.xml</suiteXmlFile>
 
         <!-- DEPENDENCY VERSIONS -->
         <playwright.version>1.53.0</playwright.version>
@@ -172,6 +173,17 @@
             <version>7.2.5</version>
         </dependency>
 
+        <!-- ================================================= -->
+        <!-- AXE-CORE ACCESSIBILITY (Playwright) -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.deque.html.axe-core</groupId>
+            <artifactId>playwright</artifactId>
+            <version>4.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <!-- ================= BUILD ================= -->
@@ -214,6 +226,18 @@
                         </path>
 
                     </annotationProcessorPaths>
+
+                    <!-- Legacy root-package test classes (pre-framework era) -->
+                    <testExcludes>
+                        <testExclude>com/toskie/AllToskieTestCases.java</testExclude>
+                        <testExclude>com/toskie/EndToEndFlowTestCases.java</testExclude>
+                        <testExclude>com/toskie/LoginPageTestCases.java</testExclude>
+                        <testExclude>com/toskie/LoginTestCases.java</testExclude>
+                        <testExclude>com/toskie/ProfileCreationTestCases.java</testExclude>
+                        <testExclude>com/toskie/ToskieCreatePrifileTestCases.java</testExclude>
+                        <testExclude>com/toskie/WelcomePageTestCases.java</testExclude>
+                        <testExclude>com/toskie/WelcomeToToskieLandingTestCase.java</testExclude>
+                    </testExcludes>
 
                 </configuration>
 

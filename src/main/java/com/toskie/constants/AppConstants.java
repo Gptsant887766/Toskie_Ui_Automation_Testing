@@ -11,4 +11,7 @@ public class AppConstants {
     public static final String POSTS_URL            = "https://dev.app.toskie.com/posts";
     public static final String EXPLORE_URL          = "https://dev.app.toskie.com/explore";
     public static final String BLOG_URL             = "https://dev.app.toskie.com/blog";
+    public static final String SUBSCRIPTION_URL     = "https://dev.app.toskie.com/subscription";
+    public static final String SETTINGS_URL         = "https://dev.app.toskie.com/settings";
+    public static final String NOTIFICATIONS_URL    = "https://dev.app.toskie.com/notifications";
 }

@@ -219,7 +219,7 @@ public class NetworkValidator {
             if ("*".equals(origin)) {
                 ReportManager.getTest().log(Status.WARNING,
                     "Wildcard CORS (Access-Control-Allow-Origin: *) on: " + resp.url()
-                        + " — review if intentional.");
+                        + " -- review if intentional.");
                 wildcardFound = true;
             }
         }

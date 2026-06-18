@@ -32,7 +32,7 @@ public class RedisValidator {
 
         if (host == null || host.trim().isEmpty()) {
             ReportManager.getTest().log(Status.WARNING,
-                "[Redis] redis.host not configured — Redis validation skipped.");
+                "[Redis] redis.host not configured -- Redis validation skipped.");
             return;
         }
         try {
@@ -50,7 +50,7 @@ public class RedisValidator {
                 "[Redis] Connected to " + host + ":" + port);
         } catch (Exception e) {
             ReportManager.getTest().log(Status.WARNING,
-                "[Redis] Connection failed: " + e.getMessage() + " — Redis validation skipped.");
+                "[Redis] Connection failed: " + e.getMessage() + " -- Redis validation skipped.");
         }
     }
 
@@ -139,7 +139,7 @@ public class RedisValidator {
 
     public void assertOTPCached(String mobile) {
         assertKeyExists("otp:" + mobile);
-        assertTTLWithinRange("otp:" + mobile, 60, 600); // 1–10 min
+        assertTTLWithinRange("otp:" + mobile, 60, 600); // 1-10 min
     }
 
     public void assertOTPExpiredAfterUse(String mobile) {
@@ -165,7 +165,7 @@ public class RedisValidator {
     }
 
     public void assertSessionExpiry(String userId) {
-        assertTTLWithinRange("session:" + userId, 3600, 86400); // 1h–24h
+        assertTTLWithinRange("session:" + userId, 3600, 86400); // 1h-24h
     }
 
     // ─── Token blacklist ──────────────────────────────────────────────────────
@@ -192,6 +192,6 @@ public class RedisValidator {
 
     private void skipLog(String method) {
         ReportManager.getTest().log(Status.WARNING,
-            "[Redis] " + method + " skipped — no Redis connection.");
+            "[Redis] " + method + " skipped -- no Redis connection.");
     }
 }

@@ -45,9 +45,15 @@ public class TalentSearchUITests extends BaseTest {
         init();
         searchPage.searchTalent("designer");
         int before = resultsPage.getResultCount();
+        ReportManager.getTest().log(Status.INFO, "Results before filter: " + before);
         searchPage.applyFilter();
-        ReportManager.getTest().log(Status.INFO, "Applied filter");
-        a.assertTrue(true, "Filter applied without error");
+        int after = resultsPage.getResultCount();
+        ReportManager.getTest().log(Status.INFO, "Results after filter: " + after);
+        // After applying any filter, results must be a non-negative count (0 is valid if filter removes all)
+        // and the search must not crash / leave an error state
+        a.assertTrue(after >= 0, "Filter applied -- result count must be >= 0 (got: " + after + ")");
+        a.assertTrue(resultsPage.isResultsLoaded() || resultsPage.isNoResultsVisible(),
+                "After applying filter, results container or no-results message must be visible");
         a.assertAll();
     }
 
@@ -57,10 +63,18 @@ public class TalentSearchUITests extends BaseTest {
         searchPage.searchTalent("actor");
         boolean hasNext = resultsPage.isPaginationVisible();
         if (hasNext) {
+            int page1Count = resultsPage.getResultCount();
             resultsPage.clickNextPage();
-            a.assertTrue(resultsPage.getCurrentPage() > 1, "Should navigate to page 2");
+            int currentPage = resultsPage.getCurrentPage();
+            a.assertTrue(currentPage > 1,
+                    "Clicking next page must advance to page 2 or beyond (got page: " + currentPage + ")");
+            a.assertTrue(resultsPage.getResultCount() >= 0,
+                    "Page 2 result count must be >= 0 (got: " + resultsPage.getResultCount() + ")");
         } else {
-            a.assertTrue(true, "Single page results, no pagination needed");
+            // Single page — verify results loaded correctly
+            int count = resultsPage.getResultCount();
+            a.assertTrue(resultsPage.isResultsLoaded() || count == 0,
+                    "Single-page search results must show loaded state (count=" + count + ")");
         }
         a.assertAll();
     }

@@ -1,6 +1,7 @@
 package com.toskie.tests.auth;
 
 import com.aventstack.extentreports.Status;
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils_Layer.BrowserManager;
@@ -110,13 +111,13 @@ public class AuthLoginTests extends BaseTest {
         new com.toskie.pages.LoginPage(utilLayer).loginWithDefaultCredentials();
         String firstUrl = BrowserManager.getPage().url();
         ReportManager.getTest().log(Status.INFO, "Navigating to dashboard and verifying session state");
-        // Navigate to dashboard URL — app may redirect to registration/authentication depending on profile state
+        // Navigate to dashboard URL -- app may redirect to registration/authentication depending on profile state
         BrowserManager.getPage().navigate(com.toskie.constants.AppConstants.DASHBOARD_URL);
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         String url = BrowserManager.getPage().url();
         // Accept any authenticated app URL (dashboard, registration, authentication flow)
-        a.assertTrue(!url.isEmpty() && (url.contains("dashboard") || url.contains("registration")
-                || url.contains("authentication") || url.contains("user")),
+        a.assertTrue(url.contains("dashboard") || url.contains("registration")
+                || url.contains("authentication") || url.contains("user"),
                 "URL after navigation should be within the app (got: " + url + ")");
         a.assertAll();
     }
@@ -141,7 +142,7 @@ public class AuthLoginTests extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         ReportManager.getTest().log(Status.INFO, "Testing: Unauthenticated user redirect from dashboard");
         BrowserManager.getPage().navigate(com.toskie.constants.AppConstants.DASHBOARD_URL);
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         String url = BrowserManager.getPage().url();
         ReportManager.getTest().log(Status.INFO, "Unauthenticated dashboard URL resolved to: " + url);
         // Dev environment may allow unauthenticated dashboard access OR redirect to auth/login/register
@@ -150,7 +151,7 @@ public class AuthLoginTests extends BaseTest {
         if (!redirected) {
             ReportManager.getTest().log(Status.WARNING, "Dev environment allows unauthenticated dashboard access at: " + url);
         }
-        a.assertTrue(!url.isEmpty(), "Dashboard should serve a valid page (got: " + url + ")");
+        a.assertContains(url, "toskie.com", "Dashboard should serve a toskie.com page (got: " + url + ")");
         a.assertAll();
     }
 

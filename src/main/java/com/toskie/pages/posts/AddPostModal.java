@@ -24,7 +24,7 @@ public class AddPostModal {
     private void loginIfNeeded() {
         try {
             Object token = BrowserManager.getPage().evaluate(
-                "localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('accessToken')");
+                "localStorage.getItem('access_token')");
             boolean hasToken = token != null && !"null".equals(String.valueOf(token)) && !String.valueOf(token).trim().isEmpty();
             if (!hasToken) {
                 new com.toskie.pages.LoginPage(util).loginWithDefaultCredentials();

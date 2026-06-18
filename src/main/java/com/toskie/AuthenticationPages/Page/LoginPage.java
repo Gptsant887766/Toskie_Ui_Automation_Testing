@@ -33,7 +33,7 @@ public class LoginPage extends LoginPageOr {
                 utilLayer.click(ClickOnLoginBT, "Login Button");
                 WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
             } catch (Exception navEx) {
-                System.out.println("[LoginPage] Login button not visible — skipping UI navigation (QA bypass).");
+                System.out.println("[LoginPage] Login button not visible -- skipping UI navigation (QA bypass).");
             }
 
             String mobile = System.getProperty("testMobile", ConfigManager.getTestMobile());

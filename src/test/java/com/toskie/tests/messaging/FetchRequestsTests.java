@@ -16,7 +16,10 @@ public class FetchRequestsTests extends BaseTest {
     public void testFetchMessageRequests() {
         init();
         ReportManager.getTest().log(Status.INFO, "Fetching message requests");
-        a.assertTrue(convPage.getConversationCount() >= 0, "Requests fetched without error");
+        boolean listVisible = convPage.isConversationListVisible();
+        ReportManager.getTest().log(Status.INFO, "MSG-REQ-1: Conversation/request list visible: " + listVisible);
+        a.assertTrue(listVisible,
+                "MSG-REQ-1: Message requests page must show the conversation/requests list after login");
         a.assertAll();
     }
 }

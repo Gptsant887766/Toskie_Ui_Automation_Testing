@@ -15,8 +15,13 @@ public class GalleryApiTests extends BaseTest {
     @Test(groups = {TestGroups.API, TestGroups.P1}, description = "Gallery images loaded from API correctly")
     public void testGalleryLoadsFromApi() {
         init();
-        ReportManager.getTest().log(Status.INFO, "Checking gallery load via API");
-        a.assertTrue(galleryPage.getImageCount() >= 0, "Gallery should load without error");
+        int count = galleryPage.getImageCount();
+        ReportManager.getTest().log(Status.INFO, "Gallery image count: " + count);
+        boolean emptyState = com.toskie.utils_Layer.BrowserManager.getPage()
+                .locator("[class*='empty'], [class*='no-gallery'], :has-text('No images'), :has-text('Upload your first')")
+                .count() > 0;
+        a.assertTrue(count > 0 || emptyState,
+                "GALLERY-API-1: Gallery must show images (count > 0) OR an empty-state message (count=" + count + ", emptyState=" + emptyState + ")");
         a.assertAll();
     }
 

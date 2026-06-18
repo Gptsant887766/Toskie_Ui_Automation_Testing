@@ -15,5 +15,5 @@ public class GalleryExploreDetailTests extends BaseTest {
     public void testGalleryDetailOpens() { init(); a.assertTrue(galleryDetail.isDetailVisible(), "Gallery detail should open"); a.assertAll(); }
 
     @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Navigation works in gallery detail")
-    public void testGalleryNavigation() { init(); a.assertTrue(true, "Gallery navigation works"); a.assertAll(); }
+    public void testGalleryNavigation() { init(); a.assertTrue(galleryDetail.isDetailVisible(), "Gallery detail should still be visible after navigation"); a.assertAll(); }
 }

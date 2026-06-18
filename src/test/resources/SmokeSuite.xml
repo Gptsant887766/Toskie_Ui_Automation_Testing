@@ -1,0 +1,61 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  SMOKE SUITE — P0/P1 critical path only.
+  Run before every deployment to catch regressions in < 5 minutes.
+  Use: mvn test -DsuiteXmlFile=src/test/resources/SmokeSuite.xml
+-->
+<suite name="Toskie Smoke Suite" verbose="1" parallel="none">
+
+    <test name="Smoke — Core Auth">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="p0"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+        </classes>
+    </test>
+
+    <test name="Smoke — Registration">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="p0"/>
+                <include name="p1"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+        </classes>
+    </test>
+
+    <test name="Smoke — Feed and Posts">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="p0"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+        </classes>
+    </test>
+
+    <test name="Smoke — Homepage">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="p0"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.regression.LoginTests"/>
+        </classes>
+    </test>
+
+</suite>

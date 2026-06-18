@@ -1,17 +1,48 @@
 package com.toskie.tests.accessibility;
 
+import com.aventstack.extentreports.Status;
+import com.deque.html.axecore.playwright.AxeBuilder;
+import com.deque.html.axecore.results.AxeResults;
+import com.deque.html.axecore.results.Rule;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.LoginPage;
 import com.toskie.pages.WelcomePage;
 import com.toskie.utils.AccessibilityUtils;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
- * ACCESSIBILITY TESTS — WCAG 2.1 AA compliance
+ * ACCESSIBILITY TESTS -- WCAG 2.1 AA compliance
  * TC-ACC-001 through TC-ACC-012
  */
 public class AccessibilityTests extends BaseTest {
+
+    private void runAxeAudit(String pageName) {
+        try {
+            AxeBuilder axeBuilder = new AxeBuilder(BrowserManager.getPage());
+            AxeResults results = axeBuilder.analyze();
+            List<Rule> violations = results.getViolations();
+            if (violations.isEmpty()) {
+                ReportManager.getTest().log(Status.PASS,
+                    "axe-core WCAG 2.1 AA: No violations on " + pageName);
+            } else {
+                ReportManager.getTest().log(Status.INFO,
+                    "axe-core: " + violations.size() + " violation(s) on " + pageName);
+                for (Rule rule : violations) {
+                    ReportManager.getTest().log(Status.FAIL,
+                        "[axe-core][" + rule.getImpact() + "] " + rule.getId()
+                        + ": " + rule.getHelp()
+                        + " (" + rule.getNodes().size() + " element(s))");
+                }
+            }
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING,
+                "axe-core audit skipped on " + pageName + ": " + e.getMessage());
+        }
+    }
 
     // ─── TC-ACC-001: Welcome page a11y audit ──────────────────────────────────
     @Test(priority = 1,
@@ -19,6 +50,7 @@ public class AccessibilityTests extends BaseTest {
     public void testWelcomePageAccessibility() {
         AccessibilityUtils a11y = new AccessibilityUtils();
         a11y.runFullAccessibilityAudit("Welcome Page");
+        runAxeAudit("Welcome Page");
     }
 
     // ─── TC-ACC-002: Login page a11y audit ────────────────────────────────────
@@ -29,6 +61,7 @@ public class AccessibilityTests extends BaseTest {
         new LoginPage(utilLayer).clickLoginButton();
         AccessibilityUtils a11y = new AccessibilityUtils();
         a11y.runFullAccessibilityAudit("Login Page");
+        runAxeAudit("Login Page");
     }
 
     // ─── TC-ACC-003: Profile creation a11y audit ──────────────────────────────
@@ -39,6 +72,7 @@ public class AccessibilityTests extends BaseTest {
         new LoginPage(utilLayer).loginWithDefaultCredentials();
         AccessibilityUtils a11y = new AccessibilityUtils();
         a11y.runFullAccessibilityAudit("Profile Creation Page");
+        runAxeAudit("Profile Creation Page");
     }
 
     // ─── TC-ACC-004: All images have alt text ─────────────────────────────────

@@ -20,10 +20,14 @@ public class ConversationListTests extends BaseTest {
         a.assertAll();
     }
 
-    @Test(groups = {TestGroups.REGRESSION, TestGroups.P1}, description = "Conversation items are displayed")
+    @Test(groups = {TestGroups.REGRESSION, TestGroups.P1}, description = "Conversation items are displayed or empty state shown")
     public void testConversationItemsDisplayed() {
         init();
-        a.assertTrue(convPage.getConversationCount() >= 0, "Conversation items should load");
+        int count = convPage.getConversationCount();
+        boolean listVisible = convPage.isConversationListVisible();
+        ReportManager.getTest().log(Status.INFO, "MSG-2: Conversation count=" + count + " | list visible=" + listVisible);
+        a.assertTrue(listVisible,
+                "MSG-2: Conversation list container must be visible on the messaging page");
         a.assertAll();
     }
 
@@ -34,16 +38,19 @@ public class ConversationListTests extends BaseTest {
             convPage.openConversation(0);
             a.assertTrue(convPage.isMessageAreaVisible(), "Message area should open");
         } else {
-            a.assertTrue(true, "No conversations to open");
+            a.assertTrue(convPage.getConversationCount() == 0, "No conversations to open -- count should be 0");
         }
         a.assertAll();
     }
 
-    @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Search conversations works")
+    @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Searching conversations filters list without crashing")
     public void testSearchConversations() {
         init();
         convPage.searchConversation("test");
-        a.assertTrue(true, "Search executed without error");
+        ReportManager.getTest().log(Status.INFO, "MSG-4: Search executed for 'test'");
+        boolean listStillVisible = convPage.isConversationListVisible();
+        a.assertTrue(listStillVisible,
+                "MSG-4: Conversation list must remain visible after performing a search (page must not crash or navigate away)");
         a.assertAll();
     }
 }

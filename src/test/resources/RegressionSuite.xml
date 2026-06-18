@@ -1,0 +1,124 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  REGRESSION SUITE — full functional regression excluding security/accessibility/performance.
+  Run after every feature branch merge to catch functional regressions.
+  Use: mvn test -DsuiteXmlFile=src/test/resources/RegressionSuite.xml
+-->
+<suite name="Toskie Regression Suite" verbose="1" parallel="none">
+
+    <test name="Auth and Registration">
+        <classes>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Profile Creation Wizard">
+        <classes>
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.ProjectStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <class name="com.toskie.tests.profile.SurveyPageTests"/>
+            <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
+            <class name="com.toskie.tests.profile.ProfileVisibilityTests"/>
+        </classes>
+    </test>
+
+    <test name="Dashboard and Profile Management">
+        <classes>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileApiTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardCRUDTests"/>
+            <class name="com.toskie.tests.dashboard.UpdateProfilePhotoTests"/>
+            <class name="com.toskie.tests.dashboard.SkillsApiTests"/>
+            <class name="com.toskie.tests.dashboard.ProjectsApiTests"/>
+            <class name="com.toskie.tests.dashboard.GalleryApiTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
+            <class name="com.toskie.tests.dashboard.ShareProfileTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+        </classes>
+    </test>
+
+    <test name="Posts and Social Feed">
+        <classes>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.AIPostTests"/>
+            <class name="com.toskie.tests.posts.ExploreTests"/>
+            <class name="com.toskie.tests.posts.PostDetailTests"/>
+            <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
+            <class name="com.toskie.tests.posts.SavedPostTests"/>
+            <class name="com.toskie.tests.posts.ShareButtonTests"/>
+            <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
+            <class name="com.toskie.tests.posts.SwitchProfileTests"/>
+            <class name="com.toskie.tests.posts.AddressManagementTests"/>
+            <class name="com.toskie.tests.posts.VideoPostTests"/>
+        </classes>
+    </test>
+
+    <test name="Search and Discovery">
+        <classes>
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+            <class name="com.toskie.tests.search.DeleteRecentSearchTests"/>
+        </classes>
+    </test>
+
+    <test name="Messaging">
+        <classes>
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <class name="com.toskie.tests.messaging.FetchRequestsTests"/>
+            <class name="com.toskie.tests.messaging.RequestAcceptDeclineTests"/>
+            <class name="com.toskie.tests.messaging.CallListingsTests"/>
+            <class name="com.toskie.tests.messaging.LikeModalTests"/>
+            <class name="com.toskie.tests.messaging.SimilarTalentsTests"/>
+            <class name="com.toskie.tests.messaging.ValidateTalentTests"/>
+        </classes>
+    </test>
+
+    <test name="Regression — Core Platform">
+        <classes>
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.regression.LoginTests"/>
+            <class name="com.toskie.tests.regression.LogoutTests"/>
+            <class name="com.toskie.tests.regression.ProfileTests"/>
+            <class name="com.toskie.tests.regression.SearchTests"/>
+            <class name="com.toskie.tests.regression.BookingTests"/>
+            <class name="com.toskie.tests.regression.ChatTests"/>
+            <class name="com.toskie.tests.regression.NotificationTests"/>
+            <class name="com.toskie.tests.regression.SettingsTests"/>
+        </classes>
+    </test>
+
+    <test name="Subscription and Settings">
+        <classes>
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+        </classes>
+    </test>
+
+    <test name="Reviews and Activity">
+        <classes>
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+        </classes>
+    </test>
+
+    <test name="Negative and Edge Cases">
+        <classes>
+            <class name="com.toskie.tests.negative.NegativeTests"/>
+            <class name="com.toskie.tests.edge.EdgeCaseTests"/>
+        </classes>
+    </test>
+
+</suite>

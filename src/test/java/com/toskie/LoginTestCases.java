@@ -3,6 +3,7 @@ package com.toskie;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.AuthenticationPages.Page.LoginPage;
 import com.toskie.AuthenticationPages.Page.ToskieCreateProfile;
 import java.lang.reflect.Method;
@@ -21,11 +22,7 @@ public class LoginTestCases extends BaseTest {
         loginPage.loginWithValidCredentials();
 
         // Wait for profile page to load after login
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        WaitManager.safePageLoad();
 
         ToskieCreateProfile profilePage = new ToskieCreateProfile(utilLayer);
         // attempt to call validateCreateProfile() if it exists; otherwise skip

@@ -33,7 +33,7 @@ public class ProfileCreationTestCases extends BaseTest {
             new com.microsoft.playwright.Page.NavigateOptions().setTimeout(15000));
         BrowserManager.getPage().waitForLoadState(LoadState.DOMCONTENTLOADED);
 
-        // /user-registration is a React SPA route — form fields render asynchronously
+        // /user-registration is a React SPA route -- form fields render asynchronously
         // after DOMCONTENTLOADED fires. Wait for First Name input to confirm the form
         // is fully painted before any test starts asserting element presence.
         BrowserManager.getPage()
@@ -45,7 +45,7 @@ public class ProfileCreationTestCases extends BaseTest {
         return new ToskieCreateProfile(utilLayer);
     }
 
-    // ── TC-PC-001: Happy path — MALE gender ───────────────────────────────────
+    // ── TC-PC-001: Happy path -- MALE gender ───────────────────────────────────
     @Test(priority = 1,
           description = "TC-PC-001: Create profile successfully with MALE gender selection")
     public void verifyCreateProfile_Male() {
@@ -55,7 +55,7 @@ public class ProfileCreationTestCases extends BaseTest {
             "Page URL must not be empty after profile creation");
     }
 
-    // ── TC-PC-002: Happy path — FEMALE gender ─────────────────────────────────
+    // ── TC-PC-002: Happy path -- FEMALE gender ─────────────────────────────────
     @Test(priority = 2,
           description = "TC-PC-002: Create profile successfully with FEMALE gender selection")
     public void verifyCreateProfile_Female() {
@@ -65,7 +65,7 @@ public class ProfileCreationTestCases extends BaseTest {
             "Page URL must not be empty after profile creation");
     }
 
-    // ── TC-PC-003: Happy path — OTHER gender ──────────────────────────────────
+    // ── TC-PC-003: Happy path -- OTHER gender ──────────────────────────────────
     @Test(priority = 3,
           description = "TC-PC-003: Create profile successfully with OTHER gender selection")
     public void verifyCreateProfile_Other() {
@@ -75,7 +75,7 @@ public class ProfileCreationTestCases extends BaseTest {
             "Page URL must not be empty after profile creation");
     }
 
-    // ── TC-PC-004: Data-driven — all genders via provider ─────────────────────
+    // ── TC-PC-004: Data-driven -- all genders via provider ─────────────────────
     @DataProvider(name = "genderData", parallel = false)
     public Object[][] genderData() {
         return new Object[][]{
@@ -86,7 +86,7 @@ public class ProfileCreationTestCases extends BaseTest {
     }
 
     @Test(dataProvider = "genderData", priority = 4,
-          description = "TC-PC-004: Data-driven — create profile for each gender option")
+          description = "TC-PC-004: Data-driven -- create profile for each gender option")
     public void verifyCreateProfile_DataDriven(String gender) {
         System.out.println("[ProfileCreationTestCases] Running gender=" + gender);
         ToskieCreateProfile profilePage = loginAndNavigate();
@@ -95,7 +95,7 @@ public class ProfileCreationTestCases extends BaseTest {
             "URL must not be empty after creating profile with gender=" + gender);
     }
 
-    // ── TC-PC-005: Email OTP — Send OTP does NOT redirect ─────────────────────
+    // ── TC-PC-005: Email OTP -- Send OTP does NOT redirect ─────────────────────
     @Test(priority = 5,
           description = "TC-PC-005: After clicking Send OTP, page must stay on /user-registration (route mock active)")
     public void verifyEmailOTP_SendDoesNotRedirect() {
@@ -108,14 +108,14 @@ public class ProfileCreationTestCases extends BaseTest {
         page.locator("//input[@placeholder='Enter Email ID']").fill(email);
         page.waitForTimeout(500);
         page.locator("//button[normalize-space()='Send OTP']").click();
-        page.waitForTimeout(2000);
+        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
         String url = page.url();
         Assert.assertTrue(url.contains("/user-registration") && !url.contains("non-loggedin-profile"),
-            "Page must stay on /user-registration after Send OTP — was: " + url);
+            "Page must stay on /user-registration after Send OTP -- was: " + url);
     }
 
-    // ── TC-PC-006: Email OTP — dialog appears after Send OTP ──────────────────
+    // ── TC-PC-006: Email OTP -- dialog appears after Send OTP ──────────────────
     @Test(priority = 6,
           description = "TC-PC-006: OTP dialog (role=dialog) must be visible after Send OTP with mocked response")
     public void verifyEmailOTP_DialogAppearsAfterSend() {
@@ -128,14 +128,14 @@ public class ProfileCreationTestCases extends BaseTest {
         page.locator("//input[@placeholder='Enter Email ID']").fill(email);
         page.waitForTimeout(500);
         page.locator("//button[normalize-space()='Send OTP']").click();
-        page.waitForTimeout(2000);
+        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
         boolean dialogVisible = page.locator("div[role='dialog'][data-state='open']").count() > 0;
         Assert.assertTrue(dialogVisible,
             "OTP dialog must appear after a successful Send OTP response");
     }
 
-    // ── TC-PC-007: Email OTP — 4-digit input is fillable ─────────────────────
+    // ── TC-PC-007: Email OTP -- 4-digit input is fillable ─────────────────────
     @Test(priority = 7,
           description = "TC-PC-007: OTP input (data-input-otp=true, maxlength=4) must accept 4-digit code")
     public void verifyEmailOTP_InputAcceptsFourDigits() {
@@ -148,7 +148,7 @@ public class ProfileCreationTestCases extends BaseTest {
         page.locator("//input[@placeholder='Enter Email ID']").fill(email);
         page.waitForTimeout(500);
         page.locator("//button[normalize-space()='Send OTP']").click();
-        page.waitForTimeout(2000);
+        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
 
         com.microsoft.playwright.Locator otpInput =
             page.locator("input[data-input-otp='true'], input[data-slot='input-otp']");
@@ -166,7 +166,7 @@ public class ProfileCreationTestCases extends BaseTest {
         loginAndNavigate();
         String url = BrowserManager.getPage().url();
         Assert.assertTrue(url.contains("/user-registration"),
-            "URL must contain /user-registration after QA login for new user — was: " + url);
+            "URL must contain /user-registration after QA login for new user -- was: " + url);
     }
 
     // ── TC-PC-009: First Name field is present and editable ──────────────────
@@ -209,7 +209,7 @@ public class ProfileCreationTestCases extends BaseTest {
         Assert.assertTrue(emailField.count() > 0, "Email input must be present on /user-registration");
     }
 
-    // ── TC-PC-012: Gender radio buttons — all three present ──────────────────
+    // ── TC-PC-012: Gender radio buttons -- all three present ──────────────────
     @Test(priority = 12,
           description = "TC-PC-012: MALE, FEMALE, OTHER gender options must all be present on the form")
     public void verifyAllGenderOptionsPresent() {

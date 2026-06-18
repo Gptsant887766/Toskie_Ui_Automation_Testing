@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  */
 public class EndToEndFlowTestCases extends BaseTest {
 
-    // ── TC-E2E-001: Full onboarding flow — welcome → login → profile (MALE) ──
+    // ── TC-E2E-001: Full onboarding flow -- welcome → login → profile (MALE) ──
     @Test(priority = 1, description = "TC-E2E-001: Complete journey: welcome slides → login → profile creation (MALE)")
     public void verifyE2E_WelcomeToProfileMale() {
         // Step 1: Navigate through welcome slides and click Create My Profile
@@ -42,7 +42,7 @@ public class EndToEndFlowTestCases extends BaseTest {
         Assert.assertNotNull(ApiUtils.getAccessToken(),
                 "Access token must exist after login in E2E flow");
 
-        // Step 3: Navigate to /home — app redirects to /user-registration for new users
+        // Step 3: Navigate to /home -- app redirects to /user-registration for new users
         String homeUrl = ConfigManager.getBaseUrl().replaceAll("/$", "") + "/home";
         Page page = BrowserManager.getPage();
         page.navigate(homeUrl, new Page.NavigateOptions().setTimeout(15000));
@@ -122,13 +122,13 @@ public class EndToEndFlowTestCases extends BaseTest {
 
         String url = page.url();
         Assert.assertTrue(url.contains("user-registration"),
-                "Authenticated user must reach /user-registration — was: " + url);
+                "Authenticated user must reach /user-registration -- was: " + url);
     }
 
     // ── TC-E2E-005: Welcome → Login → verify user is authenticated ────────────
     @Test(priority = 5, description = "TC-E2E-005: Welcome → Login → verify authenticated session (token present + not expired)")
     public void verifyE2E_WelcomeToAuthenticatedSession() {
-        // Verify the welcome page loaded — do NOT navigate through the welcome slides here.
+        // Verify the welcome page loaded -- do NOT navigate through the welcome slides here.
         // validateWelcomeToToskieLandingPage() clicks "Create My Profile" which leaves the
         // welcome screen, causing loginWithValidCredentials() to time out on the Login button.
         WelcomeToToskieLandingPage welcomePage = new WelcomeToToskieLandingPage(utilLayer);

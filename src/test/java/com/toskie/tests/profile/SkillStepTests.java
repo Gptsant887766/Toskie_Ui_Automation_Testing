@@ -18,7 +18,7 @@ public class SkillStepTests extends BaseTest {
         com.toskie.pages.profile.SkillStepPage page = new com.toskie.pages.profile.SkillStepPage(utilLayer);
         page.navigateToSkillStep();
         ReportManager.getTest().log(Status.INFO, "Verifying skill step page is loaded");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Skill step should load correctly");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Skill step should load correctly");
         a.assertAll();
     }
 
@@ -45,7 +45,7 @@ public class SkillStepTests extends BaseTest {
         com.toskie.pages.profile.SkillStepPage page = new com.toskie.pages.profile.SkillStepPage(utilLayer);
         page.navigateToSkillStep();
         ReportManager.getTest().log(Status.INFO, "Searching for skill: Photography");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Skill search should return results");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Skill search should return results");
         a.assertAll();
     }
 
@@ -104,7 +104,7 @@ public class SkillStepTests extends BaseTest {
         com.toskie.pages.profile.SkillStepPage page = new com.toskie.pages.profile.SkillStepPage(utilLayer);
         page.navigateToSkillStep();
         ReportManager.getTest().log(Status.INFO, "Verifying skill category filters are available");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Skill category filters should work");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Skill category filters should work");
         a.assertAll();
     }
 
@@ -118,7 +118,7 @@ public class SkillStepTests extends BaseTest {
         page.navigateToSkillStep();
         page.clickNext();
         ReportManager.getTest().log(Status.INFO, "Verifying error shown when no skill is added");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Minimum one skill required error should be shown");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Minimum one skill required error should be shown");
         a.assertAll();
     }
 
@@ -148,7 +148,7 @@ public class SkillStepTests extends BaseTest {
         page.searchAndAddSkill("Photography", "Beginner");
         page.searchAndAddSkill("Photography", "Intermediate");
         ReportManager.getTest().log(Status.INFO, "Verifying duplicate skill is rejected (BUG: not currently blocked)");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Duplicate skill should be blocked — KNOWN BUG TC_US_70");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Duplicate skill should be blocked -- KNOWN BUG TC_US_70");
         a.assertAll();
     }
 
@@ -161,7 +161,7 @@ public class SkillStepTests extends BaseTest {
         com.toskie.pages.profile.SkillStepPage page = new com.toskie.pages.profile.SkillStepPage(utilLayer);
         page.navigateToSkillStep();
         ReportManager.getTest().log(Status.INFO, "Verifying no-results message for unknown skill");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "No results message should be shown for unknown skill");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "No results message should be shown for unknown skill");
         a.assertAll();
     }
 
@@ -177,7 +177,9 @@ public class SkillStepTests extends BaseTest {
         page.clickNext();
         page.navigateToSkillStep();
         ReportManager.getTest().log(Status.INFO, "Verifying skills persist after navigation");
-        a.assertTrue(page.getSkillCount() >= 0, "Skills should persist on refresh");
+        int persistCount = page.getSkillCount();
+        a.assertTrue(persistCount >= 1,
+                "SKILL-12: Skill added before navigation must persist after returning to skill step (count=" + persistCount + ")");
         a.assertAll();
     }
 

@@ -1,6 +1,8 @@
 package com.toskie.tests.regression;
+import com.microsoft.playwright.options.LoadState;
 
 import com.aventstack.extentreports.Status;
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.LoginPage;
 import com.toskie.pages.WelcomePage;
@@ -62,17 +64,17 @@ public class LoginTests extends BaseTest {
           description = "Verify Login button is visible and clickable on welcome screen")
     public void testLoginButtonVisible() {
         AssertionHelper a = new AssertionHelper();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         LoginPage lp = new LoginPage(utilLayer);
         boolean loginVisible = lp.isLoginButtonVisible();
         if (!loginVisible) {
             // Toskie app uses "Create My Profile" onboarding flow; Login button
-            // may not be surfaced on the welcome screen — this is acceptable.
+            // may not be surfaced on the welcome screen -- this is acceptable.
             ReportManager.getTest().log(Status.INFO,
-                "TC-LG-003: Login button not visible on initial screen — app uses profile-creation entry point");
+                "TC-LG-003: Login button not visible on initial screen -- app uses profile-creation entry point");
         }
         // Non-blocking: confirm we checked, not that button must exist
-        a.assertTrue(true, "TC-LG-003: Login button visibility checked");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-LG-003: Login button visibility checked (visible=" + loginVisible + ") -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -81,18 +83,18 @@ public class LoginTests extends BaseTest {
           description = "Verify OTP screen appears after entering valid phone number")
     public void testOTPScreenAppearsAfterPhoneEntry() {
         AssertionHelper a = new AssertionHelper();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         LoginPage lp = new LoginPage(utilLayer);
         if (lp.isLoginButtonVisible()) {
-            // Login button found — exercise the OTP flow
+            // Login button found -- exercise the OTP flow
             lp.clickLoginButton();
             lp.enterPhoneNumber("9919011050");
             lp.clickSendOTP();
             a.assertTrue(lp.isOTPScreenVisible(), "OTP input screen should appear after phone submission");
         } else {
             ReportManager.getTest().log(Status.INFO,
-                "TC-LG-004: Login button not available in current app state — OTP flow N/A");
-            a.assertTrue(true, "TC-LG-004: OTP flow check skipped (no Login button)");
+                "TC-LG-004: Login button not available in current app state -- OTP flow N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-LG-004: OTP flow check skipped (no Login button) -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -102,20 +104,20 @@ public class LoginTests extends BaseTest {
           description = "Verify Resend OTP option appears with timer on OTP screen")
     public void testResendOTPAvailability() {
         AssertionHelper a = new AssertionHelper();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         LoginPage lp = new LoginPage(utilLayer);
         if (lp.isLoginButtonVisible()) {
             lp.clickLoginButton();
             lp.enterPhoneNumber("9919011050");
             lp.clickSendOTP();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             a.assertTrue(lp.isOTPScreenVisible(), "OTP input screen must be visible after sending OTP");
             boolean timerOrResend = lp.isResendTimerVisible() || lp.isOTPScreenVisible();
             a.assertTrue(timerOrResend, "OTP screen should have Resend or Timer visible");
         } else {
             ReportManager.getTest().log(Status.INFO,
-                "TC-LG-005: Login button not available — Resend OTP flow N/A");
-            a.assertTrue(true, "TC-LG-005: Resend OTP check skipped (no Login button)");
+                "TC-LG-005: Login button not available -- Resend OTP flow N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-LG-005: Resend OTP check skipped (no Login button) -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -180,7 +182,7 @@ public class LoginTests extends BaseTest {
         wp.completeOnboarding();
         LoginPage lp = new LoginPage(utilLayer);
         lp.loginWithDefaultCredentials();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
 
         String url = BrowserManager.getPage().url();
         a.assertNotEmpty(url, "URL should not be empty after login");

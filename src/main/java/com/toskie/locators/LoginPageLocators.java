@@ -39,7 +39,7 @@ public class LoginPageLocators {
     public final Locator backButton;
 
     public LoginPageLocators(Page page) {
-        // Entry points — use span locator (original); forceClick in LoginPage bypasses footer interception
+        // Entry points -- use span locator (original); forceClick in LoginPage bypasses footer interception
         loginButton         = page.locator("//span[text()='Login'] | //button[normalize-space(.)='Login'] | //a[normalize-space(.)='Login']").first();
         signUpButton        = page.locator("//span[contains(text(),'Sign Up')] | //button[contains(text(),'Register')]").first();
 
@@ -58,7 +58,7 @@ public class LoginPageLocators {
         changeNumberLink    = page.locator("//a[contains(text(),'Change')] | //button[contains(text(),'Change Number')]");
         otpExpiryMessage    = page.locator("[class*='expiry'], [class*='expired']");
 
-        // Validation messages — broad patterns to match various UI implementations
+        // Validation messages -- broad patterns to match various UI implementations
         phoneValidationError    = page.locator("[class*='error'], [class*='invalid'], [role='alert'], [class*='helper-text']:not(:empty)").first();
         otpValidationError      = page.locator("[class*='error'], [class*='invalid'], [role='alert']").first();
         invalidOtpMessage       = page.locator("//p[contains(text(),'Invalid')] | //span[contains(text(),'invalid')] | //p[contains(text(),'incorrect')] | //span[contains(text(),'wrong')] | [class*='error']:not(:empty)").first();

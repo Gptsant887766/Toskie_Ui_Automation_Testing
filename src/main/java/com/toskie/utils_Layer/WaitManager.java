@@ -140,7 +140,7 @@ public class WaitManager {
 
     /**
      * Safe page load: tries NETWORKIDLE for 5 s then silently continues.
-     * Use after login — the app keeps WebSocket/polling connections open so
+     * Use after login -- the app keeps WebSocket/polling connections open so
      * NETWORKIDLE never fires, but the page is interactive after DOM is loaded.
      */
     public static void safePageLoad() {
@@ -149,7 +149,7 @@ public class WaitManager {
                     LoadState.NETWORKIDLE,
                     new com.microsoft.playwright.Page.WaitForLoadStateOptions().setTimeout(5000));
         } catch (Exception e) {
-            // NETWORKIDLE timed out — app has live connections; proceed anyway
+            // NETWORKIDLE timed out -- app has live connections; proceed anyway
             try {
                 BrowserManager.getPage().waitForLoadState(
                         LoadState.LOAD,

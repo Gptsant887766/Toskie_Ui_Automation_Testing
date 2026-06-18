@@ -3,6 +3,7 @@ import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.constants.TestGroups;
 import com.toskie.utils.AssertionHelper;
+import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
@@ -14,8 +15,7 @@ public class LikeModalTests extends BaseTest {
     public void testLikeModalOpens() {
         init();
         ReportManager.getTest().log(Status.INFO, "Opening like modal");
-        a.assertTrue(true, "Like modal interaction tested");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Like modal test -- should be on toskie.com");
         a.assertAll();
     }
 }
-

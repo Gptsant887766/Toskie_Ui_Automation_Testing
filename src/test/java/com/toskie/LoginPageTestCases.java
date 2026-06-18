@@ -53,7 +53,7 @@ public class LoginPageTestCases extends BaseTest {
         Assert.assertNotNull(token, "Token must not be null");
         String[] parts = token.split("\\.");
         Assert.assertEquals(parts.length, 3,
-            "JWT token must have exactly 3 parts (header.payload.signature) — was: " + token);
+            "JWT token must have exactly 3 parts (header.payload.signature) -- was: " + token);
     }
 
     // ── TC-LG-004: Token is not expired immediately after login ───────────────
@@ -109,12 +109,12 @@ public class LoginPageTestCases extends BaseTest {
         String url = page.url();
         Assert.assertFalse(url.isEmpty(), "URL must not be empty after navigating to /home");
         Assert.assertFalse(url.contains("non-loggedin-profile") && !url.contains("user-registration"),
-            "Authenticated user must not land on non-loggedin-profile — was: " + url);
+            "Authenticated user must not land on non-loggedin-profile -- was: " + url);
     }
 
     // ── TC-LG-008: LoginPage.loginWithValidCredentials() completes ────────────
     // The "Login" span lives on the phone-entry page reached AFTER clicking
-    // "Create My Profile" — so the full welcome flow must run before loginWithValidCredentials().
+    // "Create My Profile" -- so the full welcome flow must run before loginWithValidCredentials().
     @Test(priority = 8,
           description = "TC-LG-008: After full welcome flow (Next×3 + Create My Profile), loginWithValidCredentials() must complete and return a token")
     public void verifyLoginPage_LoginWithValidCredentials() {
@@ -133,7 +133,7 @@ public class LoginPageTestCases extends BaseTest {
     // phone-entry page with a "Login" span. The current build shows "Start Exploring"
     // which replaces the welcome overlay with the home screen in-place (same URL,
     // no "Login" span). The reliable proof of forward progress is that the Next
-    // button — present only during onboarding — is no longer visible.
+    // button -- present only during onboarding -- is no longer visible.
     @Test(priority = 9,
           description = "TC-LG-009: After final onboarding CTA, welcome slides must be dismissed (Next button gone)")
     public void verifyLoginPage_LoginButtonVisibleAfterSlides() {
@@ -146,7 +146,7 @@ public class LoginPageTestCases extends BaseTest {
             "URL must not be empty after the onboarding flow completes");
     }
 
-    // ── TC-LG-010: Data-driven — login with multiple mobile numbers ───────────
+    // ── TC-LG-010: Data-driven -- login with multiple mobile numbers ───────────
     @DataProvider(name = "multipleUsers", parallel = false)
     public Object[][] multipleUsers() {
         return new Object[][]{
@@ -157,7 +157,7 @@ public class LoginPageTestCases extends BaseTest {
     }
 
     @Test(dataProvider = "multipleUsers", priority = 10,
-          description = "TC-LG-010: Data-driven — each QA mobile number must produce a valid token")
+          description = "TC-LG-010: Data-driven -- each QA mobile number must produce a valid token")
     public void verifyLogin_MultipleUsers(String mobile, String label) {
         System.out.println("[LoginPageTestCases] mobile=" + mobile + " label=" + label);
         utilLayer.loginViaQAGraphQL(mobile);

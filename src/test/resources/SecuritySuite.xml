@@ -1,0 +1,53 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  SECURITY SUITE — auth bypass, token validation, IDOR, XSS, injection.
+  Run weekly or before every security audit / penetration test engagement.
+  Use: mvn test -DsuiteXmlFile=src/test/resources/SecuritySuite.xml
+-->
+<suite name="Toskie Security Suite" verbose="1" parallel="none">
+
+    <test name="Auth Security">
+        <groups>
+            <run>
+                <include name="security"/>
+                <include name="p0"/>
+                <include name="p1"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+        </classes>
+    </test>
+
+    <test name="Security Tests">
+        <classes>
+            <class name="com.toskie.tests.security.SecurityTests"/>
+            <class name="com.toskie.tests.security.JwtSecurityTests"/>
+            <class name="com.toskie.tests.security.IdorTests"/>
+        </classes>
+    </test>
+
+    <test name="API Security and Validation">
+        <classes>
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.api.WebSocketTests"/>
+        </classes>
+    </test>
+
+    <test name="Negative Input Handling">
+        <classes>
+            <class name="com.toskie.tests.negative.NegativeTests"/>
+            <class name="com.toskie.tests.edge.EdgeCaseTests"/>
+        </classes>
+    </test>
+
+    <test name="WebSocket Security">
+        <classes>
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+        </classes>
+    </test>
+
+</suite>

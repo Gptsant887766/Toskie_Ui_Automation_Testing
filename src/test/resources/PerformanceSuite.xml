@@ -1,0 +1,65 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  PERFORMANCE SUITE — page load time, API response time, WebSocket latency.
+  Run against staging with -Dheadless=true for consistent baselines.
+  Use: mvn test -DsuiteXmlFile=src/test/resources/PerformanceSuite.xml -Dheadless=true
+-->
+<suite name="Toskie Performance Suite" verbose="1" parallel="none">
+
+    <test name="Performance Benchmarks">
+        <groups>
+            <run>
+                <include name="performance"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.performance.PerformanceTests"/>
+        </classes>
+    </test>
+
+    <test name="API Response Time">
+        <groups>
+            <run>
+                <include name="api"/>
+                <include name="performance"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileApiTests"/>
+            <class name="com.toskie.tests.dashboard.SkillsApiTests"/>
+            <class name="com.toskie.tests.dashboard.ProjectsApiTests"/>
+            <class name="com.toskie.tests.dashboard.GalleryApiTests"/>
+            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
+        </classes>
+    </test>
+
+    <test name="WebSocket Performance">
+        <groups>
+            <run>
+                <include name="websocket"/>
+                <include name="performance"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.TimezoneWebSocketTests"/>
+            <class name="com.toskie.tests.websocket.BulkMessageReadTests"/>
+        </classes>
+    </test>
+
+    <test name="Page Load Benchmarks">
+        <groups>
+            <run>
+                <include name="performance"/>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+        </classes>
+    </test>
+
+</suite>

@@ -1,5 +1,6 @@
 package com.toskie.tests.e2e;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.*;
 import com.toskie.utils.AssertionHelper;
@@ -11,14 +12,14 @@ import org.testng.annotations.Test;
 import com.aventstack.extentreports.Status;
 
 /**
- * END-TO-END TESTS â€” TC_RG_001 to TC_RG_007
+ * END-TO-END TESTS -- TC_RG_001 to TC_RG_007
  * Full user journeys spanning multiple modules in a single flow.
  */
 public class EndToEndTests extends BaseTest {
 
-    // â”€â”€â”€ TC_RG_001: Complete new-user registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_001: Complete new-user registration a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 1,
-          description = "TC_RG_001: New user â€” onboarding â†’ login â†’ profile creation â†’ home")
+          description = "TC_RG_001: New user -- onboarding - login - profile creation - home")
     public void testCompleteNewUserRegistrationFlow() {
         AssertionHelper a = new AssertionHelper();
         com.toskie.utils_Layer.ReportManager.getTest().log(Status.INFO, "E2E: New user registration journey");
@@ -46,9 +47,9 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_002: Returning user login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_002: Returning user login a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 2,
-          description = "TC_RG_002: Returning user â€” onboarding â†’ login â†’ direct to home")
+          description = "TC_RG_002: Returning user -- onboarding - login - direct to home")
     public void testReturningUserLoginFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -68,9 +69,9 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_003: Talent discovery â†’ booking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_003: Talent discovery - booking a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 3,
-          description = "TC_RG_003: Search talent â†’ view profile â†’ book service")
+          description = "TC_RG_003: Search talent - view profile - book service")
     public void testTalentDiscoveryAndBookingFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -86,11 +87,11 @@ public class EndToEndTests extends BaseTest {
         // Search
         SearchPage sp = new SearchPage(utilLayer);
         sp.searchFor("plumber");
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
 
         if (sp.getResultCount() > 0) {
             sp.clickFirstResult();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
 
             BookingPage bp = new BookingPage(utilLayer);
             bp.clickBookNow();
@@ -99,17 +100,17 @@ public class EndToEndTests extends BaseTest {
                 a.assertTrue(bp.isBookingConfirmed() || !BrowserManager.getPage().url().isEmpty(),
                     "TC_RG_003 PASS: Booking flow completed end-to-end");
             } else {
-                a.assertTrue(true, "TC_RG_003: Booking form not available â€” discovery flow completed");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_003: Booking form not available -- should be on toskie.com");
             }
         } else {
-            a.assertTrue(true, "TC_RG_003: No search results â€” discovery flow exercised");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_003: No search results -- should be on toskie.com");
         }
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_004: Chat initiation from profile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_004: Chat initiation from profile a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 4,
-          description = "TC_RG_004: View talent profile â†’ initiate chat â†’ send message")
+          description = "TC_RG_004: View talent profile - initiate chat - send message")
     public void testChatInitiationFromProfile() {
         AssertionHelper a = new AssertionHelper();
 
@@ -123,29 +124,29 @@ public class EndToEndTests extends BaseTest {
 
         if (hp.getTalentCardCount() > 0) {
             hp.clickFirstTalentCard();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
 
             // Click chat CTA on profile
             try {
                 BrowserManager.getPage().locator(
-                    "button:has-text('Chat'), button:has-text('Message'), [class*='chat-cta']").first().click();
-                BrowserManager.getPage().waitForTimeout(2000);
+                    "button:has-text('Chat'), button:has-text('Message'), [class*='chat-ct-]").first().click();
+                WaitManager.safePageLoad();
 
                 ChatPage cp = new ChatPage(utilLayer);
                 cp.sendMessage("Hi, I'm interested in your services.");
-                a.assertTrue(true, "TC_RG_004 PASS: Chat initiated and message sent from profile");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_004: Chat initiated and message sent -- should be on toskie.com");
             } catch (Exception e) {
-                a.assertTrue(true, "TC_RG_004: Chat CTA not present on profile â€” flow exercised");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_004: Chat CTA not present on profile -- should be on toskie.com");
             }
         } else {
-            a.assertTrue(true, "TC_RG_004: No talent cards to start chat with");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_004: No talent cards to start chat with -- should be on toskie.com");
         }
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_005: Notification â†’ chat flow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_005: Notification - chat flow a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 5,
-          description = "TC_RG_005: Tap chat notification â†’ land in the correct conversation")
+          description = "TC_RG_005: Tap chat notification - land in the correct conversation")
     public void testNotificationToChatFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -163,17 +164,17 @@ public class EndToEndTests extends BaseTest {
         try {
             BrowserManager.getPage().locator(
                 "[class*='notification-item']:has-text('message'), [class*='notif-chat']").first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "TC_RG_005 PASS: Navigated from notification");
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_005 PASS: Navigated from notification");
         } catch (Exception e) {
-            a.assertTrue(true, "TC_RG_005: No chat notification available â€” flow exercised");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_005: No chat notification available -- should be on toskie.com");
         }
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_006: Search + filter â†’ profile view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_006: Search + filter - profile view a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 6,
-          description = "TC_RG_006: Search with filter â†’ click result â†’ view full profile")
+          description = "TC_RG_006: Search with filter - click result - view full profile")
     public void testSearchFilterAndProfileViewFlow() {
         AssertionHelper a = new AssertionHelper();
 
@@ -187,22 +188,22 @@ public class EndToEndTests extends BaseTest {
 
         SearchPage sp = new SearchPage(utilLayer);
         sp.searchFor("electrician");
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
 
         try { sp.applySortBy("Rating"); } catch (Exception ignored) {}
 
         if (sp.getResultCount() > 0) {
             sp.clickFirstResult();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertNotEmpty(BrowserManager.getPage().url(),
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com",
                 "TC_RG_006 PASS: Profile opened after search + filter");
         } else {
-            a.assertTrue(true, "TC_RG_006: No results for filtered search â€” flow exercised");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_006: No results for filtered search -- should be on toskie.com");
         }
         a.assertAll();
     }
 
-    // â”€â”€â”€ TC_RG_007: Logout and re-login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // a"€a"€a"€ TC_RG_007: Logout and re-login a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 7,
           description = "TC_RG_007: Log out then log back in successfully")
     public void testLogoutAndReloginFlow() {
@@ -221,16 +222,16 @@ public class EndToEndTests extends BaseTest {
         // Logout via settings
         try {
             BrowserManager.getPage().locator(
-                "[aria-label='profile' i], [href*='profile'], nav a:last-child").first().click();
+                "[ari-label='profile' i], [href*='profile'], nav -last-child").first().click();
             BrowserManager.getPage().waitForTimeout(1500);
             BrowserManager.getPage().locator(
-                "a:has-text('Settings'), [href*='settings']").first().click();
+                "-has-text('Settings'), [href*='settings']").first().click();
             BrowserManager.getPage().waitForTimeout(1500);
             BrowserManager.getPage().locator("button:has-text('Logout')").first().click();
             BrowserManager.getPage().waitForTimeout(1000);
             BrowserManager.getPage().locator(
                 "[role='dialog'] button:has-text('Logout'), button:has-text('Confirm')").first().click();
-            BrowserManager.getPage().waitForTimeout(2500);
+            WaitManager.safePageLoad();
         } catch (Exception e) {
             com.toskie.utils_Layer.ReportManager.getTest().log(Status.INFO,
                 "TC_RG_007: Logout path not fully reachable from current build.");
@@ -245,4 +246,3 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 }
-

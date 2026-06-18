@@ -40,7 +40,7 @@ public class WelcomeToToskieLandingPage extends WelcomeToToskieLandingPageOr {
             utilLayer.forceClick(CreateMYProfile, "Create My Profile Button");
         }
 
-        // The app uses same-URL SPA state rendering — clicking the final CTA swaps React
+        // The app uses same-URL SPA state rendering -- clicking the final CTA swaps React
         // components without changing the URL. waitForURL therefore never resolves.
         // Instead wait for the welcome-slide "Next" button to leave the DOM, which reliably
         // confirms the onboarding screen has been replaced by the next view.

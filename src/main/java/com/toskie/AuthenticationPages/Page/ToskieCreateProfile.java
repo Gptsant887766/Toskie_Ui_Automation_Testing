@@ -68,7 +68,7 @@ public class ToskieCreateProfile extends ToskieCreateProfileOr {
         utilLayer.typeValue(EmailField, email);
         page.waitForTimeout(500);
 
-        // Click Send OTP — route mock returns fake success so no redirect occurs.
+        // Click Send OTP -- route mock returns fake success so no redirect occurs.
         utilLayer.click(SendOTPButton, "Send OTP Button");
         page.waitForTimeout(2000);
         System.out.println("[DEBUG] URL after Send OTP: " + page.url());
@@ -104,13 +104,13 @@ public class ToskieCreateProfile extends ToskieCreateProfileOr {
         boolean onReg = url.contains("/user-registration") && !url.contains("non-loggedin-profile");
         if (onReg) return;
 
-        System.out.println("[ToskieCreateProfile] Off registration page (" + url + ") — recovering.");
+        System.out.println("[ToskieCreateProfile] Off registration page (" + url + ") -- recovering.");
         String regUrl = ConfigManager.getBaseUrl().replaceAll("/$", "") + "/user-registration";
         page.navigate(regUrl);
         page.waitForLoadState(LoadState.DOMCONTENTLOADED);
         page.waitForTimeout(1000);
 
-        // page.navigate() wipes localStorage — restore auth tokens.
+        // page.navigate() wipes localStorage -- restore auth tokens.
         String at = ApiUtils.getAccessToken();
         String rt = ApiUtils.getRefreshToken();
         page.evaluate(
@@ -133,7 +133,7 @@ public class ToskieCreateProfile extends ToskieCreateProfileOr {
         utilLayer.fill(LastName,  "Gupta",   "Last Name");
         page.waitForTimeout(500);
 
-        // Re-type email and re-click Send OTP — route mock is still active.
+        // Re-type email and re-click Send OTP -- route mock is still active.
         utilLayer.typeValue(EmailField, email);
         page.waitForTimeout(500);
         utilLayer.click(SendOTPButton, "Send OTP Button (recovery)");
@@ -149,14 +149,14 @@ public class ToskieCreateProfile extends ToskieCreateProfileOr {
             Locator dialog = page.locator("div[role='dialog'][data-state='open']");
             page.waitForTimeout(1000);
             if (dialog.count() == 0) {
-                System.out.println("[ToskieCreateProfile] No OTP dialog visible — continuing.");
+                System.out.println("[ToskieCreateProfile] No OTP dialog visible -- continuing.");
                 return;
             }
 
-            System.out.println("[ToskieCreateProfile] OTP dialog detected — filling input.");
+            System.out.println("[ToskieCreateProfile] OTP dialog detected -- filling input.");
             Locator otpInput = page.locator("input[data-input-otp='true'], input[data-slot='input-otp']");
             if (otpInput.count() == 0) {
-                System.out.println("[ToskieCreateProfile] OTP input not found inside dialog — skipping.");
+                System.out.println("[ToskieCreateProfile] OTP input not found inside dialog -- skipping.");
                 return;
             }
 
@@ -164,7 +164,7 @@ public class ToskieCreateProfile extends ToskieCreateProfileOr {
             System.out.println("[ToskieCreateProfile] OTP filled with '0000'.");
             page.waitForTimeout(800);
 
-            // Click the verify button — route mock intercepts and returns success.
+            // Click the verify button -- route mock intercepts and returns success.
             Locator verifyBtn = page.locator(
                 "button:has-text('Verify Email'), button:has-text('Verify OTP'), " +
                 "button:has-text('Verify')");

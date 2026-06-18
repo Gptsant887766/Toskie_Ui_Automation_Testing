@@ -1,11 +1,14 @@
 package com.toskie.tests.regression;
+import com.microsoft.playwright.options.LoadState;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.LoginPage;
 import com.toskie.pages.ProfileCreationPage;
 import com.toskie.pages.SearchPage;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.TestDataManager;
+import com.toskie.utils_Layer.BrowserManager;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -25,14 +28,14 @@ public class SearchTests extends BaseTest {
         com.toskie.utils_Layer.BrowserManager.getPage().navigate(
             com.toskie.utils_Layer.ConfigManager.getBaseUrl());
         com.toskie.utils_Layer.WaitManager.safePageLoad();
-        com.toskie.utils_Layer.BrowserManager.getPage().waitForTimeout(3000);
+        com.toskie.utils_Layer.WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
         if (pp.isProfileCreationPageVisible()) {
             try { pp.createProfileWithDefaultData(); } catch (Exception ignored) {}
             com.toskie.utils_Layer.BrowserManager.getPage().navigate(
                 com.toskie.utils_Layer.ConfigManager.getBaseUrl());
             com.toskie.utils_Layer.WaitManager.safePageLoad();
-            com.toskie.utils_Layer.BrowserManager.getPage().waitForTimeout(2000);
+            com.toskie.utils_Layer.WaitManager.safePageLoad();
         }
         return new SearchPage(utilLayer);
     }
@@ -47,12 +50,12 @@ public class SearchTests extends BaseTest {
             try {
                 sp.searchFor("plumber");
                 boolean hasResults = sp.isResultsLoaded();
-                a.assertTrue(hasResults || true, "Search for 'plumber' state checked");
+                a.assertTrue(hasResults, "Search for 'plumber' should return results");
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-001: Search attempted — locator may not match current DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-001: After search attempt, page should remain on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-001: Search setup attempted");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-001: After search setup, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -67,12 +70,12 @@ public class SearchTests extends BaseTest {
             try {
                 sp.searchFor(query);
                 boolean stateLoaded = sp.isResultsLoaded();
-                a.assertTrue(stateLoaded || true, "Search for '" + query + "' state checked");
+                a.assertTrue(stateLoaded, "Search for '" + query + "' should return results");
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-002: Search for '" + query + "' attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-002: After search for '" + query + "', page should remain on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-002: Search setup attempted for query: " + query);
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-002: After search setup for '" + query + "', page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -87,11 +90,11 @@ public class SearchTests extends BaseTest {
             try {
                 sp.searchFor("");
             } catch (Throwable t) {
-                // empty search may fail on locator — acceptable
+                // empty search may fail on locator -- acceptable
             }
-            a.assertTrue(true, "Empty search handled gracefully");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-003: After empty search, page should remain on toskie.com");
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-003: Empty search test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-003: After empty search exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -107,11 +110,11 @@ public class SearchTests extends BaseTest {
                 sp.enterSearchQuery("plum");
                 com.toskie.utils_Layer.BrowserManager.getPage().waitForTimeout(1500);
             } catch (Throwable t) {
-                // suggestions locator may not match — acceptable
+                // suggestions locator may not match -- acceptable
             }
-            a.assertTrue(true, "Search input accepted query");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-004: After typing search query, page should remain on toskie.com");
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-004: Search suggestions test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-004: After suggestions exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -127,15 +130,15 @@ public class SearchTests extends BaseTest {
                 sp.searchFor("electrician");
                 try {
                     sp.applySortBy("Rating");
-                    a.assertTrue(true, "Sort by Rating applied");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-005: After sort by rating, should remain on toskie.com");
                 } catch (Throwable t) {
-                    a.assertTrue(true, "Sort option may not be available — acceptable");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-005: Sort option unavailable -- page should remain on toskie.com");
                 }
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-005: Search for sort test attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-005: After search for sort, page should be on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-005: Sort by Rating test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-005: After sort exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -151,15 +154,15 @@ public class SearchTests extends BaseTest {
                 sp.searchFor("tutor");
                 try {
                     sp.applySortBy("Distance");
-                    a.assertTrue(true, "Sort by Distance applied");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-006: After sort by distance, should remain on toskie.com");
                 } catch (Throwable t) {
-                    a.assertTrue(true, "Distance sort may require location — acceptable");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-006: Distance sort unavailable -- page should remain on toskie.com");
                 }
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-006: Search for distance sort attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-006: After distance sort search, page should be on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-006: Sort by Distance test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-006: After distance sort exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -176,15 +179,15 @@ public class SearchTests extends BaseTest {
                 try {
                     sp.setPriceRange("0", "500");
                     sp.applyFilters();
-                    a.assertTrue(true, "Price filter applied");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-007: After price filter, should remain on toskie.com");
                 } catch (Throwable t) {
-                    a.assertTrue(true, "Price filter may not be available — acceptable");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-007: Price filter unavailable -- page should remain on toskie.com");
                 }
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-007: Search for price filter attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-007: After price filter search, page should be on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-007: Price range filter test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-007: After price filter exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -198,14 +201,14 @@ public class SearchTests extends BaseTest {
             SearchPage sp = loginAndOpenSearch();
             try {
                 sp.searchFor("xyzunknowntalent999");
-                com.toskie.utils_Layer.BrowserManager.getPage().waitForTimeout(2000);
+                com.toskie.utils_Layer.WaitManager.safePageLoad();
                 boolean noResults = sp.isNoResultsVisible() || sp.getResultCount() == 0;
-                a.assertTrue(noResults || true, "Unknown search term state checked");
+                a.assertTrue(noResults, "Search for unknown term 'xyzunknowntalent999' should return no results");
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-008: No-results search attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-008: After no-results search, page should remain on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-008: No results test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-008: After no-results exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -221,15 +224,15 @@ public class SearchTests extends BaseTest {
                 sp.enterSearchQuery("plumber");
                 try {
                     sp.clearSearch();
-                    a.assertTrue(true, "Search cleared successfully");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-009: After clearing search, should remain on toskie.com");
                 } catch (Throwable t) {
-                    a.assertTrue(true, "Clear search may not be available — acceptable");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-009: Clear search unavailable -- page should remain on toskie.com");
                 }
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-009: Search input attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-009: After clear search input exception, should be on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-009: Clear search test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-009: After clear search exception, page should be on toskie.com");
         }
         a.assertAll();
     }
@@ -243,19 +246,19 @@ public class SearchTests extends BaseTest {
             SearchPage sp = loginAndOpenSearch();
             try {
                 sp.searchFor("plumber");
-                com.toskie.utils_Layer.BrowserManager.getPage().waitForTimeout(2000);
+                com.toskie.utils_Layer.WaitManager.safePageLoad();
                 if (sp.getResultCount() > 0) {
                     sp.clickFirstResult();
                     String urlAfter = com.toskie.utils_Layer.BrowserManager.getPage().url();
                     a.assertNotEmpty(urlAfter, "URL after clicking result");
                 } else {
-                    a.assertTrue(true, "No results to click — acceptable");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-010: No results to click -- page should still be on toskie.com");
                 }
             } catch (Throwable t) {
-                a.assertTrue(true, "TC-SR-010: Search result click attempted — locator may not match DOM");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-010: After result click exception, page should remain on toskie.com");
             }
         } catch (Throwable t) {
-            a.assertTrue(true, "TC-SR-010: Search result opens profile test completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-SR-010: After result click setup exception, page should be on toskie.com");
         }
         a.assertAll();
     }

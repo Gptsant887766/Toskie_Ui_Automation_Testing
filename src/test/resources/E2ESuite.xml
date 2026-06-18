@@ -1,0 +1,72 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  E2E SUITE — full end-to-end user journey flows.
+  Register → Profile Creation → Search → Connect → Message → Post → Review.
+  Run before every release on a clean QA account.
+  Use: mvn test -DsuiteXmlFile=src/test/resources/E2ESuite.xml
+-->
+<suite name="Toskie E2E Suite" verbose="1" parallel="none">
+
+    <test name="E2E — Registration and Onboarding">
+        <classes>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.ProjectStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <class name="com.toskie.tests.profile.SurveyPageTests"/>
+            <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
+        </classes>
+    </test>
+
+    <test name="E2E — Talent Discovery and Engagement">
+        <classes>
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+        </classes>
+    </test>
+
+    <test name="E2E — Messaging and Connection">
+        <classes>
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.RequestAcceptDeclineTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+        </classes>
+    </test>
+
+    <test name="E2E — Posts and Content">
+        <classes>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
+            <class name="com.toskie.tests.posts.SavedPostTests"/>
+            <class name="com.toskie.tests.posts.PostDetailTests"/>
+        </classes>
+    </test>
+
+    <test name="E2E — Full Flow">
+        <classes>
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
+        </classes>
+    </test>
+
+    <test name="E2E — Reviews and Notifications">
+        <classes>
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.misc.NotificationTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+        </classes>
+    </test>
+
+</suite>

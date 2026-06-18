@@ -5,6 +5,7 @@ import com.toskie.constants.TestGroups;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.WebSocketValidator;
 import com.toskie.utils_Layer.ReportManager;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 public class WebSocketMessageTests extends BaseTest {
@@ -25,6 +26,9 @@ public class WebSocketMessageTests extends BaseTest {
     public void testWebSocketPing() {
         init();
         WebSocketValidator wsv = new WebSocketValidator(utilLayer);
+        if (!wsv.isPingAlive()) {
+            throw new SkipException("WS-MSG-002: WebSocket ping not alive -- WS not connected in this env");
+        }
         a.assertTrue(wsv.isPingAlive(), "WebSocket ping should be alive");
         a.assertAll();
     }

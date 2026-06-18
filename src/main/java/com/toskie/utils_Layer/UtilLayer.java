@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
- * Core utility class — action, wait, verify, and scroll helpers.
+ * Core utility class -- action, wait, verify, and scroll helpers.
  *
  * Browser state  → BrowserManager  (ThreadLocal Page/Browser/Context)
  * Config         → ConfigManager   (config.properties)
@@ -197,7 +197,7 @@ public class UtilLayer<RouteHandler> {
         try {
             for (int i = 1; i <= count; i++) {
                 locator.click();
-                getTest().log(Status.INFO, "Clicked " + name + " — count " + i);
+                getTest().log(Status.INFO, "Clicked " + name + " -- count " + i);
             }
         } catch (PlaywrightException e) {
             getTest().log(Status.FAIL, "multipleClick failed: " + name + " | " + e.getMessage());

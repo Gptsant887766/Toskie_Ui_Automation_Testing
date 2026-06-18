@@ -5,6 +5,7 @@ import com.toskie.constants.TestGroups;
 import com.toskie.pages.search.TalentSearchPage;
 import com.toskie.pages.search.TalentSearchResultsPage;
 import com.toskie.utils.AssertionHelper;
+import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
@@ -20,7 +21,12 @@ public class TalentAddressSearchTests extends BaseTest {
         init();
         ReportManager.getTest().log(Status.INFO, "Searching talent by location");
         searchPage.searchByLocation("Mumbai");
-        a.assertTrue(resultsPage.getResultCount() >= 0, "Location search should execute without error");
+        BrowserManager.getPage().waitForTimeout(1500);
+        int count = resultsPage.getResultCount();
+        boolean noResults = resultsPage.isNoResultsVisible();
+        ReportManager.getTest().log(Status.INFO, "ADDR-SEARCH-1: Results for Mumbai: " + count + " | noResults: " + noResults);
+        a.assertTrue(count > 0 || noResults,
+                "ADDR-SEARCH-1: Location search for 'Mumbai' must show results OR a no-results message (count=" + count + ", noResults=" + noResults + ")");
         a.assertAll();
     }
 

@@ -49,7 +49,7 @@ public class WelcomePage {
         // Navigate through 3 slides
         clickNextNTimes(3);
 
-        // Use forceClick — fixed footer div (user-registration-footer-shadow z-50) intercepts normal clicks
+        // Use forceClick -- fixed footer div (user-registration-footer-shadow z-50) intercepts normal clicks
         util.forceClick(loc.createMyProfileButton, "Create My Profile");
         BrowserManager.getPage().waitForTimeout(1000);
         ReportManager.getTest().log(Status.PASS, "Onboarding completed.");

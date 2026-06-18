@@ -2,6 +2,7 @@ package com.toskie.BaseTest_Layer;
 
 import java.lang.reflect.Method;
 
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
@@ -19,7 +20,7 @@ public class BaseTest {
 
     protected UtilLayer<?> utilLayer;
 
-    // Read from config.properties — still overridable via -Dbrowser=firefox
+    // Read from config.properties -- still overridable via -Dbrowser=firefox
     protected String browser = System.getProperty("browser", ConfigManager.getBrowser());
     protected String baseUrl  = System.getProperty("baseUrl",  ConfigManager.getBaseUrl());
 
@@ -35,10 +36,16 @@ public class BaseTest {
 
     // ─── Per-test setup ───────────────────────────────────────────────────────
     @BeforeMethod(alwaysRun = true)
-    public void setUp(Method method) {
+    public void setUp(Method method, ITestContext context) {
+        // Allow <parameter name="browser" value="firefox"/> in suite XML to override config/system-prop
+        String xmlBrowser = context.getCurrentXmlTest().getParameter("browser");
+        if (xmlBrowser != null && !xmlBrowser.isEmpty()) {
+            browser = xmlBrowser;
+        }
+
         utilLayer = UtilLayer.getInstance();
         utilLayer.markTestStart();
-        System.out.println("===== TEST START : " + method.getName() + " =====");
+        System.out.println("===== TEST START : " + method.getName() + " [" + browser + "] =====");
 
         utilLayer.resetOnlyLogs();
         utilLayer.createTest(method.getName());
@@ -88,7 +95,7 @@ public class BaseTest {
         if (utilLayer != null) {
             utilLayer.generateFinalReports();
         } else {
-            System.err.println("[BaseTest] REPORT SKIPPED — utilLayer is null. Check @BeforeSuite for errors.");
+            System.err.println("[BaseTest] REPORT SKIPPED -- utilLayer is null. Check @BeforeSuite for errors.");
         }
         System.out.println("===== FINAL REPORT END =====");
     }

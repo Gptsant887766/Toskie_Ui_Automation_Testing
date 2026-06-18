@@ -162,7 +162,7 @@ public class AccessibilityUtils {
                 "() => document.activeElement?.tagName");
             if (focused != null && !"BODY".equals(focused.toString())) {
                 ReportManager.getTest().log(Status.PASS,
-                    "Tab navigation working — focused: " + focused);
+                    "Tab navigation working -- focused: " + focused);
             }
         } catch (Exception e) {
             ReportManager.getTest().log(Status.WARNING, "Tab test error: " + e.getMessage());
@@ -192,7 +192,7 @@ public class AccessibilityUtils {
                 + "  return {bg: style.backgroundColor, color: style.color};"
                 + "}");
             ReportManager.getTest().log(Status.INFO,
-                "Page color info: " + result + " — manual contrast check recommended (WCAG 1.4.3).");
+                "Page color info: " + result + " -- manual contrast check recommended (WCAG 1.4.3).");
         } catch (Exception e) {
             ReportManager.getTest().log(Status.WARNING, "Color contrast check error: " + e.getMessage());
         }
@@ -208,7 +208,7 @@ public class AccessibilityUtils {
                 ReportManager.getTest().log(Status.PASS, "ARIA live region present.");
             } else {
                 ReportManager.getTest().log(Status.WARNING,
-                    "No ARIA live region found — dynamic content may not be announced by screen readers.");
+                    "No ARIA live region found -- dynamic content may not be announced by screen readers.");
             }
         } catch (Exception e) {
             ReportManager.getTest().log(Status.WARNING, "ARIA live check error: " + e.getMessage());

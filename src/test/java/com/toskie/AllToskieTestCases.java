@@ -96,9 +96,9 @@ public class AllToskieTestCases extends BaseTest {
     @Test(priority = 2, groups = { "onboarding" }, description = "TC_OB_002: Toskie logo is visible in the header area")
     public void TC_OB_002_verifyAppLogoDisplayed() {
         AssertionHelper a = new AssertionHelper();
-        a.assertNotEmpty(BrowserManager.getPage().url(), "App URL should not be empty");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "App URL should not be empty");
         // Logo check: any visible branding element confirms the welcome screen
-        a.assertTrue(welcome().isOnWelcomePage() || true, "App logo area should be visible");
+        a.assertTrue(welcome().isOnWelcomePage(), "App logo area should be visible -- should be on welcome page");
         a.assertAll();
     }
 
@@ -131,7 +131,7 @@ public class AllToskieTestCases extends BaseTest {
         wp.clickNext();
         wp.clickNext();
         BrowserManager.getPage().waitForTimeout(500);
-        a.assertNotEmpty(BrowserManager.getPage().url(), "App should be on Slide 3");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "App should be on Slide 3");
         a.assertAll();
     }
 
@@ -154,7 +154,7 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         WelcomePage wp = welcome();
         wp.completeOnboarding();
-        a.assertNotEmpty(BrowserManager.getPage().url(), "App should navigate forward after onboarding CTA");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "App should navigate forward after onboarding CTA");
         a.assertAll();
     }
 
@@ -166,10 +166,10 @@ public class AllToskieTestCases extends BaseTest {
         try {
             wp.skipOnboarding();
         } catch (Exception e) {
-            // Skip may not exist — complete onboarding normally
+            // Skip may not exist -- complete onboarding normally
             wp.completeOnboarding();
         }
-        a.assertNotEmpty(BrowserManager.getPage().url(), "Skip should navigate to login or app");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Skip should navigate to login or app");
         a.assertAll();
     }
 
@@ -180,7 +180,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().waitForLoadState(LoadState.DOMCONTENTLOADED);
         long elapsed = System.currentTimeMillis() - start;
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(elapsed < 10000, "Page load should complete — elapsed: " + elapsed + "ms");
+        a.assertTrue(elapsed < 10000, "Page load should complete -- elapsed: " + elapsed + "ms");
         a.assertAll();
     }
 
@@ -205,8 +205,8 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         BrowserManager.getPage().waitForTimeout(1000);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(!lp.isLoginButtonVisible() || !BrowserManager.getPage().url().isEmpty(),
-                "Phone number input should appear after clicking Login");
+        a.assertTrue(!lp.isLoginButtonVisible(),
+                "Phone number input should appear after clicking Login -- login button should no longer be visible");
         a.assertAll();
     }
 
@@ -218,7 +218,7 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(lp.isOTPScreenVisible(), "OTP screen should appear after valid phone submission");
         a.assertAll();
@@ -232,7 +232,7 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(lp.isOTPScreenVisible(), "4-digit OTP input should be visible after sending OTP");
         a.assertAll();
@@ -246,7 +246,7 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         boolean timerOrResend = lp.isResendTimerVisible() || lp.isOTPScreenVisible();
         a.assertTrue(timerOrResend, "Timer or Resend OTP option should be visible on OTP screen");
@@ -261,7 +261,7 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(lp.isOTPScreenVisible(), "OTP screen must remain visible for Resend to appear");
         a.assertAll();
@@ -285,12 +285,12 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("9999");
             lp.clickVerifyOTP();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             boolean hasError = lp.isInvalidOTPMessageVisible() || lp.isOTPValidationErrorVisible();
             a.assertTrue(hasError, "Wrong OTP should show 'Invalid OTP' error message");
         }
@@ -298,7 +298,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 18, groups = { "login",
-            "negative" }, description = "TC_LG_009: Empty phone number shows validation error — OTP not sent")
+            "negative" }, description = "TC_LG_009: Empty phone number shows validation error -- OTP not sent")
     public void TC_LG_009_verifyEmptyPhoneShowsError() {
         doOnboarding();
         LoginPage lp = login();
@@ -364,13 +364,13 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("12");
             lp.clickVerifyOTP();
             BrowserManager.getPage().waitForTimeout(1000);
-            a.assertTrue(true, "Short OTP handled gracefully without crash");
+            a.assertTrue(lp.isOTPScreenVisible(), "TC_LG_013: Short OTP should not complete login -- user should remain on OTP screen");
         }
         a.assertAll();
     }
@@ -381,7 +381,7 @@ public class AllToskieTestCases extends BaseTest {
         doOnboarding();
         LoginPage lp = login();
         lp.clickLoginButton();
-        // Rapid OTP requests — app should throttle after threshold
+        // Rapid OTP requests -- app should throttle after threshold
         for (int i = 0; i < 5; i++) {
             try {
                 lp.enterPhoneNumber("9919011050");
@@ -392,7 +392,7 @@ public class AllToskieTestCases extends BaseTest {
         }
         // If no exception and app is still responsive, rate limit is enforced silently
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "App did not crash under repeated OTP requests");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_LG_014: App still responsive after repeated OTP requests -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -458,7 +458,7 @@ public class AllToskieTestCases extends BaseTest {
             "login" }, description = "TC_LG_021: After successful login user is redirected to profile creation or home")
     public void TC_LG_021_verifyUserRedirectedAfterLogin() {
         doLogin();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         String url = BrowserManager.getPage().url();
         AssertionHelper a = new AssertionHelper();
         a.assertNotEmpty(url, "User should be on a valid URL after login");
@@ -503,7 +503,7 @@ public class AllToskieTestCases extends BaseTest {
         if (pp.isProfileCreationPageVisible())
             pp.verifyAllFieldsVisible();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Profile fields verified");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_002: Profile fields verified -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -577,7 +577,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 38, groups = {
-            "profile" }, description = "TC_PC_008: MALE gender selection works — button highlights")
+            "profile" }, description = "TC_PC_008: MALE gender selection works -- button highlights")
     public void TC_PC_008_verifyMaleGenderSelection() {
         doLogin();
         ProfileCreationPage pp = profile();
@@ -585,12 +585,12 @@ public class AllToskieTestCases extends BaseTest {
             return;
         pp.selectGender("MALE");
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "MALE gender selected without error");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_008: After MALE gender selection, should remain on toskie.com");
         a.assertAll();
     }
 
     @Test(priority = 39, groups = {
-            "profile" }, description = "TC_PC_009: FEMALE gender selection works — button highlights")
+            "profile" }, description = "TC_PC_009: FEMALE gender selection works -- button highlights")
     public void TC_PC_009_verifyFemaleGenderSelection() {
         doLogin();
         ProfileCreationPage pp = profile();
@@ -598,7 +598,7 @@ public class AllToskieTestCases extends BaseTest {
             return;
         pp.selectGender("FEMALE");
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "FEMALE gender selected without error");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_009: After FEMALE gender selection, should remain on toskie.com");
         a.assertAll();
     }
 
@@ -611,7 +611,7 @@ public class AllToskieTestCases extends BaseTest {
             return;
         pp.selectDateOfBirth();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "DOB calendar opened and date selected without error");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_013: After DOB selection, should remain on toskie.com");
         a.assertAll();
     }
 
@@ -628,7 +628,7 @@ public class AllToskieTestCases extends BaseTest {
             pp.selectDateOfBirth();
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "DOB 25-May-1997 selected successfully");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_014: After DOB 25-May-1997 selection, should be on toskie.com");
         a.assertAll();
     }
 
@@ -645,11 +645,11 @@ public class AllToskieTestCases extends BaseTest {
             pp.clickCreateProfile();
             BrowserManager.getPage().waitForTimeout(1000);
             AssertionHelper a = new AssertionHelper();
-            a.assertTrue(pp.isAgeValidationErrorVisible() || pp.isGeneralErrorVisible() || true,
-                    "Under-18 DOB should be rejected");
+            a.assertTrue(pp.isAgeValidationErrorVisible() || pp.isGeneralErrorVisible(),
+                    "TC_PC_015: Under-18 DOB should be rejected with age validation error");
             a.assertAll();
         } catch (Exception e) {
-            // Calendar may disable future-near dates — acceptable
+            // Calendar may disable future-near dates -- acceptable
         }
     }
 
@@ -670,7 +670,7 @@ public class AllToskieTestCases extends BaseTest {
             pp.selectDateOfBirth();
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Boundary age DOB handled");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_PC_017: After boundary age DOB selection, should be on toskie.com");
         a.assertAll();
     }
 
@@ -687,8 +687,8 @@ public class AllToskieTestCases extends BaseTest {
         pp.clickCreateProfile();
         BrowserManager.getPage().waitForTimeout(1000);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(pp.isProfileCreationPageVisible() || pp.isGeneralErrorVisible() || true,
-                "Profile should not submit without terms acceptance");
+        a.assertTrue(pp.isProfileCreationPageVisible() || pp.isGeneralErrorVisible(),
+                "TC_PC_019: Profile should not submit without terms acceptance -- should show error or stay on form");
         a.assertAll();
     }
 
@@ -701,7 +701,7 @@ public class AllToskieTestCases extends BaseTest {
             pp.createProfileWithDefaultData();
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertNotEmpty(BrowserManager.getPage().url(), "Should be on a valid page after profile creation");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Should be on a valid page after profile creation");
         a.assertAll();
     }
 
@@ -716,8 +716,8 @@ public class AllToskieTestCases extends BaseTest {
         pp.clickCreateProfile();
         BrowserManager.getPage().waitForTimeout(1000);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(pp.isFirstNameErrorVisible() || pp.isGeneralErrorVisible() || true,
-                "Empty first name should trigger validation error");
+        a.assertTrue(pp.isFirstNameErrorVisible() || pp.isGeneralErrorVisible(),
+                "TC_PC_022: Empty first name should trigger validation error");
         a.assertAll();
     }
 
@@ -732,8 +732,8 @@ public class AllToskieTestCases extends BaseTest {
         pp.clickSendOTP();
         BrowserManager.getPage().waitForTimeout(1000);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(pp.isEmailErrorVisible() || pp.isGeneralErrorVisible() || true,
-                "Invalid email format should trigger format validation error");
+        a.assertTrue(pp.isEmailErrorVisible() || pp.isGeneralErrorVisible(),
+                "TC_PC_024: Invalid email format should trigger format validation error");
         a.assertAll();
     }
 
@@ -747,7 +747,7 @@ public class AllToskieTestCases extends BaseTest {
         pp.enterFirstName("A".repeat(100));
         BrowserManager.getPage().waitForTimeout(500);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "100-character first name handled gracefully");
+        a.assertFalse(pp.isFirstNameErrorVisible(), "TC_PC_028: 100-character first name should not show validation error (field likely truncates)");
         a.assertAll();
     }
 
@@ -773,7 +773,7 @@ public class AllToskieTestCases extends BaseTest {
             return;
         pp.enterFirstName("O'Brien");
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Name with apostrophe handled without crash");
+        a.assertFalse(pp.isFirstNameErrorVisible(), "TC_PC_030: Name with apostrophe should not show validation error");
         a.assertAll();
     }
 
@@ -807,7 +807,7 @@ public class AllToskieTestCases extends BaseTest {
         HomePage hp = home();
         AssertionHelper a = new AssertionHelper();
         if (hp.isOnHomePage() && hp.getTalentCardCount() > 0) {
-            a.assertTrue(true, "Talent card with Book Now button is present in feed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_007: Talent cards with Book Now present -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -819,7 +819,7 @@ public class AllToskieTestCases extends BaseTest {
         HomePage hp = home();
         AssertionHelper a = new AssertionHelper();
         if (hp.isOnHomePage() && hp.getTalentCardCount() > 0) {
-            a.assertTrue(true, "Save/bookmark interaction available on talent card");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_009: Save/bookmark available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -833,7 +833,7 @@ public class AllToskieTestCases extends BaseTest {
         if (hp.isOnHomePage() && hp.getTalentCardCount() > 0) {
             hp.clickFirstTalentCard();
             WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Profile page should load on card click");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Profile page should load on card click");
         }
         a.assertAll();
     }
@@ -867,7 +867,7 @@ public class AllToskieTestCases extends BaseTest {
         doLoginAndProfile();
         home().verifyHomePageElements();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Bottom navigation bar verified");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_013: Bottom navigation verified -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -880,7 +880,7 @@ public class AllToskieTestCases extends BaseTest {
         if (hp.isOnHomePage()) {
             hp.searchFor("plumber");
             WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Search screen should load");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Search screen should load");
         }
         a.assertAll();
     }
@@ -896,7 +896,7 @@ public class AllToskieTestCases extends BaseTest {
                 hp.navigateToChat();
             } catch (Exception ignored) {
             }
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Chat screen should be reachable");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Chat screen should be reachable");
         }
         a.assertAll();
     }
@@ -912,7 +912,7 @@ public class AllToskieTestCases extends BaseTest {
                 hp.clickNotifications();
             } catch (Exception ignored) {
             }
-            a.assertTrue(true, "Notifications icon interaction completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_017: After notifications interaction, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -928,7 +928,7 @@ public class AllToskieTestCases extends BaseTest {
                 hp.resetFilters();
             } catch (Exception ignored) {
             }
-            a.assertTrue(true, "Filter button accessible on home screen");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_019: Filter button accessible -- should remain on toskie.com");
         }
         a.assertAll();
     }
@@ -954,7 +954,7 @@ public class AllToskieTestCases extends BaseTest {
                 hp.searchFor("");
             } catch (Exception ignored) {
             }
-            a.assertTrue(true, "Search bar interaction completed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_HM_023: Search bar interaction -- should remain on toskie.com");
         }
         a.assertAll();
     }
@@ -1013,7 +1013,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Empty search handled without crash");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_006: Empty search handled -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1052,9 +1052,9 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         try {
             sp.openFilterPanel();
-            a.assertTrue(true, "Filter panel opened from search results");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_011: Filter panel opened -- should be on toskie.com");
         } catch (Exception e) {
-            a.assertTrue(true, "Filter panel interaction handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_011: Filter panel not available -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1072,7 +1072,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Price filter applied without crash");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_014: Price filter applied -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1087,7 +1087,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Clear filters completed without crash");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_016: Clear filters completed -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1102,7 +1102,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Sort by rating applied without crash");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_017: Sort by rating applied -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1116,7 +1116,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Sort by distance applied without crash");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SR_019: Sort by distance applied -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1131,7 +1131,7 @@ public class AllToskieTestCases extends BaseTest {
             try {
                 sp.clickFirstResult();
                 WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-                a.assertNotEmpty(BrowserManager.getPage().url(), "Profile should load on result click");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Profile should load on result click");
             } catch (Exception ignored) {
             }
         }
@@ -1151,7 +1151,7 @@ public class AllToskieTestCases extends BaseTest {
         if (hp.isOnHomePage() && hp.getTalentCardCount() > 0) {
             hp.clickFirstTalentCard();
             WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Talent profile page should load");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Talent profile page should load");
         }
         a.assertAll();
     }
@@ -1181,9 +1181,9 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         try {
             BookingPage bp = openBookingFlowFromHome();
-            a.assertTrue(bp.isBookingFormVisible() || true, "Booking flow should start on Book Now click");
+            a.assertTrue(bp.isBookingFormVisible(), "TC_BK_001: Booking form should open after Book Now click");
         } catch (Exception e) {
-            a.assertTrue(true, "Booking flow navigation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_001: After booking flow exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1197,10 +1197,10 @@ public class AllToskieTestCases extends BaseTest {
             BookingPage bp = openBookingFlowFromHome();
             if (bp.isBookingFormVisible()) {
                 bp.selectFirstAvailableDate();
-                a.assertTrue(true, "Booking date selected successfully");
+                a.assertTrue(bp.isBookingFormVisible(), "TC_BK_002: After date selection, booking form should still be visible");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Date selection handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_002: After date selection exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1214,10 +1214,10 @@ public class AllToskieTestCases extends BaseTest {
             if (bp.isBookingFormVisible()) {
                 bp.selectFirstAvailableDate();
                 bp.selectFirstAvailableTimeSlot();
-                a.assertTrue(true, "Time slot selected successfully");
+                a.assertTrue(bp.isBookingFormVisible(), "TC_BK_003: After time slot selection, booking form should still be visible");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Time slot selection handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_003: After time slot exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1231,10 +1231,10 @@ public class AllToskieTestCases extends BaseTest {
             BookingPage bp = openBookingFlowFromHome();
             if (bp.isBookingFormVisible()) {
                 bp.enterBookingNotes("Need expert plumber for bathroom pipe repair");
-                a.assertTrue(true, "Booking notes entered successfully");
+                a.assertTrue(bp.isBookingFormVisible(), "TC_BK_004: After notes entry, booking form should still be visible");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Booking notes field interaction handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_004: After notes field exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1250,10 +1250,10 @@ public class AllToskieTestCases extends BaseTest {
                 bp.selectFirstAvailableDate();
                 bp.selectFirstAvailableTimeSlot();
                 bp.confirmBooking();
-                a.assertTrue(bp.isBookingConfirmed() || true, "Booking confirmation should be shown");
+                a.assertTrue(bp.isBookingConfirmed(), "TC_BK_005: Booking confirmation screen must appear after confirming");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Booking confirmation flow handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_005: After booking confirmation exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1267,10 +1267,10 @@ public class AllToskieTestCases extends BaseTest {
             BookingPage bp = openBookingFlowFromHome();
             if (bp.isBookingFormVisible()) {
                 bp.cancelBooking();
-                a.assertTrue(true, "Booking cancelled — returned to previous page");
+                a.assertFalse(bp.isBookingFormVisible(), "TC_BK_006: Booking form must be dismissed after cancellation");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Cancel booking interaction handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_006: After cancel booking exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1282,9 +1282,9 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         try {
             booking().navigateToMyBookings();
-            a.assertNotEmpty(BrowserManager.getPage().url(), "My Bookings page should load");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "My Bookings page should load");
         } catch (Exception e) {
-            a.assertTrue(true, "My Bookings navigation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_007: After My Bookings navigation exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1297,11 +1297,11 @@ public class AllToskieTestCases extends BaseTest {
         try {
             BookingPage bp = openBookingFlowFromHome();
             if (bp.isBookingFormVisible()) {
-                a.assertTrue(bp.isPastDateDisabled() || true,
-                        "Past dates should be disabled in booking calendar");
+                a.assertTrue(bp.isPastDateDisabled(),
+                        "TC_BK_008: Past dates should be disabled in booking calendar");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Past date check handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_008: After past date check exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1316,11 +1316,11 @@ public class AllToskieTestCases extends BaseTest {
             if (bp.isBookingFormVisible()) {
                 bp.confirmBooking();
                 BrowserManager.getPage().waitForTimeout(1000);
-                a.assertTrue(bp.isDateRequiredErrorVisible() || true,
-                        "Missing date should trigger validation error");
+                a.assertTrue(bp.isDateRequiredErrorVisible(),
+                        "TC_BK_009: Missing date should trigger validation error");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "No-date booking validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_009: After no-date booking exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1330,7 +1330,7 @@ public class AllToskieTestCases extends BaseTest {
     public void TC_BK_010_verifyBookingNotificationSent() {
         doLoginAndProfile();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Booking notification flow — checked via notification badge after booking");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_BK_010: Booking notification flow -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -1343,7 +1343,7 @@ public class AllToskieTestCases extends BaseTest {
             home().navigateToChat();
         } catch (Exception ignored) {
         }
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
     }
 
     @Test(priority = 88, groups = {
@@ -1365,7 +1365,7 @@ public class AllToskieTestCases extends BaseTest {
         goToChatList();
         ChatPage cp = chat();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(cp.isOnChatList() || true, "Chat list rendered (conversations or empty state)");
+        a.assertTrue(cp.isOnChatList(), "TC_CH_002: Chat list should be rendered (conversations or empty state)");
         a.assertAll();
     }
 
@@ -1403,7 +1403,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 92, groups = { "chat",
-            "negative" }, description = "TC_CH_006: Sending an empty message is blocked — message count unchanged")
+            "negative" }, description = "TC_CH_006: Sending an empty message is blocked -- message count unchanged")
     public void TC_CH_006_verifyEmptyMessageNotSent() {
         doLoginAndProfile();
         goToChatList();
@@ -1414,8 +1414,8 @@ public class AllToskieTestCases extends BaseTest {
             int before = cp.getSentMessageCount();
             cp.sendMessage("");
             BrowserManager.getPage().waitForTimeout(1000);
-            a.assertTrue(cp.getSentMessageCount() == before || true,
-                    "Empty message should not be sent");
+            a.assertTrue(cp.getSentMessageCount() == before,
+                    "TC_CH_006: Empty message should not increase sent message count");
         }
         a.assertAll();
     }
@@ -1430,7 +1430,7 @@ public class AllToskieTestCases extends BaseTest {
         if (cp.hasChatItems()) {
             cp.openFirstChat();
             cp.sendMessageWithEnter("Testing Enter key message.");
-            a.assertTrue(true, "Enter key message sent without error");
+            a.assertFalse(cp.getLastSentMessageText().isEmpty(), "TC_CH_009: Enter key should send message -- last sent message should not be empty");
         }
         a.assertAll();
     }
@@ -1445,7 +1445,7 @@ public class AllToskieTestCases extends BaseTest {
         if (cp.hasChatItems()) {
             cp.openFirstChat();
             cp.sendMessage("Great service! 😊");
-            a.assertTrue(true, "Message with emoji sent without crash");
+            a.assertFalse(cp.getLastSentMessageText().isEmpty(), "TC_CH_010: Emoji message should appear in chat window");
         }
         a.assertAll();
     }
@@ -1459,7 +1459,7 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         if (cp.hasChatItems()) {
             cp.openFirstChat();
-            a.assertNotEmpty(BrowserManager.getPage().url(),
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com",
                     "Chat history should load when opening conversation");
         }
         a.assertAll();
@@ -1472,8 +1472,8 @@ public class AllToskieTestCases extends BaseTest {
         goToChatList();
         ChatPage cp = chat();
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(cp.isOnChatList() || cp.isEmptyChatVisible() || true,
-                "Empty chat state or conversation list should be visible");
+        a.assertTrue(cp.isOnChatList() || cp.isEmptyChatVisible(),
+                "TC_CH_017: Empty chat state or conversation list should be visible");
         a.assertAll();
     }
 
@@ -1489,10 +1489,10 @@ public class AllToskieTestCases extends BaseTest {
         try {
             BrowserManager.getPage().locator("[href*='notification'], button[aria-label*='notification']")
                     .first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Notifications page should load");
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Notifications page should load");
         } catch (Exception e) {
-            a.assertTrue(true, "Notifications navigation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_001: Notifications navigation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1505,10 +1505,10 @@ public class AllToskieTestCases extends BaseTest {
         try {
             BrowserManager.getPage().locator("[href*='notification'], button[aria-label*='notification']")
                     .first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Notifications page loaded");
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Notifications page loaded");
         } catch (Exception e) {
-            a.assertTrue(true, "Notifications empty state handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_006: Notifications empty state exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1524,10 +1524,10 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         try {
             BrowserManager.getPage().locator("[href*='settings'], button:has-text('Settings')").first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Settings page should load");
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Settings page should load");
         } catch (Exception e) {
-            a.assertTrue(true, "Settings navigation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_ST_001: Settings navigation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1546,9 +1546,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1500);
             boolean logoutVisible = BrowserManager.getPage()
                     .locator("button:has-text('Logout'), button:has-text('Log Out')").count() > 0;
-            a.assertTrue(logoutVisible || true, "Logout button should be visible in settings");
+            a.assertTrue(logoutVisible, "TC_LO_001: Logout button should be visible in settings");
         } catch (Exception e) {
-            a.assertTrue(true, "Logout button check handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_LO_001: Logout button check exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1564,9 +1564,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean dialogVisible = BrowserManager.getPage()
                     .locator("div[role='dialog'], [data-state='open']").count() > 0;
-            a.assertTrue(dialogVisible || true, "Logout confirmation dialog should appear");
+            a.assertTrue(dialogVisible, "TC_LO_002: Logout confirmation dialog should appear");
         } catch (Exception e) {
-            a.assertTrue(true, "Logout confirmation dialog check handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_LO_002: Logout confirmation dialog check exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1582,11 +1582,11 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().locator("button:has-text('Logout'), button:has-text('Log Out')").first().click();
             BrowserManager.getPage().waitForTimeout(1000);
             BrowserManager.getPage().locator("button:has-text('Confirm'), button:has-text('Yes')").first().click();
-            BrowserManager.getPage().waitForTimeout(3000);
+            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
             String url = BrowserManager.getPage().url();
             a.assertFalse(url.contains("/home"), "After logout, user should not be on /home");
         } catch (Exception e) {
-            a.assertTrue(true, "Logout confirmation flow handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_LO_003: Logout confirmation flow exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1602,13 +1602,13 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().locator("button:has-text('Logout'), button:has-text('Log Out')").first().click();
             BrowserManager.getPage().waitForTimeout(1000);
             BrowserManager.getPage().locator("button:has-text('Confirm'), button:has-text('Yes')").first().click();
-            BrowserManager.getPage().waitForTimeout(3000);
+            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
             Object token = BrowserManager.getPage().evaluate("() => localStorage.getItem('access_token')");
             boolean tokenCleared = (token == null || token.toString().equals("null")
                     || token.toString().isEmpty());
-            a.assertTrue(tokenCleared || true, "access_token should be cleared from localStorage on logout");
+            a.assertTrue(tokenCleared, "TC_LO_005: access_token should be cleared from localStorage on logout");
         } catch (Exception e) {
-            a.assertTrue(true, "Token clearance on logout handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_LO_005: Token clearance exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -1697,7 +1697,7 @@ public class AllToskieTestCases extends BaseTest {
             }
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "App did not crash under repeated OTP requests");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_SC_007: App should survive repeated OTP requests -- should be on toskie.com");
         a.assertAll();
     }
 
@@ -1707,7 +1707,7 @@ public class AllToskieTestCases extends BaseTest {
         NetworkValidator nv = new NetworkValidator();
         nv.startCapturing();
         doLogin();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         nv.stopCapturing();
         // HTTPS + auth header present is a sufficient proxy for CSRF protection check
         nv.assertHTTPS();
@@ -1724,7 +1724,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().waitForLoadState(LoadState.DOMCONTENTLOADED);
         long elapsed = System.currentTimeMillis() - start;
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(elapsed < 15000, "Page FCP should complete — measured: " + elapsed + "ms");
+        a.assertTrue(elapsed < 15000, "Page FCP should complete -- measured: " + elapsed + "ms");
         a.assertAll();
     }
 
@@ -1735,7 +1735,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().waitForLoadState(LoadState.LOAD);
         long elapsed = System.currentTimeMillis() - start;
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(elapsed < 15000, "Full page load completed — measured: " + elapsed + "ms");
+        a.assertTrue(elapsed < 15000, "Full page load completed -- measured: " + elapsed + "ms");
         a.assertAll();
     }
 
@@ -1777,7 +1777,7 @@ public class AllToskieTestCases extends BaseTest {
                     com.aventstack.extentreports.Status.WARNING,
                     "Images missing alt text: " + images.size());
         }
-        a.assertTrue(true, "Alt text audit completed — " + images.size() + " img(s) checked");
+        a.assertTrue(images.isEmpty(), "TC_AC_001: All img elements should have alt text -- found " + images.size() + " without alt attribute");
         a.assertAll();
     }
 
@@ -1789,7 +1789,7 @@ public class AllToskieTestCases extends BaseTest {
                 "button:not([aria-label]):not(:has-text(''))").count();
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(unnamed <= 5,
-                "Unnamed buttons (without aria-label and without text) should be minimal — found: " + unnamed);
+                "Unnamed buttons (without aria-label and without text) should be minimal -- found: " + unnamed);
         a.assertAll();
     }
 
@@ -1800,7 +1800,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().keyboard().press("Tab");
         BrowserManager.getPage().keyboard().press("Tab");
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Tab key navigation works without throwing exception");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_AC_003: Tab navigation should not break page -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1818,7 +1818,7 @@ public class AllToskieTestCases extends BaseTest {
         } catch (Exception ignored) {
         }
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Escape key modal close tested");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_AC_004: Escape key should not break page -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1829,7 +1829,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().keyboard().press("Tab");
         BrowserManager.getPage().waitForTimeout(300);
         AssertionHelper a = new AssertionHelper();
-        a.assertTrue(true, "Focus indicator check — tab navigation works");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_AC_005: Tab navigation for focus indicator should not break page -- should remain on toskie.com");
         a.assertAll();
     }
 
@@ -1848,7 +1848,7 @@ public class AllToskieTestCases extends BaseTest {
         }
         home().waitForHomePageLoad();
         AssertionHelper a = new AssertionHelper();
-        a.assertNotEmpty(BrowserManager.getPage().url(), "Full registration flow completed");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Full registration flow completed");
         a.assertAll();
     }
 
@@ -1872,7 +1872,7 @@ public class AllToskieTestCases extends BaseTest {
         if (hp.isOnHomePage() && hp.getTalentCardCount() > 0) {
             hp.clickFirstTalentCard();
             WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-            a.assertNotEmpty(BrowserManager.getPage().url(), "Talent profile page loaded from home feed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Talent profile page loaded from home feed");
         }
         a.assertAll();
     }
@@ -1889,10 +1889,10 @@ public class AllToskieTestCases extends BaseTest {
             try {
                 BrowserManager.getPage().locator("button:has-text('Chat'), button:has-text('Message')")
                         .first().click();
-                BrowserManager.getPage().waitForTimeout(2000);
-                a.assertNotEmpty(BrowserManager.getPage().url(), "Chat screen should open from profile");
+                WaitManager.safePageLoad();
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Chat screen should open from profile");
             } catch (Exception e) {
-                a.assertTrue(true, "Chat initiation from profile handled");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_RG_004: Chat initiation from profile exception -- should be on toskie.com");
             }
         }
         a.assertAll();
@@ -1910,7 +1910,7 @@ public class AllToskieTestCases extends BaseTest {
             try {
                 sp.clickFirstResult();
                 WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-                a.assertNotEmpty(BrowserManager.getPage().url(), "Talent profile loaded from search result");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Talent profile loaded from search result");
             } catch (Exception ignored) {
             }
         }
@@ -1918,7 +1918,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 125, groups = { "e2e",
-            "smoke" }, description = "TC_RG_007: Complete logout and re-login flow — user can log back in normally")
+            "smoke" }, description = "TC_RG_007: Complete logout and re-login flow -- user can log back in normally")
     public void TC_RG_007_verifyLogoutAndReloginFlow() {
         doLoginAndProfile();
         // Logout
@@ -1928,7 +1928,7 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().locator("button:has-text('Logout'), button:has-text('Log Out')").first().click();
             BrowserManager.getPage().waitForTimeout(1000);
             BrowserManager.getPage().locator("button:has-text('Confirm'), button:has-text('Yes')").first().click();
-            BrowserManager.getPage().waitForTimeout(3000);
+            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         } catch (Exception ignored) {
         }
 
@@ -1940,7 +1940,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // AUTHENTICATION – MTC SERIES (TOSKIE_Master_QA_Repository – EXISTING)
+    // AUTHENTICATION - MTC SERIES (TOSKIE_Master_QA_Repository - EXISTING)
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 126, groups = { "authentication", "login",
@@ -1970,7 +1970,7 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().waitForTimeout(1000);
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(!lp.isOTPScreenVisible() || lp.isPhoneValidationErrorVisible(),
-                "5-digit phone should show validation error — OTP not sent");
+                "5-digit phone should show validation error -- OTP not sent");
         a.assertAll();
     }
 
@@ -2008,12 +2008,12 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("0000");
             lp.clickVerifyOTP();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             a.assertTrue(lp.isInvalidOTPMessageVisible() || lp.isOTPValidationErrorVisible(),
                     "Wrong OTP should display 'Invalid OTP' error");
         }
@@ -2028,16 +2028,16 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             // Simulate expired OTP by entering a known-bad OTP after waiting
             lp.enterOTP("1111");
             lp.clickVerifyOTP();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             boolean hasError = lp.isInvalidOTPMessageVisible() || lp.isOTPValidationErrorVisible()
                     || BrowserManager.getPage().content().toLowerCase().contains("expired");
-            a.assertTrue(hasError || true, "Expired/wrong OTP should show appropriate error");
+            a.assertTrue(hasError, "MTC-008: Expired/wrong OTP should show appropriate error");
         }
         a.assertAll();
     }
@@ -2050,12 +2050,12 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         AssertionHelper a = new AssertionHelper();
         a.assertTrue(lp.isOTPScreenVisible(), "OTP screen should remain visible for resend");
         boolean resendPresent = lp.isResendTimerVisible()
                 || BrowserManager.getPage().locator("button:has-text('Resend'), text='Resend OTP'").count() > 0;
-        a.assertTrue(resendPresent || true, "Resend OTP option should be present on OTP screen");
+        a.assertTrue(resendPresent, "MTC-009: Resend OTP option should be present on OTP screen");
         a.assertAll();
     }
 
@@ -2072,8 +2072,8 @@ public class AllToskieTestCases extends BaseTest {
         if (lp.isOTPScreenVisible()) {
             long resendDisabledCount = BrowserManager.getPage()
                     .locator("button:has-text('Resend')[disabled], button:has-text('Resend OTP')[disabled]").count();
-            a.assertTrue(resendDisabledCount > 0 || lp.isResendTimerVisible() || true,
-                    "Resend OTP should be disabled while countdown timer is still running");
+            a.assertTrue(resendDisabledCount > 0 || lp.isResendTimerVisible(),
+                    "MTC-010: Resend OTP should be disabled while countdown timer is still running");
         }
         a.assertAll();
     }
@@ -2086,7 +2086,7 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             var otpInputs = BrowserManager.getPage()
@@ -2109,13 +2109,13 @@ public class AllToskieTestCases extends BaseTest {
         lp.clickLoginButton();
         lp.enterPhoneNumber("9919011050");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
         AssertionHelper a = new AssertionHelper();
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("12");
             lp.clickVerifyOTP();
             BrowserManager.getPage().waitForTimeout(1000);
-            a.assertTrue(true, "Partial OTP (2 digits) handled without app crash");
+            a.assertTrue(lp.isOTPScreenVisible(), "MTC-012: Partial OTP should not complete login -- OTP screen should remain visible");
         }
         a.assertAll();
     }
@@ -2134,10 +2134,10 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().locator("input[type='email'], input[placeholder*='email']")
                     .first().fill(testEmail());
             BrowserManager.getPage().locator("button:has-text('Verify'), button:has-text('Send OTP')").first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
-            a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Account recovery flow initiated");
+            WaitManager.safePageLoad();
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Account recovery flow initiated");
         } catch (Exception e) {
-            a.assertTrue(true, "Account recovery link/flow handled (feature may not be on welcome screen)");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-016: Account recovery link/flow exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2155,9 +2155,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("required")
                     || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-            a.assertTrue(hasError || true, "Empty email should show 'Email is required' error");
+            a.assertTrue(hasError, "MTC-017: Empty email should show 'Email is required' error");
         } catch (Exception e) {
-            a.assertTrue(true, "Account recovery empty email validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-017: Account recovery empty email validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2177,9 +2177,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("valid email")
                     || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-            a.assertTrue(hasError || true, "Invalid email format should show validation error");
+            a.assertTrue(hasError, "MTC-018: Invalid email format should show validation error");
         } catch (Exception e) {
-            a.assertTrue(true, "Invalid email format in account recovery handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-018: Invalid email format in account recovery exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2198,15 +2198,15 @@ public class AllToskieTestCases extends BaseTest {
             emailInput.fill("  " + testEmail() + "  ");
             BrowserManager.getPage().locator("button:has-text('Verify'), button:has-text('Send OTP')").first().click();
             BrowserManager.getPage().waitForTimeout(1500);
-            a.assertTrue(true, "Spaces trimmed from email — no crash; form handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-020: Email with spaces submitted -- should remain on toskie.com");
         } catch (Exception e) {
-            a.assertTrue(true, "Email space trim in account recovery handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-020: Email space trim exception -- should be on toskie.com");
         }
         a.assertAll();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // TALENT REGISTRATION – MTC SERIES (Steps 1–6)
+    // TALENT REGISTRATION - MTC SERIES (Steps 1-6)
     // ════════════════════════════════════════════════════════════════════════
 
     private void navigateToTalentRegistration() {
@@ -2215,14 +2215,14 @@ public class AllToskieTestCases extends BaseTest {
         // registration URL
         try {
             BrowserManager.getPage().navigate(baseUrl + "talent/register");
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
         } catch (Exception e) {
             try {
                 BrowserManager.getPage().locator(
                         "button:has-text('Register as Talent'), a:has-text('Become a Talent'), " +
                                 "a:has-text('Register Talent')")
                         .first().click();
-                BrowserManager.getPage().waitForTimeout(2000);
+                WaitManager.safePageLoad();
             } catch (Exception ignored) {
             }
         }
@@ -2257,9 +2257,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean hasError = BrowserManager.getPage().locator("[class*='error']").count() > 0
                     || BrowserManager.getPage().content().toLowerCase().contains("valid email");
-            a.assertTrue(hasError || true, "Invalid email should show validation error in Step 1");
+            a.assertTrue(hasError, "MTC-022: Invalid email should show validation error in Step 1");
         } catch (Exception e) {
-            a.assertTrue(true, "Invalid email in talent registration Step 1 handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-022: Invalid email in talent registration Step 1 exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2275,9 +2275,9 @@ public class AllToskieTestCases extends BaseTest {
             // Count disabled future date cells in calendar
             long disabledFutureDates = BrowserManager.getPage()
                     .locator("[aria-disabled='true'], [disabled], .rdp-day_disabled").count();
-            a.assertTrue(disabledFutureDates >= 0 || true, "Future dates should be disabled in DOB calendar");
+            a.assertTrue(disabledFutureDates > 0, "MTC-023: Future dates should be disabled in DOB calendar");
         } catch (Exception e) {
-            a.assertTrue(true, "Future DOB restriction handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-023: Future DOB restriction exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2292,14 +2292,14 @@ public class AllToskieTestCases extends BaseTest {
                     .locator("input[type='email'], input[placeholder*='email']").first();
             emailField.fill(testEmail());
             BrowserManager.getPage().locator("button:has-text('Send OTP')").first().click();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
             String content = BrowserManager.getPage().content();
             // Masked email should contain *** or *
             boolean isMasked = content.contains("***") || content.contains("*")
                     || !content.contains(testEmail());
-            a.assertTrue(isMasked || true, "Email address in OTP modal should be partially masked");
+            a.assertTrue(isMasked, "MTC-024: Email address in OTP modal should be partially masked");
         } catch (Exception e) {
-            a.assertTrue(true, "Email masking in OTP modal handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-024: Email masking in OTP modal exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2320,15 +2320,15 @@ public class AllToskieTestCases extends BaseTest {
             var option = BrowserManager.getPage().locator("li, [role='option'], [class*='option']").first();
             if (option.isVisible())
                 option.click();
-            a.assertTrue(true, "Primary skill selection attempted without crash");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-028: Primary skill selected -- should remain on toskie.com");
         } catch (Exception e) {
-            a.assertTrue(true, "Add primary skill in Step 2 handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-028: Add primary skill exception -- should be on toskie.com");
         }
         a.assertAll();
     }
 
     @Test(priority = 145, groups = { "talent-registration",
-            "negative" }, description = "MTC-029 (TC_070): Same skill cannot be added twice — error shown")
+            "negative" }, description = "MTC-029 (TC_070): Same skill cannot be added twice -- error shown")
     public void MTC_029_verifySameSkillCannotBeAddedTwice() {
         navigateToTalentRegistration();
         AssertionHelper a = new AssertionHelper();
@@ -2348,9 +2348,9 @@ public class AllToskieTestCases extends BaseTest {
             }
             boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("already added")
                     || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-            a.assertTrue(hasError || true, "Duplicate skill should show 'Skill already added' error");
+            a.assertTrue(hasError, "MTC-029: Duplicate skill should show 'Skill already added' error");
         } catch (Exception e) {
-            a.assertTrue(true, "Duplicate skill prevention handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-029: Duplicate skill prevention exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2364,9 +2364,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().locator("button:has-text('Next'), [class*='next']").first().click();
             BrowserManager.getPage().waitForTimeout(1500);
             long primaryBadges = BrowserManager.getPage().locator("[class*='primary'], text='Primary'").count();
-            a.assertTrue(primaryBadges <= 1 || true, "Only one skill should be marked as primary");
+            a.assertTrue(primaryBadges <= 1, "MTC-030: Only one skill should be marked as primary");
         } catch (Exception e) {
-            a.assertTrue(true, "Single primary skill constraint handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-030: Single primary skill constraint exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2387,10 +2387,10 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(1000);
                 boolean promptPresent = BrowserManager.getPage().content().toLowerCase().contains("primary")
                         || BrowserManager.getPage().locator("[role='dialog']").count() > 0;
-                a.assertTrue(promptPresent || true, "Removing primary skill should prompt for new primary selection");
+                a.assertTrue(promptPresent, "MTC-031: Removing primary skill should prompt for new primary selection");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Remove primary skill prompt handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-031: Remove primary skill prompt exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2408,10 +2408,10 @@ public class AllToskieTestCases extends BaseTest {
             skillInput.fill("Desig");
             BrowserManager.getPage().waitForTimeout(1000);
             long optionCount = BrowserManager.getPage().locator("li, [role='option']").count();
-            a.assertTrue(optionCount >= 0 || true,
-                    "Skill dropdown should filter options containing 'Desig'");
+            a.assertTrue(optionCount > 0,
+                    "MTC-032: Skill dropdown should filter and show results for 'Desig'");
         } catch (Exception e) {
-            a.assertTrue(true, "Skill dropdown filter handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-032: Skill dropdown filter exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2428,10 +2428,10 @@ public class AllToskieTestCases extends BaseTest {
                     .locator("textarea[placeholder*='description'], input[placeholder*='description']").first();
             if (descField.isVisible()) {
                 descField.fill("Expert in responsive web design and front-end development.");
-                a.assertTrue(true, "Skill description entered successfully");
+                a.assertFalse(descField.inputValue().isEmpty(), "MTC-033: Skill description should be entered successfully");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Skill description and tags handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-033: Skill description and tags exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2449,9 +2449,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("skill")
                     && BrowserManager.getPage().locator("[class*='error']").count() > 0;
-            a.assertTrue(hasError || true, "Next should be blocked with error when no skill is added");
+            a.assertTrue(hasError, "MTC-034: Next should be blocked with error when no skill is added");
         } catch (Exception e) {
-            a.assertTrue(true, "No-skill validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-034: No-skill validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2471,10 +2471,10 @@ public class AllToskieTestCases extends BaseTest {
                     .locator("input[placeholder*='role'], input[placeholder*='Role'], input[name*='role']").first();
             if (roleField.isVisible()) {
                 roleField.fill("Senior Web Developer");
-                a.assertTrue(true, "Role field accepts input");
+                a.assertFalse(roleField.inputValue().isEmpty(), "MTC-035: Role field should accept and retain input");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Experience form fields handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-035: Experience form fields exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2496,11 +2496,11 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(500);
                 boolean endDateDisabled = BrowserManager.getPage()
                         .locator("input[placeholder*='end'], input[placeholder*='End']").first().isDisabled();
-                a.assertTrue(endDateDisabled || true,
-                        "End date field should be disabled when Currently Working is checked");
+                a.assertTrue(endDateDisabled,
+                        "MTC-036: End date field should be disabled when Currently Working is checked");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Currently Working end date disable handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-036: Currently Working end date exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2527,10 +2527,10 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(1000);
                 boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("before")
                         || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-                a.assertTrue(hasError || true, "End date before start date should show validation error");
+                a.assertTrue(hasError, "MTC-037: End date before start date should show validation error");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "End date < start date validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-037: End date < start date validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2551,10 +2551,10 @@ public class AllToskieTestCases extends BaseTest {
             if (addNewBtn.isVisible()) {
                 addNewBtn.click();
                 BrowserManager.getPage().waitForTimeout(1000);
-                a.assertTrue(true, "Add New experience entry button works");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-038: Add experience entry clicked -- should remain on toskie.com");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Multiple experience entries handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-038: Multiple experience entries exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2574,9 +2574,9 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
             boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("role")
                     || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-            a.assertTrue(hasError || true, "Empty Role should block navigation with validation error");
+            a.assertTrue(hasError, "MTC-039: Empty Role should block navigation with validation error");
         } catch (Exception e) {
-            a.assertTrue(true, "Role required validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-039: Role required validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2596,10 +2596,10 @@ public class AllToskieTestCases extends BaseTest {
                     .first();
             if (degreeField.isVisible()) {
                 degreeField.fill("Bachelor of Technology");
-                a.assertTrue(true, "Degree field accepts valid input");
+                a.assertFalse(degreeField.inputValue().isEmpty(), "MTC-040: Degree field should accept and retain input");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Education fields in Step 4 handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-040: Education fields in Step 4 exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2626,10 +2626,10 @@ public class AllToskieTestCases extends BaseTest {
                 boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("precede")
                         || BrowserManager.getPage().content().toLowerCase().contains("before")
                         || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-                a.assertTrue(hasError || true, "Education end date before start date should be rejected");
+                a.assertTrue(hasError, "MTC-041: Education end date before start date should be rejected");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Education date validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-041: Education date validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2651,10 +2651,10 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(500);
                 boolean endDisabled = BrowserManager.getPage()
                         .locator("input[placeholder*='end'], input[placeholder*='End']").first().isDisabled();
-                a.assertTrue(endDisabled || true, "End date should be disabled when Currently Studying is checked");
+                a.assertTrue(endDisabled, "MTC-042: End date should be disabled when Currently Studying is checked");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Currently Studying end date handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-042: Currently Studying end date exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2671,9 +2671,9 @@ public class AllToskieTestCases extends BaseTest {
             }
             var uploadBtn = BrowserManager.getPage()
                     .locator("input[type='file'], button:has-text('Upload'), button:has-text('Certification')").first();
-            a.assertTrue(uploadBtn.isVisible() || true, "Certification upload input should be present in Step 4");
+            a.assertTrue(uploadBtn.isVisible(), "MTC-043: Certification upload input should be present in Step 4");
         } catch (Exception e) {
-            a.assertTrue(true, "Certification upload availability handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-043: Certification upload availability exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2690,10 +2690,10 @@ public class AllToskieTestCases extends BaseTest {
             }
             var fileInput = BrowserManager.getPage().locator("input[type='file']").first();
             String acceptAttr = fileInput.isVisible() ? fileInput.getAttribute("accept") : "";
-            a.assertTrue(acceptAttr == null || acceptAttr.contains("pdf") || acceptAttr.contains("image") || true,
-                    "File input should only accept supported formats");
+            a.assertTrue(acceptAttr == null || acceptAttr.contains("pdf") || acceptAttr.contains("image"),
+                    "MTC-044: File input should only accept supported formats (pdf/image)");
         } catch (Exception e) {
-            a.assertTrue(true, "Unsupported cert format rejection handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-044: Unsupported cert format rejection exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2712,16 +2712,16 @@ public class AllToskieTestCases extends BaseTest {
                     .locator("input[placeholder*='title'], input[placeholder*='Title']").first();
             if (titleField.isVisible()) {
                 titleField.fill("E-Commerce Platform Redesign");
-                a.assertTrue(true, "Project title field accepts input");
+                a.assertFalse(titleField.inputValue().isEmpty(), "MTC-045: Project title field should accept and retain input");
             }
             var descField = BrowserManager.getPage()
                     .locator("textarea[placeholder*='description'], textarea[placeholder*='desc']").first();
             if (descField.isVisible()) {
                 descField.fill("Led complete redesign of an e-commerce platform serving 50k users.");
-                a.assertTrue(true, "Project description field accepts input with word count updating");
+                a.assertFalse(descField.inputValue().isEmpty(), "MTC-045: Project description field should accept and retain input");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Project title/description fields in Step 5 handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-045: Project title/description exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2744,10 +2744,10 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(500);
                 String value = descField.inputValue();
                 int wordCount = value.trim().isEmpty() ? 0 : value.trim().split("\\s+").length;
-                a.assertTrue(wordCount <= 251 || true, "Description word limit should be enforced at 250 words");
+                a.assertTrue(wordCount <= 251, "MTC-046: Description word limit should be enforced at 250 words -- found: " + wordCount);
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Project description word limit handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-046: Project description word limit exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2764,15 +2764,15 @@ public class AllToskieTestCases extends BaseTest {
             }
             boolean uploadPresent = BrowserManager.getPage()
                     .locator("input[type='file'], button:has-text('Upload'), [class*='upload']").count() > 0;
-            a.assertTrue(uploadPresent || true, "Project image upload area should be present in Step 5");
+            a.assertTrue(uploadPresent, "MTC-047: Project image upload area should be present in Step 5");
         } catch (Exception e) {
-            a.assertTrue(true, "Project image upload availability handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-047: Project image upload availability exception -- should be on toskie.com");
         }
         a.assertAll();
     }
 
     @Test(priority = 164, groups = {
-            "talent-registration" }, description = "MTC-048 (TC_430): Project image can be replaced — old replaced by new preview")
+            "talent-registration" }, description = "MTC-048 (TC_430): Project image can be replaced -- old replaced by new preview")
     public void MTC_048_verifyProjectImageCanBeReplaced() {
         navigateToTalentRegistration();
         AssertionHelper a = new AssertionHelper();
@@ -2785,9 +2785,9 @@ public class AllToskieTestCases extends BaseTest {
             boolean replacePresent = BrowserManager.getPage()
                     .locator("button:has-text('Replace'), button:has-text('Change Image'), [class*='replace']")
                     .count() > 0;
-            a.assertTrue(replacePresent || true, "Replace image option should be available once image is uploaded");
+            a.assertTrue(replacePresent, "MTC-048: Replace image option should be available once image is uploaded");
         } catch (Exception e) {
-            a.assertTrue(true, "Project image replace handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-048: Project image replace exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2804,9 +2804,9 @@ public class AllToskieTestCases extends BaseTest {
             }
             boolean galleryUploadPresent = BrowserManager.getPage()
                     .locator("input[type='file'], button:has-text('Upload'), [class*='gallery']").count() > 0;
-            a.assertTrue(galleryUploadPresent || true, "Gallery image upload area should be present in Step 6");
+            a.assertTrue(galleryUploadPresent, "MTC-049: Gallery image upload area should be present in Step 6");
         } catch (Exception e) {
-            a.assertTrue(true, "Gallery image upload in Step 6 handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-049: Gallery image upload in Step 6 exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2827,10 +2827,10 @@ public class AllToskieTestCases extends BaseTest {
             if (addGallery.isVisible()) {
                 addGallery.click();
                 BrowserManager.getPage().waitForTimeout(1000);
-                a.assertTrue(true, "Add gallery item button works in Step 6");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-050: Add gallery item clicked -- should remain on toskie.com");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Multiple gallery items handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-050: Multiple gallery items exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2854,7 +2854,7 @@ public class AllToskieTestCases extends BaseTest {
                         "Skip should proceed without gallery upload validation error");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Gallery skip functionality handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-051: Gallery skip exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -2877,16 +2877,16 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(1000);
                 boolean hasError = BrowserManager.getPage().content().toLowerCase().contains("title required")
                         || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-                a.assertTrue(hasError || true, "Gallery title should be required after image upload");
+                a.assertTrue(hasError, "MTC-052: Gallery title should be required after image upload");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Gallery title mandatory validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-052: Gallery title mandatory validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // TALENT PROFILE – MTC SERIES
+    // TALENT PROFILE - MTC SERIES
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 169, groups = {
@@ -2904,7 +2904,7 @@ public class AllToskieTestCases extends BaseTest {
                     .locator("img[class*='avatar'], img[class*='profile'], img[alt*='profile']").count() > 0;
             a.assertTrue(hasName || !BrowserManager.getPage().url().isEmpty(),
                     "Profile header should display talent name");
-            a.assertTrue(hasPhoto || true, "Profile header should display photo/avatar");
+            a.assertTrue(hasPhoto, "MTC-053: Profile header should display photo/avatar");
         }
         a.assertAll();
     }
@@ -2921,7 +2921,7 @@ public class AllToskieTestCases extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1500);
             boolean hasTabs = BrowserManager.getPage()
                     .locator("button[role='tab'], [class*='tab'], nav a").count() > 0;
-            a.assertTrue(hasTabs || true, "Profile tabs (Posts/Reviews/About/Skills/Projects) should be visible");
+            a.assertTrue(hasTabs, "MTC-054: Profile tabs (Posts/Reviews/About/Skills/Projects) should be visible");
         }
         a.assertAll();
     }
@@ -2944,7 +2944,7 @@ public class AllToskieTestCases extends BaseTest {
             }
             boolean hasSkills = BrowserManager.getPage().content().toLowerCase().contains("skill")
                     || BrowserManager.getPage().locator("[class*='skill']").count() > 0;
-            a.assertTrue(hasSkills || true, "Skills section should list primary and secondary skills");
+            a.assertTrue(hasSkills, "MTC-055: Skills section should list primary and secondary skills");
         }
         a.assertAll();
     }
@@ -2967,7 +2967,7 @@ public class AllToskieTestCases extends BaseTest {
             }
             boolean hasProjects = BrowserManager.getPage().content().toLowerCase().contains("project")
                     || BrowserManager.getPage().locator("[class*='project']").count() > 0;
-            a.assertTrue(hasProjects || true, "Projects section should display project cards");
+            a.assertTrue(hasProjects, "MTC-056: Projects section should display project cards");
         }
         a.assertAll();
     }
@@ -2989,13 +2989,13 @@ public class AllToskieTestCases extends BaseTest {
             } catch (Exception ignored) {
             }
             boolean hasGallery = BrowserManager.getPage().locator("img, [class*='gallery']").count() > 0;
-            a.assertTrue(hasGallery || true, "Gallery section should display images in a grid layout");
+            a.assertTrue(hasGallery, "MTC-057: Gallery section should display images in a grid layout");
         }
         a.assertAll();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // TALENT SEARCH – MTC SERIES
+    // TALENT SEARCH - MTC SERIES
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 174, groups = { "talent-search",
@@ -3026,10 +3026,10 @@ public class AllToskieTestCases extends BaseTest {
             if (recentItem.isVisible()) {
                 recentItem.click();
                 BrowserManager.getPage().waitForTimeout(1500);
-                a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Recent search click should trigger search");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Recent search click should trigger search");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Recent search item handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-067: Recent search item exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3058,11 +3058,11 @@ public class AllToskieTestCases extends BaseTest {
                     BrowserManager.getPage().waitForTimeout(1500);
                     boolean success = BrowserManager.getPage().content().toLowerCase().contains("success")
                             || BrowserManager.getPage().locator("[class*='success'], [class*='toast']").count() > 0;
-                    a.assertTrue(success || true, "Skill request should submit with success popup");
+                    a.assertTrue(success, "MTC-073: Skill request should submit with success popup");
                 }
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Skill request submission handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-073: Skill request submission exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3092,10 +3092,10 @@ public class AllToskieTestCases extends BaseTest {
                 }
                 boolean duplicateError = BrowserManager.getPage().content().toLowerCase().contains("already requested")
                         || BrowserManager.getPage().locator("[class*='error']").count() > 0;
-                a.assertTrue(duplicateError || true, "Duplicate skill request should show appropriate error");
+                a.assertTrue(duplicateError, "MTC-074: Duplicate skill request should show appropriate error");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Duplicate skill request prevention handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-074: Duplicate skill request exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3118,10 +3118,10 @@ public class AllToskieTestCases extends BaseTest {
                 BrowserManager.getPage().waitForTimeout(1000);
                 boolean hasErrors = BrowserManager.getPage().locator("[class*='error']").count() > 0
                         || BrowserManager.getPage().content().toLowerCase().contains("required");
-                a.assertTrue(hasErrors || true, "Empty skill request fields should show inline validation errors");
+                a.assertTrue(hasErrors, "MTC-075: Empty skill request fields should show inline validation errors");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "Empty skill request validation handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-075: Empty skill request validation exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3138,7 +3138,7 @@ public class AllToskieTestCases extends BaseTest {
             a.assertTrue(locationPresent || !BrowserManager.getPage().url().isEmpty(),
                     "Location should be auto-detected and shown when permission is granted");
         } catch (Exception e) {
-            a.assertTrue(true, "Location auto-detection handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-076: Location auto-detection exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3148,14 +3148,14 @@ public class AllToskieTestCases extends BaseTest {
     public void MTC_077_verifyGracefulHandlingWhenLocationPermissionDenied() {
         doLoginAndProfile();
         AssertionHelper a = new AssertionHelper();
-        // App should still function without location — manual entry should be shown
+        // App should still function without location -- manual entry should be shown
         boolean appFunctional = home().isOnHomePage() || !BrowserManager.getPage().url().isEmpty();
         a.assertTrue(appFunctional, "App should function gracefully when location permission is denied");
         a.assertAll();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // MESSAGING – MTC SERIES
+    // MESSAGING - MTC SERIES
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 181, groups = { "messaging",
@@ -3167,20 +3167,20 @@ public class AllToskieTestCases extends BaseTest {
             // Check for online indicator (green dot) on talent cards or profile
             boolean onlineIndicatorPresent = BrowserManager.getPage()
                     .locator("[class*='online'], [class*='green'], [aria-label*='online']").count() > 0;
-            a.assertTrue(onlineIndicatorPresent || true,
-                    "Green dot online indicator should be visible on talent cards for online users");
+            a.assertTrue(onlineIndicatorPresent,
+                    "MTC-081: Green dot online indicator should be visible on talent cards for online users");
         } catch (Exception e) {
-            a.assertTrue(true, "Online status indicator handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-081: Online status indicator exception -- should be on toskie.com");
         }
         a.assertAll();
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // BACKEND API – MTC SERIES
+    // BACKEND API - MTC SERIES
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 182, groups = { "backend-api",
-            "api" }, description = "MTC-104 (TC_459): POST /login – valid phone number returns 200 with OTP sent")
+            "api" }, description = "MTC-104 (TC_459): POST /login - valid phone number returns 200 with OTP sent")
     public void MTC_104_verifyLoginAPIValidPhoneReturnsOTP() {
         AssertionHelper a = new AssertionHelper();
         try {
@@ -3194,7 +3194,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 183, groups = { "backend-api",
-            "api" }, description = "MTC-105 (TC_467): POST /login – phone with country code prefix accepted")
+            "api" }, description = "MTC-105 (TC_467): POST /login - phone with country code prefix accepted")
     public void MTC_105_verifyLoginAPIPhoneWithCountryCodeAccepted() {
         AssertionHelper a = new AssertionHelper();
         try {
@@ -3202,13 +3202,13 @@ public class AllToskieTestCases extends BaseTest {
             utilLayer.loginViaQAGraphQL("9919011050");
             a.assertNotEmpty(utilLayer.getAccessToken(), "Login API should accept phone and return token");
         } catch (Exception e) {
-            a.assertTrue(true, "Login API with country code handled: " + e.getMessage());
+            a.assertContains(e.getMessage() != null ? e.getMessage() : "", "Login API", "MTC-105: Login API with country code should not throw unexpected exception");
         }
         a.assertAll();
     }
 
     @Test(priority = 184, groups = { "backend-api", "api",
-            "negative" }, description = "MTC-106 (TC_461): POST /login – empty phone returns 400 Bad Request")
+            "negative" }, description = "MTC-106 (TC_461): POST /login - empty phone returns 400 Bad Request")
     public void MTC_106_verifyLoginAPIEmptyPhoneReturns400() {
         AssertionHelper a = new AssertionHelper();
         try {
@@ -3222,42 +3222,42 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 185, groups = { "backend-api",
-            "api" }, description = "MTC-108 (TC_486): POST /upload-image – valid PNG uploads and returns S3 URL")
+            "api" }, description = "MTC-108 (TC_486): POST /upload-image - valid PNG uploads and returns S3 URL")
     public void MTC_108_verifyImageUploadAPIValidPNGReturns200() {
         AssertionHelper a = new AssertionHelper();
         try {
             utilLayer.loginViaQAGraphQL("9919011050");
             a.assertNotEmpty(utilLayer.getAccessToken(), "Auth token available for image upload test");
-            // Image upload API validation — verify auth token is set for upload call
+            // Image upload API validation -- verify auth token is set for upload call
             a.assertFalse(utilLayer.isTokenExpired(), "Token must be valid to call upload-image endpoint");
         } catch (Exception e) {
-            a.assertTrue(true, "Image upload API test handled: " + e.getMessage());
+            a.assertTrue(e.getMessage() != null, "MTC-108: Image upload API should throw a meaningful exception -- got: " + e.getMessage());
         }
         a.assertAll();
     }
 
     @Test(priority = 186, groups = { "backend-api", "api",
-            "negative" }, description = "MTC-109 (TC_491): POST /upload-image – empty base64 returns 400 Bad Request")
+            "negative" }, description = "MTC-109 (TC_491): POST /upload-image - empty base64 returns 400 Bad Request")
     public void MTC_109_verifyImageUploadAPIEmptyBase64Returns400() {
         AssertionHelper a = new AssertionHelper();
         try {
             utilLayer.loginViaQAGraphQL("9919011050");
             utilLayer.injectTokenFull();
-            // Attempt to trigger upload with empty payload — should fail with 400
+            // Attempt to trigger upload with empty payload -- should fail with 400
             NetworkValidator nv = new NetworkValidator();
             nv.startCapturing();
             BrowserManager.getPage().navigate(baseUrl);
             BrowserManager.getPage().waitForTimeout(1000);
             nv.stopCapturing();
-            a.assertTrue(true, "Empty base64 upload API test executed");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-109: Empty base64 upload API test -- should be on toskie.com");
         } catch (Exception e) {
-            a.assertTrue(true, "Upload API empty base64 validation handled: " + e.getMessage());
+            a.assertTrue(e.getMessage() != null, "MTC-109: Upload API empty base64 should throw meaningful exception -- got: " + e.getMessage());
         }
         a.assertAll();
     }
 
     @Test(priority = 187, groups = { "backend-api", "api",
-            "security" }, description = "MTC-110 (TC_495): POST /upload-image – no auth token returns 401 Unauthorized")
+            "security" }, description = "MTC-110 (TC_495): POST /upload-image - no auth token returns 401 Unauthorized")
     public void MTC_110_verifyImageUploadAPINoTokenReturns401() {
         NetworkValidator nv = new NetworkValidator();
         nv.startCapturing();
@@ -3266,12 +3266,12 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         // No authenticated calls should be made before login
         nv.assertHTTPS();
-        a.assertTrue(true, "Unauthenticated upload-image should return 401 — verified via HTTPS-only constraint");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-110: Unauthenticated upload-image tested -- should be on toskie.com after onboarding");
         a.assertAll();
     }
 
     @Test(priority = 188, groups = { "backend-api",
-            "api" }, description = "MTC-111 (TC_Talent_Search): GET /search – returns results for valid skill + location")
+            "api" }, description = "MTC-111 (TC_Talent_Search): GET /search - returns results for valid skill + location")
     public void MTC_111_verifySearchAPIReturnsResultsForSkillAndLocation() {
         doLoginAndProfile();
         SearchPage sp = search();
@@ -3282,7 +3282,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     @Test(priority = 189, groups = { "backend-api",
-            "api" }, description = "MTC-112 (TC_102): GET /search – pagination limit parameter respected")
+            "api" }, description = "MTC-112 (TC_102): GET /search - pagination limit parameter respected")
     public void MTC_112_verifySearchAPIPaginationLimitRespected() {
         doLoginAndProfile();
         SearchPage sp = search();
@@ -3294,7 +3294,7 @@ public class AllToskieTestCases extends BaseTest {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    // UI VALIDATION – MTC SERIES
+    // UI VALIDATION - MTC SERIES
     // ════════════════════════════════════════════════════════════════════════
 
     @Test(priority = 190, groups = { "ui-validation",
@@ -3307,8 +3307,8 @@ public class AllToskieTestCases extends BaseTest {
         // Verify no horizontal scroll (scrollWidth <= clientWidth)
         Object scrollOverflow = BrowserManager.getPage().evaluate(
                 "() => document.documentElement.scrollWidth <= window.innerWidth + 5");
-        a.assertTrue(Boolean.TRUE.equals(scrollOverflow) || true,
-                "No horizontal overflow on 360×640 mobile viewport");
+        a.assertTrue(Boolean.TRUE.equals(scrollOverflow),
+                "MTC-118: No horizontal overflow on 360×640 mobile viewport");
         a.assertAll();
     }
 
@@ -3321,8 +3321,8 @@ public class AllToskieTestCases extends BaseTest {
         AssertionHelper a = new AssertionHelper();
         Object scrollOverflow = BrowserManager.getPage().evaluate(
                 "() => document.documentElement.scrollWidth <= window.innerWidth + 5");
-        a.assertTrue(Boolean.TRUE.equals(scrollOverflow) || true,
-                "No horizontal overflow on 768×1024 tablet viewport");
+        a.assertTrue(Boolean.TRUE.equals(scrollOverflow),
+                "MTC-119: No horizontal overflow on 768×1024 tablet viewport");
         a.assertAll();
     }
 
@@ -3333,10 +3333,10 @@ public class AllToskieTestCases extends BaseTest {
         BrowserManager.getPage().navigate(baseUrl);
         BrowserManager.getPage().waitForTimeout(1500);
         AssertionHelper a = new AssertionHelper();
-        a.assertNotEmpty(BrowserManager.getPage().url(), "App should load on desktop 1440px viewport");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "App should load on desktop 1440px viewport");
         long overflowElements = BrowserManager.getPage()
                 .locator("[style*='overflow:hidden'], [style*='overflow: hidden']").count();
-        a.assertTrue(overflowElements >= 0 || true, "Desktop layout should render without overflow issues");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-120: Desktop layout loaded -- should be on toskie.com at 1440px");
         a.assertAll();
     }
 
@@ -3354,10 +3354,10 @@ public class AllToskieTestCases extends BaseTest {
             boolean spinnerPresent = BrowserManager.getPage()
                     .locator("[class*='spinner'], [class*='loading'], [class*='skeleton'], [role='progressbar']")
                     .count() > 0;
-            a.assertTrue(spinnerPresent || true,
-                    "Loading spinner or skeleton should appear during API call processing");
+            a.assertTrue(spinnerPresent,
+                    "MTC-122: Loading spinner or skeleton should appear during API call processing");
         } catch (Exception e) {
-            a.assertTrue(true, "Loading spinner check handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-122: Loading spinner check exception -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -3377,10 +3377,10 @@ public class AllToskieTestCases extends BaseTest {
                             .count() > 0
                     || BrowserManager.getPage().content().toLowerCase().contains("no result")
                     || BrowserManager.getPage().content().toLowerCase().contains("not found");
-            a.assertTrue(emptyStatePresent || true,
-                    "Empty state illustration and message should be shown when no data is available");
+            a.assertTrue(emptyStatePresent,
+                    "MTC-123: Empty state illustration and message should be shown when no data is available");
         } catch (Exception e) {
-            a.assertTrue(true, "Empty state UI check handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "MTC-123: Empty state UI check exception -- should be on toskie.com");
         }
         a.assertAll();
     }

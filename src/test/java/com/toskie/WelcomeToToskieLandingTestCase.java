@@ -17,7 +17,7 @@ public class WelcomeToToskieLandingTestCase extends BaseTest {
 
         welcomePage.validateWelcomeToToskieLandingPage();
 
-        // The app uses same-URL SPA state rendering — clicking the final CTA replaces the
+        // The app uses same-URL SPA state rendering -- clicking the final CTA replaces the
         // welcome screen in-place without a URL change, so assertNotEquals on URLs is wrong.
         // The reliable indicator of forward progress is that the slide Next button is gone.
         Assert.assertFalse(welcomePage.isNextButtonStillVisible(),

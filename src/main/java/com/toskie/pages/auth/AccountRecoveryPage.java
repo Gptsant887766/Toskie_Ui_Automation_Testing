@@ -53,10 +53,10 @@ public class AccountRecoveryPage {
     }
     public String getMobileError()           { try { return loc.mobileError.textContent().trim(); } catch (Exception e) { return ""; } }
 
-    /** OTP bypass via QA API — use when mobile/SMS/email OTP cannot be received in dev environment. */
+    /** OTP bypass via QA API -- use when mobile/SMS/email OTP cannot be received in dev environment. */
     public void bypassPasswordResetOTP() {
         try {
-            ReportManager.getTest().log(Status.INFO, "Password reset OTP bypass via QA API (dev environment — no real OTP)");
+            ReportManager.getTest().log(Status.INFO, "Password reset OTP bypass via QA API (dev environment -- no real OTP)");
             util.loginViaQAGraphQL(com.toskie.utils_Layer.ConfigManager.getTestMobile());
             util.injectTokenFull();
             util.injectCookies();

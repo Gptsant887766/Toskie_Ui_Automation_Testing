@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
  *
  * Note: The app is a React SPA. Elements are rendered by JS after
  * DOMCONTENTLOADED fires, so all element checks use waitFor() instead
- * of the immediate count()/isVisible() — matching the pattern used by
+ * of the immediate count()/isVisible() -- matching the pattern used by
  * WelcomeToToskieLandingPage.validateWelcomeToToskieLandingPage() which
  * calls NextBT.waitFor(VISIBLE, 15000) and works reliably.
  */
@@ -21,7 +21,7 @@ public class WelcomePageTestCases extends BaseTest {
 
     private static final int RENDER_WAIT_MS = 5000;
 
-    // ── TC-WP-001: Welcome page loads — Next button renders ──────────────────
+    // ── TC-WP-001: Welcome page loads -- Next button renders ──────────────────
     @Test(priority = 1,
           description = "TC-WP-001: Welcome page Next button must render within 5 seconds of page load")
     public void verifyWelcomePage_Loads() {
@@ -97,7 +97,7 @@ public class WelcomePageTestCases extends BaseTest {
     // ── TC-WP-007: Welcome slides dismissed after full onboarding flow ──────────
     // After clicking the final CTA ("Start Exploring" in current build, "Create My
     // Profile" in older builds), the app replaces the welcome overlay with the home
-    // screen in-place — same URL, no navigation. The reliable proof is that the Next
+    // screen in-place -- same URL, no navigation. The reliable proof is that the Next
     // button (present only during onboarding slides) is no longer visible.
     @Test(priority = 7,
           description = "TC-WP-007: After final onboarding CTA, welcome slides must be replaced by home content")
