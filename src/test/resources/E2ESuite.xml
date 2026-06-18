@@ -1,15 +1,33 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <!--
-  E2E SUITE — full end-to-end user journey flows.
-  Register → Profile Creation → Search → Connect → Message → Post → Review.
-  Run before every release on a clean QA account.
-  Use: mvn test -DsuiteXmlFile=src/test/resources/E2ESuite.xml
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  END-TO-END SUITE — Complete User Journey Flows                 ║
+  ║  Purpose : Validate critical multi-step user journeys           ║
+  ║  Journey : Register → Profile → Search → Connect → Message →   ║
+  ║            Post → Review → Notification → Subscribe             ║
+  ║  Runtime : ~2–2.5 hours                                         ║
+  ║  Trigger : Before every release; run on clean QA test account   ║
+  ║  Command : mvn test -DsuiteXmlFile=src/test/resources/E2ESuite.xml ║
+  ╚══════════════════════════════════════════════════════════════════╝
 -->
-<suite name="Toskie E2E Suite" verbose="1" parallel="none">
+<suite name="Toskie E2E Suite" verbose="1" parallel="none" data-provider-thread-count="1">
 
-    <test name="E2E — Registration and Onboarding">
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+    </listeners>
+
+    <!-- ── PHASE 1: Registration and Onboarding ──────────────────────────────── -->
+    <test name="E2E — Phase 1: Registration and Onboarding">
         <classes>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
             <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+        </classes>
+    </test>
+
+    <!-- ── PHASE 2: Profile Creation Wizard ──────────────────────────────────── -->
+    <test name="E2E — Phase 2: Profile Creation">
+        <classes>
             <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
             <class name="com.toskie.tests.profile.BioStepTests"/>
             <class name="com.toskie.tests.profile.SkillStepTests"/>
@@ -22,50 +40,72 @@
         </classes>
     </test>
 
-    <test name="E2E — Talent Discovery and Engagement">
+    <!-- ── PHASE 3: Talent Discovery and Search ──────────────────────────────── -->
+    <test name="E2E — Phase 3: Talent Discovery">
         <classes>
             <class name="com.toskie.tests.search.TalentSearchUITests"/>
             <class name="com.toskie.tests.search.TalentSearchApiTests"/>
             <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
             <class name="com.toskie.tests.dashboard.UserProfileTests"/>
             <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
-            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
-            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
         </classes>
     </test>
 
-    <test name="E2E — Messaging and Connection">
+    <!-- ── PHASE 4: Connect and Engage ───────────────────────────────────────── -->
+    <test name="E2E — Phase 4: Connect and Engage">
         <classes>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
             <class name="com.toskie.tests.messaging.MessageRequestTests"/>
             <class name="com.toskie.tests.messaging.RequestAcceptDeclineTests"/>
             <class name="com.toskie.tests.messaging.ConversationListTests"/>
-            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
-            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+            <class name="com.toskie.tests.messaging.MessagingSendReceiveTests"/>
         </classes>
     </test>
 
-    <test name="E2E — Posts and Content">
+    <!-- ── PHASE 5: Real-Time Communication ─────────────────────────────────── -->
+    <test name="E2E — Phase 5: Real-Time Communication">
+        <classes>
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+            <class name="com.toskie.tests.websocket.BulkMessageReadTests"/>
+        </classes>
+    </test>
+
+    <!-- ── PHASE 6: Content Creation and Discovery ───────────────────────────── -->
+    <test name="E2E — Phase 6: Content and Posts">
         <classes>
             <class name="com.toskie.tests.posts.FeedTests"/>
             <class name="com.toskie.tests.posts.AddPostTests"/>
             <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.ExploreTests"/>
+            <class name="com.toskie.tests.posts.PostDetailTests"/>
             <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
             <class name="com.toskie.tests.posts.SavedPostTests"/>
-            <class name="com.toskie.tests.posts.PostDetailTests"/>
         </classes>
     </test>
 
-    <test name="E2E — Full Flow">
-        <classes>
-            <class name="com.toskie.tests.e2e.EndToEndTests"/>
-        </classes>
-    </test>
-
-    <test name="E2E — Reviews and Notifications">
+    <!-- ── PHASE 7: Reviews, Notifications, Activity ──────────────────────────── -->
+    <test name="E2E — Phase 7: Reviews and Notifications">
         <classes>
             <class name="com.toskie.tests.reviews.ReviewTests"/>
-            <class name="com.toskie.tests.misc.NotificationTests"/>
+            <class name="com.toskie.tests.notifications.NotificationTests"/>
             <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+        </classes>
+    </test>
+
+    <!-- ── PHASE 8: Subscription and Settings ────────────────────────────────── -->
+    <test name="E2E — Phase 8: Subscription and Settings">
+        <classes>
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+            <class name="com.toskie.tests.regression.SettingsTests"/>
+        </classes>
+    </test>
+
+    <!-- ── PHASE 9: Full E2E Flow (dedicated E2E class) ─────────────────────── -->
+    <test name="E2E — Phase 9: Full Journey Validation">
+        <classes>
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
         </classes>
     </test>
 

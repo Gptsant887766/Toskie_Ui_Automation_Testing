@@ -1,33 +1,31 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <!--
-  FULL REGRESSION SUITE — covers all 94+ modern test classes across 20 modules.
-  parallel="none" is intentional: the app uses WebSocket + shared QA test data,
-  so sequential execution avoids token/state conflicts.
-  Use -DsuiteXmlFile=src/test/resources/FullRegressionSuite.xml to run.
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  FULL REGRESSION SUITE — All 93 Test Classes                    ║
+  ║  Purpose : Complete test coverage including security/perf/a11y  ║
+  ║  Scope   : Every test class in the framework                    ║
+  ║  Runtime : ~4–5 hours                                           ║
+  ║  Trigger : Weekly regression / before major release             ║
+  ║  Note    : parallel="none" — WebSocket + shared QA data require ║
+  ║            sequential execution to avoid state conflicts        ║
+  ║  Command : mvn test -DsuiteXmlFile=src/test/resources/FullRegressionSuite.xml ║
+  ╚══════════════════════════════════════════════════════════════════╝
 -->
-<suite name="Toskie Full Regression Suite" verbose="1" parallel="none">
+<suite name="Toskie Full Regression Suite" verbose="1" parallel="none" data-provider-thread-count="1">
 
     <listeners>
         <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
     </listeners>
 
-    <!-- ==================== SMOKE / P0 ==================== -->
-    <test name="Smoke Tests">
-        <groups>
-            <run>
-                <include name="smoke"/>
-                <include name="p0"/>
-            </run>
-        </groups>
+    <!-- ══════════════════ MODULE 01: SMOKE ══════════════════════════════════ -->
+    <test name="01 — Smoke">
         <classes>
             <class name="com.toskie.tests.smoke.SmokeTests"/>
-            <class name="com.toskie.tests.auth.AuthLoginTests"/>
-            <class name="com.toskie.tests.auth.RegistrationTests"/>
         </classes>
     </test>
 
-    <!-- ==================== AUTH ==================== -->
-    <test name="Auth Tests">
+    <!-- ══════════════════ MODULE 02: AUTHENTICATION ═════════════════════════ -->
+    <test name="02 — Authentication">
         <classes>
             <class name="com.toskie.tests.auth.AuthLoginTests"/>
             <class name="com.toskie.tests.auth.RegistrationTests"/>
@@ -36,8 +34,8 @@
         </classes>
     </test>
 
-    <!-- ==================== PROFILE CREATION ==================== -->
-    <test name="Profile Creation Tests">
+    <!-- ══════════════════ MODULE 03: PROFILE CREATION ══════════════════════ -->
+    <test name="03 — Profile Creation Wizard">
         <classes>
             <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
             <class name="com.toskie.tests.profile.BioStepTests"/>
@@ -49,11 +47,12 @@
             <class name="com.toskie.tests.profile.SurveyPageTests"/>
             <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
             <class name="com.toskie.tests.profile.ProfileVisibilityTests"/>
+            <class name="com.toskie.tests.profile.GalleryManagementTests"/>
         </classes>
     </test>
 
-    <!-- ==================== DASHBOARD ==================== -->
-    <test name="Dashboard Tests">
+    <!-- ══════════════════ MODULE 04: DASHBOARD ═════════════════════════════ -->
+    <test name="04 — Dashboard">
         <classes>
             <class name="com.toskie.tests.dashboard.UserProfileTests"/>
             <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
@@ -70,12 +69,13 @@
         </classes>
     </test>
 
-    <!-- ==================== POSTS AND FEED ==================== -->
-    <test name="Posts and Feed Tests">
+    <!-- ══════════════════ MODULE 05: POSTS AND FEED ════════════════════════ -->
+    <test name="05 — Posts and Social Feed">
         <classes>
             <class name="com.toskie.tests.posts.FeedTests"/>
             <class name="com.toskie.tests.posts.AddPostTests"/>
             <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.VideoPostTests"/>
             <class name="com.toskie.tests.posts.AIPostTests"/>
             <class name="com.toskie.tests.posts.ExploreTests"/>
             <class name="com.toskie.tests.posts.PostDetailTests"/>
@@ -85,12 +85,11 @@
             <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
             <class name="com.toskie.tests.posts.SwitchProfileTests"/>
             <class name="com.toskie.tests.posts.AddressManagementTests"/>
-            <class name="com.toskie.tests.posts.VideoPostTests"/>
         </classes>
     </test>
 
-    <!-- ==================== SEARCH ==================== -->
-    <test name="Search Tests">
+    <!-- ══════════════════ MODULE 06: SEARCH ════════════════════════════════ -->
+    <test name="06 — Search and Discovery">
         <classes>
             <class name="com.toskie.tests.search.TalentSearchUITests"/>
             <class name="com.toskie.tests.search.TalentSearchApiTests"/>
@@ -99,8 +98,8 @@
         </classes>
     </test>
 
-    <!-- ==================== MESSAGING ==================== -->
-    <test name="Messaging Tests">
+    <!-- ══════════════════ MODULE 07: MESSAGING ════════════════════════════ -->
+    <test name="07 — Messaging">
         <classes>
             <class name="com.toskie.tests.messaging.MessageRequestTests"/>
             <class name="com.toskie.tests.messaging.ConversationListTests"/>
@@ -114,8 +113,8 @@
         </classes>
     </test>
 
-    <!-- ==================== WEBSOCKET ==================== -->
-    <test name="WebSocket Tests">
+    <!-- ══════════════════ MODULE 08: WEBSOCKET ════════════════════════════ -->
+    <test name="08 — WebSocket">
         <classes>
             <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
             <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
@@ -124,8 +123,54 @@
         </classes>
     </test>
 
-    <!-- ==================== REGRESSION ==================== -->
-    <test name="Regression Tests">
+    <!-- ══════════════════ MODULE 09: API VALIDATION ════════════════════════ -->
+    <test name="09 — API Validation">
+        <classes>
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.api.WebSocketTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 10: LANDING AND BLOG ══════════════════════ -->
+    <test name="10 — Landing and Blog">
+        <classes>
+            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
+            <class name="com.toskie.tests.blog.BlogApiTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 11: REVIEWS AND ACTIVITY ══════════════════ -->
+    <test name="11 — Reviews and Activity">
+        <classes>
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 12: NOTIFICATIONS ═════════════════════════ -->
+    <test name="12 — Notifications">
+        <classes>
+            <class name="com.toskie.tests.notifications.NotificationTests"/>
+            <class name="com.toskie.tests.misc.NotificationTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 13: AI FEATURES ════════════════════════ -->
+    <test name="13 — AI Features">
+        <classes>
+            <class name="com.toskie.tests.ai.AIBioTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 14: SUBSCRIPTION ══════════════════════════ -->
+    <test name="14 — Subscription">
+        <classes>
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 15: CORE PLATFORM REGRESSION ═════════════ -->
+    <test name="15 — Core Platform Regression">
         <classes>
             <class name="com.toskie.tests.regression.HomeTests"/>
             <class name="com.toskie.tests.regression.LoginTests"/>
@@ -139,81 +184,37 @@
         </classes>
     </test>
 
-    <!-- ==================== API ==================== -->
-    <test name="API Tests">
-        <classes>
-            <class name="com.toskie.tests.api.APIValidationTests"/>
-            <class name="com.toskie.tests.api.WebSocketTests"/>
-            <class name="com.toskie.tests.blog.BlogApiTests"/>
-            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== AI ==================== -->
-    <test name="AI Tests">
-        <classes>
-            <class name="com.toskie.tests.ai.AIBioTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== ACTIVITY ==================== -->
-    <test name="Activity Tests">
-        <classes>
-            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== REVIEWS ==================== -->
-    <test name="Review Tests">
-        <classes>
-            <class name="com.toskie.tests.reviews.ReviewTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== GALLERY MANAGEMENT ==================== -->
-    <test name="Gallery Management Tests">
-        <classes>
-            <class name="com.toskie.tests.profile.GalleryManagementTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== NOTIFICATIONS ==================== -->
-    <test name="Notification Tests">
-        <classes>
-            <class name="com.toskie.tests.notifications.NotificationTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== MISC ==================== -->
-    <test name="Misc Tests">
+    <!-- ══════════════════ MODULE 16: MISC UTILITIES ════════════════════════ -->
+    <test name="16 — Misc Utilities">
         <classes>
             <class name="com.toskie.tests.misc.ChangeLocationTests"/>
-            <class name="com.toskie.tests.misc.NotificationTests"/>
-            <class name="com.toskie.tests.misc.ViewerListTests"/>
-            <class name="com.toskie.tests.misc.UserTipsTests"/>
-            <class name="com.toskie.tests.misc.PrivacyPolicyTests"/>
             <class name="com.toskie.tests.misc.FetchContactsReviewTests"/>
             <class name="com.toskie.tests.misc.GalleryViewApiTests"/>
+            <class name="com.toskie.tests.misc.PrivacyPolicyTests"/>
             <class name="com.toskie.tests.misc.ProjectViewApiTests"/>
+            <class name="com.toskie.tests.misc.UserTipsTests"/>
+            <class name="com.toskie.tests.misc.ViewerListTests"/>
             <class name="com.toskie.tests.misc.ViewPostApiTests"/>
         </classes>
     </test>
 
-    <!-- ==================== NEGATIVE / EDGE CASES ==================== -->
-    <test name="Negative Tests">
+    <!-- ══════════════════ MODULE 17: NEGATIVE AND EDGE CASES ═══════════════ -->
+    <test name="17 — Negative and Edge Cases">
         <classes>
             <class name="com.toskie.tests.negative.NegativeTests"/>
-        </classes>
-    </test>
-
-    <test name="Edge Case Tests">
-        <classes>
             <class name="com.toskie.tests.edge.EdgeCaseTests"/>
         </classes>
     </test>
 
-    <!-- ==================== SECURITY ==================== -->
-    <test name="Security Tests">
+    <!-- ══════════════════ MODULE 18: END-TO-END FLOWS ══════════════════════ -->
+    <test name="18 — End-to-End Flows">
+        <classes>
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
+        </classes>
+    </test>
+
+    <!-- ══════════════════ MODULE 19: SECURITY ══════════════════════════════ -->
+    <test name="19 — Security">
         <classes>
             <class name="com.toskie.tests.security.SecurityTests"/>
             <class name="com.toskie.tests.security.JwtSecurityTests"/>
@@ -221,31 +222,17 @@
         </classes>
     </test>
 
-    <!-- ==================== ACCESSIBILITY ==================== -->
-    <test name="Accessibility Tests">
+    <!-- ══════════════════ MODULE 20: ACCESSIBILITY ═════════════════════════ -->
+    <test name="20 — Accessibility">
         <classes>
             <class name="com.toskie.tests.accessibility.AccessibilityTests"/>
         </classes>
     </test>
 
-    <!-- ==================== PERFORMANCE ==================== -->
-    <test name="Performance Tests">
+    <!-- ══════════════════ MODULE 21: PERFORMANCE ═══════════════════════════ -->
+    <test name="21 — Performance">
         <classes>
             <class name="com.toskie.tests.performance.PerformanceTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== SUBSCRIPTION / SETTINGS ==================== -->
-    <test name="Subscription Tests">
-        <classes>
-            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
-        </classes>
-    </test>
-
-    <!-- ==================== END-TO-END ==================== -->
-    <test name="End-to-End Tests">
-        <classes>
-            <class name="com.toskie.tests.e2e.EndToEndTests"/>
         </classes>
     </test>
 

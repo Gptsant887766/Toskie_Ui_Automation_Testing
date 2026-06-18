@@ -1,12 +1,22 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <!--
-  REGRESSION SUITE — full functional regression excluding security/accessibility/performance.
-  Run after every feature branch merge to catch functional regressions.
-  Use: mvn test -DsuiteXmlFile=src/test/resources/RegressionSuite.xml
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  REGRESSION SUITE — Full Functional Regression                  ║
+  ║  Purpose : Catch regressions across all functional modules      ║
+  ║  Scope   : All functional classes — excludes security/perf/a11y ║
+  ║  Runtime : ~2–3 hours                                           ║
+  ║  Trigger : After every feature branch merge to develop          ║
+  ║  Command : mvn test -DsuiteXmlFile=src/test/resources/RegressionSuite.xml ║
+  ╚══════════════════════════════════════════════════════════════════╝
 -->
-<suite name="Toskie Regression Suite" verbose="1" parallel="none">
+<suite name="Toskie Regression Suite" verbose="1" parallel="none" data-provider-thread-count="1">
 
-    <test name="Auth and Registration">
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+    </listeners>
+
+    <!-- ── 1. Authentication ─────────────────────────────────────────────────── -->
+    <test name="Regression — Authentication">
         <classes>
             <class name="com.toskie.tests.auth.AuthLoginTests"/>
             <class name="com.toskie.tests.auth.RegistrationTests"/>
@@ -15,7 +25,8 @@
         </classes>
     </test>
 
-    <test name="Profile Creation Wizard">
+    <!-- ── 2. Profile Creation Wizard ───────────────────────────────────────── -->
+    <test name="Regression — Profile Creation Wizard">
         <classes>
             <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
             <class name="com.toskie.tests.profile.BioStepTests"/>
@@ -30,7 +41,15 @@
         </classes>
     </test>
 
-    <test name="Dashboard and Profile Management">
+    <!-- ── 3. Profile Management ────────────────────────────────────────────── -->
+    <test name="Regression — Profile Management">
+        <classes>
+            <class name="com.toskie.tests.profile.GalleryManagementTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 4. Dashboard ──────────────────────────────────────────────────────── -->
+    <test name="Regression — Dashboard">
         <classes>
             <class name="com.toskie.tests.dashboard.UserProfileTests"/>
             <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
@@ -47,11 +66,13 @@
         </classes>
     </test>
 
-    <test name="Posts and Social Feed">
+    <!-- ── 5. Posts and Social Feed ─────────────────────────────────────────── -->
+    <test name="Regression — Posts and Social Feed">
         <classes>
             <class name="com.toskie.tests.posts.FeedTests"/>
             <class name="com.toskie.tests.posts.AddPostTests"/>
             <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.VideoPostTests"/>
             <class name="com.toskie.tests.posts.AIPostTests"/>
             <class name="com.toskie.tests.posts.ExploreTests"/>
             <class name="com.toskie.tests.posts.PostDetailTests"/>
@@ -61,11 +82,11 @@
             <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
             <class name="com.toskie.tests.posts.SwitchProfileTests"/>
             <class name="com.toskie.tests.posts.AddressManagementTests"/>
-            <class name="com.toskie.tests.posts.VideoPostTests"/>
         </classes>
     </test>
 
-    <test name="Search and Discovery">
+    <!-- ── 6. Search and Discovery ──────────────────────────────────────────── -->
+    <test name="Regression — Search and Discovery">
         <classes>
             <class name="com.toskie.tests.search.TalentSearchUITests"/>
             <class name="com.toskie.tests.search.TalentSearchApiTests"/>
@@ -74,7 +95,8 @@
         </classes>
     </test>
 
-    <test name="Messaging">
+    <!-- ── 7. Messaging ──────────────────────────────────────────────────────── -->
+    <test name="Regression — Messaging">
         <classes>
             <class name="com.toskie.tests.messaging.MessageRequestTests"/>
             <class name="com.toskie.tests.messaging.ConversationListTests"/>
@@ -84,9 +106,68 @@
             <class name="com.toskie.tests.messaging.LikeModalTests"/>
             <class name="com.toskie.tests.messaging.SimilarTalentsTests"/>
             <class name="com.toskie.tests.messaging.ValidateTalentTests"/>
+            <class name="com.toskie.tests.messaging.MessagingSendReceiveTests"/>
         </classes>
     </test>
 
+    <!-- ── 8. WebSocket ──────────────────────────────────────────────────────── -->
+    <test name="Regression — WebSocket">
+        <classes>
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+            <class name="com.toskie.tests.websocket.BulkMessageReadTests"/>
+            <class name="com.toskie.tests.websocket.TimezoneWebSocketTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 9. API Validation ─────────────────────────────────────────────────── -->
+    <test name="Regression — API Validation">
+        <classes>
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.api.WebSocketTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 10. Landing and Blog ─────────────────────────────────────────────── -->
+    <test name="Regression — Landing and Blog">
+        <classes>
+            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
+            <class name="com.toskie.tests.blog.BlogApiTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 11. Reviews and Activity ─────────────────────────────────────────── -->
+    <test name="Regression — Reviews and Activity">
+        <classes>
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 12. Notifications ────────────────────────────────────────────────── -->
+    <test name="Regression — Notifications">
+        <classes>
+            <class name="com.toskie.tests.notifications.NotificationTests"/>
+            <class name="com.toskie.tests.misc.NotificationTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 13. AI Features ──────────────────────────────────────────────────── -->
+    <test name="Regression — AI Features">
+        <classes>
+            <class name="com.toskie.tests.ai.AIBioTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 14. Subscription and Settings ────────────────────────────────────── -->
+    <test name="Regression — Subscription and Settings">
+        <classes>
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+            <class name="com.toskie.tests.regression.SettingsTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 15. Core Platform Regression ─────────────────────────────────────── -->
     <test name="Regression — Core Platform">
         <classes>
             <class name="com.toskie.tests.regression.HomeTests"/>
@@ -97,27 +178,35 @@
             <class name="com.toskie.tests.regression.BookingTests"/>
             <class name="com.toskie.tests.regression.ChatTests"/>
             <class name="com.toskie.tests.regression.NotificationTests"/>
-            <class name="com.toskie.tests.regression.SettingsTests"/>
         </classes>
     </test>
 
-    <test name="Subscription and Settings">
+    <!-- ── 16. Misc Utilities ────────────────────────────────────────────────── -->
+    <test name="Regression — Misc Utilities">
         <classes>
-            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+            <class name="com.toskie.tests.misc.ChangeLocationTests"/>
+            <class name="com.toskie.tests.misc.FetchContactsReviewTests"/>
+            <class name="com.toskie.tests.misc.GalleryViewApiTests"/>
+            <class name="com.toskie.tests.misc.PrivacyPolicyTests"/>
+            <class name="com.toskie.tests.misc.ProjectViewApiTests"/>
+            <class name="com.toskie.tests.misc.UserTipsTests"/>
+            <class name="com.toskie.tests.misc.ViewerListTests"/>
+            <class name="com.toskie.tests.misc.ViewPostApiTests"/>
         </classes>
     </test>
 
-    <test name="Reviews and Activity">
-        <classes>
-            <class name="com.toskie.tests.reviews.ReviewTests"/>
-            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
-        </classes>
-    </test>
-
-    <test name="Negative and Edge Cases">
+    <!-- ── 17. Negative and Edge Cases ──────────────────────────────────────── -->
+    <test name="Regression — Negative and Edge Cases">
         <classes>
             <class name="com.toskie.tests.negative.NegativeTests"/>
             <class name="com.toskie.tests.edge.EdgeCaseTests"/>
+        </classes>
+    </test>
+
+    <!-- ── 18. Smoke (final gate) ────────────────────────────────────────────── -->
+    <test name="Regression — Final Smoke Gate">
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
         </classes>
     </test>
 
