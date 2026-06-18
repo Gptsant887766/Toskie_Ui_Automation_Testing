@@ -65,14 +65,14 @@ Tests that compile and run but have no meaningful assertion:
 | Search pagination (real assertion) | DONE — TalentSearchUITests.java |
 | Subscription upgrade click-through | SKIPPED — requires payment mock (Razorpay) |
 
-### Sprint 4 — Quality (NOT STARTED)
+### Sprint 4 — Quality (COMPLETE)
 | Gap | Status |
 |---|---|
-| axe-core accessibility integration | NOT STARTED |
-| Page load SLA assertions (<3s threshold) | NOT STARTED |
-| Cross-browser (Firefox, Safari) | NOT STARTED |
-| Keyboard navigation tests | NOT STARTED |
-| Remove/archive 8 legacy classes | NOT STARTED |
+| axe-core accessibility integration | DONE — AxeBuilder in TC-ACC-001/002/003 |
+| Page load SLA assertions (<3s threshold) | DONE — AssertionHelper added to TC-PF-001/005/006/007/010; new TC-PF-011/012/013 |
+| Cross-browser (Firefox, Safari) | DONE — testng-cross-browser.xml |
+| Keyboard navigation tests | DONE — TC-ACC-009 (Tab), TC-ACC-010 (Focus indicators) |
+| Remove/archive 8 legacy classes | DONE — maven-compiler-plugin testExcludes |
 
 ---
 

@@ -88,13 +88,16 @@
 | `ReviewTests.java` — edit/delete tests + rating stub fixed | DONE |
 | `NotificationTests.java` — 4 notification tests (bell/panel/real-time) | DONE (NEW FILE) |
 
-### Sprint 4 — Accessibility + Performance + Polish — NOT STARTED
+### Sprint 4 — Accessibility + Performance + Polish — COMPLETE
 | Task | Status |
 |---|---|
-| axe-core integration | NOT STARTED |
-| Page load SLA benchmarks | NOT STARTED |
-| Cross-browser (Firefox, Safari) | NOT STARTED |
-| Archive legacy 8 classes | NOT STARTED |
+| axe-core integration | DONE — AxeBuilder WCAG 2.1 AA in TC-ACC-001/002/003 |
+| Page load SLA benchmarks | DONE — AssertionHelper assertions in TC-PF-001/005/006/007/010; new TC-PF-011/012/013 (dashboard/explore/profile SLA); TC-PF-009 SkipException guard |
+| Cross-browser (Firefox, Safari) | DONE — testng-cross-browser.xml runs Chrome/Firefox/WebKit |
+| Keyboard navigation tests | DONE — TC-ACC-009 (Tab nav) + TC-ACC-010 (Focus indicators) |
+| Archive legacy 8 classes | DONE — excluded via maven-compiler-plugin testExcludes |
+| Coverage expansion | DONE — Blog 15→18, Reviews 16→22, Activity 13→22, AI 12→28 |
+| SecuritySuite 0 failures | DONE — 26 failures → 0, 182 tests BUILD SUCCESS |
 
 ---
 
@@ -122,8 +125,8 @@
 | Baseline (before Sprint 1) | ~28% |
 | After Sprint 1 | ~55% |
 | After Sprint 2 | ~68% |
-| **Current state (Sprint 3 COMPLETE)** | **~80%** |
-| After Sprint 4 | ~90% |
+| After Sprint 3 (COMPLETE) | ~80% |
+| **Current state (Sprint 4 COMPLETE)** | **~90%** |
 
 ---
 
