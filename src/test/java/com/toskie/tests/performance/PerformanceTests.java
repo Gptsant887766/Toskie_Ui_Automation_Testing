@@ -14,7 +14,6 @@ import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ConfigManager;
 import com.toskie.utils_Layer.ReportManager;
 import com.toskie.utils_Layer.WaitManager;
-import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 /**
@@ -193,7 +192,7 @@ public class PerformanceTests extends BaseTest {
             try {
                 pp.createProfileWithDefaultData();
             } catch (Exception e) {
-                throw new SkipException("TC-PF-009: Profile creation timed out -- skipping search SLA test: " + e.getMessage());
+                ReportManager.getTest().log(Status.WARNING, "TC-PF-009: Profile creation timed out in QA env — continuing with search SLA test: " + e.getMessage());
             }
         }
 

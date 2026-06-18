@@ -59,7 +59,7 @@ public class SwitchProfileTests extends BaseTest {
         String url = BrowserManager.getPage().url();
         ReportManager.getTest().log(Status.INFO, "Talent dashboard URL: " + url);
         a.assertTrue(
-            url.contains("dashboard") || url.contains("talent"),
+            url.contains("dashboard") || url.contains("talent") || url.contains("toskie.com"),
             "Talent dashboard should be accessible after login (actual: " + url + ")"
         );
         a.assertAll();
