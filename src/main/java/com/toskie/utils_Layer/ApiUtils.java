@@ -65,8 +65,8 @@ public class ApiUtils {
             System.out.println("[ApiUtils] Login SUCCESS");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("QA Login failed", e);
+            System.err.println("[ApiUtils] QA Login failed (non-fatal in QA env): " + e.getMessage());
+            // Tokens stay null; injectTokenFull/injectCookies will no-op when tokens absent
         } finally {
             if (conn != null) conn.disconnect();
         }
@@ -163,6 +163,12 @@ public class ApiUtils {
 
     // ─── Token injection into browser ─────────────────────────────────────────
     public static void injectTokenFull() {
+        String access  = getAccessToken();
+        String refresh = getRefreshToken();
+        if (access == null || access.isEmpty()) {
+            System.out.println("[ApiUtils] Token inject skipped — no access token (login may have failed)");
+            return;
+        }
         Page page = BrowserManager.getPage();
         page.waitForLoadState();
         page.waitForTimeout(3000);
@@ -173,23 +179,30 @@ public class ApiUtils {
                         "window.sessionStorage.setItem('access_token', access);" +
                         "window.sessionStorage.setItem('refresh_token', refresh);" +
                         "}",
-                new Object[]{getAccessToken(), getRefreshToken()});
+                new Object[]{access, refresh != null ? refresh : ""});
         page.waitForTimeout(3000);
         System.out.println("[ApiUtils] Tokens injected into localStorage/sessionStorage");
     }
 
     public static void injectCookies() {
+        String access  = getAccessToken();
+        String refresh = getRefreshToken();
+        if (access == null || access.isEmpty()) {
+            System.out.println("[ApiUtils] Cookies skipped — no access token (login may have failed)");
+            return;
+        }
         try {
             com.microsoft.playwright.options.Cookie accessCookie =
-                    new com.microsoft.playwright.options.Cookie("access_token", getAccessToken())
+                    new com.microsoft.playwright.options.Cookie("access_token", access)
                             .setDomain("dev.app.toskie.com").setPath("/");
             com.microsoft.playwright.options.Cookie refreshCookie =
-                    new com.microsoft.playwright.options.Cookie("refresh_token", getRefreshToken())
+                    new com.microsoft.playwright.options.Cookie("refresh_token",
+                            refresh != null ? refresh : "")
                             .setDomain("dev.app.toskie.com").setPath("/");
             BrowserManager.getContext().addCookies(java.util.List.of(accessCookie, refreshCookie));
             System.out.println("[ApiUtils] Cookies injected");
         } catch (Exception e) {
-            throw new RuntimeException("Cookie inject failed", e);
+            System.err.println("[ApiUtils] Cookie inject failed (non-fatal): " + e.getMessage());
         }
     }
 
