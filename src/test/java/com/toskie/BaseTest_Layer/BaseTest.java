@@ -49,10 +49,20 @@ public class BaseTest {
 
         utilLayer.resetOnlyLogs();
         utilLayer.createTest(method.getName());
-        utilLayer.launchBrowser(browser);
 
-        utilLayer.openUrl(baseUrl);
-        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+        // Retry once if browser launch / initial navigation fails
+        try {
+            utilLayer.launchBrowser(browser);
+            utilLayer.openUrl(baseUrl);
+            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+        } catch (Exception firstAttempt) {
+            System.out.println("[BaseTest] @BeforeMethod first attempt failed: " + firstAttempt.getMessage() + " — retrying...");
+            ReportManager.getTest().log(Status.WARNING, "Browser setup first attempt failed — retrying: " + firstAttempt.getMessage());
+            try { utilLayer.tearDown(); } catch (Exception ignored) {}
+            utilLayer.launchBrowser(browser);
+            utilLayer.openUrl(baseUrl);
+            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+        }
 
         ReportManager.getTest().log(Status.INFO, "Application opened: " + baseUrl);
         System.out.println("Application opened: " + baseUrl);
