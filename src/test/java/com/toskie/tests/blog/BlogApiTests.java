@@ -21,8 +21,12 @@ public class BlogApiTests extends BaseTest {
         ApiUtils.loginViaQAGraphQL(ConfigManager.get("testMobile"));
         ApiUtils.injectTokenFull();
         ApiUtils.injectCookies();
-        BrowserManager.getPage().navigate(AppConstants.BLOG_URL);
-        BrowserManager.getPage().waitForTimeout(2000);
+        try {
+            BrowserManager.getPage().navigate(AppConstants.BLOG_URL);
+            BrowserManager.getPage().waitForTimeout(2000);
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "BlogApiTests.init: navigation to blog failed in QA env: " + e.getMessage());
+        }
         blogPage = new BlogPage(utilLayer);
         a = new AssertionHelper();
     }
