@@ -109,7 +109,7 @@ public class JwtSecurityTests extends BaseTest {
           description = "JWT-005: QA bypass login issues a valid token that grants dashboard access")
     public void testValidQATokenGrantsDashboardAccess() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("8808992219");
+        utilLayer.loginViaQAGraphQL("7088545641");
         utilLayer.injectTokenFull();
         BrowserManager.getPage().navigate(AppConstants.DASHBOARD_URL);
         WaitManager.safePageLoad();
@@ -125,7 +125,7 @@ public class JwtSecurityTests extends BaseTest {
           description = "JWT-006: Expired access token with valid refresh token should silently re-authenticate")
     public void testRefreshTokenSilentFlow() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("8808992219");
+        utilLayer.loginViaQAGraphQL("7088545641");
         String validRefresh = utilLayer.getRefreshToken();
         a.assertNotEmpty(validRefresh, "JWT-006: Refresh token must be present after QA login");
 
@@ -170,7 +170,7 @@ public class JwtSecurityTests extends BaseTest {
           description = "JWT-008: The access token must never appear as a query parameter in any request URL")
     public void testTokenNotExposedInQueryString() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("8808992219");
+        utilLayer.loginViaQAGraphQL("7088545641");
         String accessToken = utilLayer.getAccessToken();
         a.assertNotEmpty(accessToken, "JWT-008: access_token must be present to run this check");
 
@@ -198,7 +198,7 @@ public class JwtSecurityTests extends BaseTest {
           description = "JWT-009: Issued JWT must contain sub, exp, and iat claims")
     public void testJwtContainsRequiredClaims() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("8808992219");
+        utilLayer.loginViaQAGraphQL("7088545641");
         String token = utilLayer.getAccessToken();
         a.assertNotEmpty(token, "JWT-009: access_token must be present");
 

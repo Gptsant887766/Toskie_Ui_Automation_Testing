@@ -15,6 +15,12 @@ public class TestDataManager {
 
     private static final String DATA_ROOT = "testdata/";
 
+    // ─── Phone number constants ────────────────────────────────────────────────
+    /** Existing/logged-in user number — use for login, profile, E2E, and all non-registration flows. */
+    public static final String EXISTING_USER_MOBILE   = "7088545641";
+    /** Registration-only number — use exclusively in Registration Suite and registration page objects. */
+    public static final String REGISTRATION_MOBILE    = "8808992219";
+
     // ─── Load JSON file ───────────────────────────────────────────────────────
 
     public static JSONArray loadJsonArray(String fileName) {
@@ -95,8 +101,12 @@ public class TestDataManager {
             JSONArray arr = loadJsonArray("login-data.json");
             return arr.getJSONObject(0).getString("mobile");
         } catch (Exception e) {
-            return "8808992219";
+            return EXISTING_USER_MOBILE;
         }
+    }
+
+    public static String getRegistrationMobile() {
+        return REGISTRATION_MOBILE;
     }
 
     public static String getTestEmail() {
@@ -146,7 +156,7 @@ public class TestDataManager {
         data.put("lastName",  "Gupta");
         data.put("email",     "gptsant@gmail.com");
         data.put("gender",    "MALE");
-        data.put("mobile",    "8808992219");
+        data.put("mobile",    EXISTING_USER_MOBILE);
         return data;
     }
 }

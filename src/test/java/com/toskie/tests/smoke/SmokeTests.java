@@ -100,7 +100,7 @@ public class SmokeTests extends BaseTest {
     @Test(groups = {"smoke"}, priority = 5,
           description = "Verify GraphQL API responds to QA login mutation")
     public void verifyAPIResponds() {
-        utilLayer.loginViaQAGraphQL("8808992219");
+        utilLayer.loginViaQAGraphQL("7088545641");
         AssertionHelper a = new AssertionHelper();
         a.assertNotEmpty(utilLayer.getAccessToken(),  "API must return access_token");
         a.assertNotEmpty(utilLayer.getRefreshToken(), "API must return refresh_token");

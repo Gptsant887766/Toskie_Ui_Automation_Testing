@@ -85,7 +85,7 @@ public class NegativeTests extends BaseTest {
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("8808992219");
+        lp.enterPhoneNumber("7088545641");
         lp.clickSendOTP();
         WaitManager.safePageLoad();
 
@@ -108,7 +108,7 @@ public class NegativeTests extends BaseTest {
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("8808992219");
+        lp.enterPhoneNumber("7088545641");
         lp.clickSendOTP();
         WaitManager.safePageLoad();
 

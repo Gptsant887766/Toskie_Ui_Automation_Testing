@@ -180,7 +180,7 @@ public class SecurityTests extends BaseTest {
             new WelcomePage(utilLayer).completeOnboarding();
             new LoginPage(utilLayer).clickLoginButton();
             LoginPageLocators loc = new LoginPageLocators(BrowserManager.getPage());
-            loc.phoneNumberInput.fill("8808992219");
+            loc.phoneNumberInput.fill("7088545641");
             SecurityUtils sec = new SecurityUtils();
             sec.assertRateLimitingOnOTP(loc.sendOtpButton, 5);
         } catch (Exception e) {

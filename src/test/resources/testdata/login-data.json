@@ -1,9 +1,9 @@
 ﻿[
   {
-    "mobile": "8808992219",
+    "mobile": "7088545641",
     "expectedResult": "success",
     "testType": "valid_qa_user",
-    "description": "Primary QA test account"
+    "description": "Primary QA existing-user account"
   },
   {
     "mobile": "9876543210",
