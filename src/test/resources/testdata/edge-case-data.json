@@ -1,4 +1,4 @@
-[
+﻿[
   { "field": "firstName",    "input": "José",                                    "expectedBehavior": "accepted",   "testType": "unicode_name" },
   { "field": "firstName",    "input": "O'Brien",                                 "expectedBehavior": "accepted",   "testType": "apostrophe_name" },
   { "field": "firstName",    "input": "Anna-Marie",                              "expectedBehavior": "accepted",   "testType": "hyphen_name" },
@@ -8,8 +8,8 @@
   { "field": "search",       "input": "  plumber  ",                             "expectedBehavior": "trimmed_search", "testType": "whitespace_search" },
   { "field": "search",       "input": "PLUMBER",                                 "expectedBehavior": "case_insensitive", "testType": "uppercase_search" },
   { "field": "search",       "input": "plumb*",                                  "expectedBehavior": "wildcard_or_literal", "testType": "wildcard_search" },
-  { "field": "phoneNumber",  "input": "9919011050",                              "expectedBehavior": "accepted",   "testType": "valid_10_digit" },
-  { "field": "phoneNumber",  "input": "+919919011050",                           "expectedBehavior": "accepted",   "testType": "intl_format" },
+  { "field": "phoneNumber",  "input": "7088545641",                              "expectedBehavior": "accepted",   "testType": "valid_10_digit" },
+  { "field": "phoneNumber",  "input": "+917088545641",                           "expectedBehavior": "accepted",   "testType": "intl_format" },
   { "field": "dob",          "input": "2008-01-01",                              "expectedBehavior": "rejected_under18", "testType": "boundary_age_17" },
   { "field": "dob",          "input": "2006-01-01",                              "expectedBehavior": "accepted",   "testType": "boundary_age_18" },
   { "field": "message",      "input": "Hello! 😊🎉",                             "expectedBehavior": "accepted",   "testType": "emoji_message" },

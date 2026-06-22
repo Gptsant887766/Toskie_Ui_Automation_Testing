@@ -17,8 +17,9 @@ public class AccountRecoveryTests extends BaseTest {
         com.toskie.pages.auth.AccountRecoveryPage page = new com.toskie.pages.auth.AccountRecoveryPage(utilLayer);
         page.navigateToForgotPassword();
         ReportManager.getTest().log(Status.INFO, "Verifying forgot password page loaded");
-        a.assertTrue(BrowserManager.getPage().url().contains("forgot") || !BrowserManager.getPage().url().isEmpty(),
-                "Forgot password page should be accessible");
+        String recUrl = BrowserManager.getPage().url();
+        a.assertContains(recUrl, "toskie.com", "Forgot password page should be on toskie.com domain (actual: " + recUrl + ")");
+        a.assertFalse(recUrl.contains("404") || recUrl.contains("error"), "Forgot password page should not be an error page (actual: " + recUrl + ")");
         a.assertAll();
     }
 
@@ -32,7 +33,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
         ReportManager.getTest().log(Status.INFO, "Verifying OTP sent confirmation is shown");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "OTP should be sent for valid email");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer should appear after entering valid email and sending OTP");
         a.assertAll();
     }
 
@@ -73,7 +74,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
         ReportManager.getTest().log(Status.INFO, "Verifying OTP sent confirmation state");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Page should show OTP sent confirmation");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer should be visible confirming OTP was sent");
         a.assertAll();
     }
 
@@ -89,8 +90,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryOTP("1234");
         page.clickVerify();
         ReportManager.getTest().log(Status.INFO, "Verifying reset form or next step is shown");
-        a.assertTrue(page.isResetFormVisible() || !BrowserManager.getPage().url().isEmpty(),
-                "Reset form should appear after valid OTP verification");
+        a.assertTrue(page.isResetFormVisible(), "Reset form should appear after valid OTP verification");
         a.assertAll();
     }
 
@@ -119,8 +119,8 @@ public class AccountRecoveryTests extends BaseTest {
         page.navigateToForgotPassword();
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
-        ReportManager.getTest().log(Status.INFO, "Simulating expired OTP — verifying resend is available");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Page should handle expired OTP gracefully");
+        ReportManager.getTest().log(Status.INFO, "Simulating expired OTP -- verifying resend is available");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer should be visible -- expired OTP scenario stays on OTP page");
         a.assertAll();
     }
 
@@ -135,7 +135,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.clickSendOTP();
         page.clickResend();
         ReportManager.getTest().log(Status.INFO, "Verifying page is still in OTP state after resend");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Resend OTP should work and stay on OTP page");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer should be visible after resending OTP");
         a.assertAll();
     }
 
@@ -238,7 +238,9 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterConfirmNewPassword("NewValid@123");
         page.clickResetPassword();
         ReportManager.getTest().log(Status.INFO, "Verifying password reset success state");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Password reset should complete successfully");
+        String resetUrl = BrowserManager.getPage().url();
+        a.assertContains(resetUrl, "toskie.com", "Password reset should stay on toskie.com (actual: " + resetUrl + ")");
+        a.assertFalse(resetUrl.contains("404") || resetUrl.contains("error"), "Password reset should not land on error page (actual: " + resetUrl + ")");
         a.assertAll();
     }
 
@@ -252,7 +254,7 @@ public class AccountRecoveryTests extends BaseTest {
         ReportManager.getTest().log(Status.INFO, "Verifying redirect after password reset");
         String url = BrowserManager.getPage().url();
         ReportManager.getTest().log(Status.INFO, "Post-reset URL: " + url);
-        a.assertTrue(!url.isEmpty(), "Password reset flow should land on a valid page (got: " + url + ")");
+        a.assertTrue(url.contains("login") || url.contains("success") || url.contains("toskie"), "Successful reset should redirect to login or success page (actual: " + url + ")");
         a.assertAll();
     }
 
@@ -312,7 +314,9 @@ public class AccountRecoveryTests extends BaseTest {
         page.clickSendOTP();
         page.clickBack();
         ReportManager.getTest().log(Status.INFO, "Verifying back navigation works");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Back button should navigate to previous step");
+        String backUrl = BrowserManager.getPage().url();
+        a.assertContains(backUrl, "toskie.com", "Back button should stay on toskie.com (actual: " + backUrl + ")");
+        a.assertFalse(backUrl.contains("404") || backUrl.contains("error"), "Back navigation should not land on error page (actual: " + backUrl + ")");
         a.assertAll();
     }
 
@@ -324,7 +328,9 @@ public class AccountRecoveryTests extends BaseTest {
         com.toskie.pages.auth.AccountRecoveryPage page = new com.toskie.pages.auth.AccountRecoveryPage(utilLayer);
         page.navigateToForgotPassword();
         ReportManager.getTest().log(Status.INFO, "Verifying forgot password page handles expired link gracefully");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Expired reset scenario should be handled gracefully");
+        String expiryUrl = BrowserManager.getPage().url();
+        a.assertContains(expiryUrl, "toskie.com", "Expired reset link: page should be on toskie.com (actual: " + expiryUrl + ")");
+        a.assertFalse(expiryUrl.contains("404") || expiryUrl.contains("error"), "Expired reset link should not show error page (actual: " + expiryUrl + ")");
         a.assertAll();
     }
 
@@ -358,7 +364,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
         ReportManager.getTest().log(Status.INFO, "Verifying OTP page loaded with fields");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "OTP fields should be present on OTP page");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer (indicating OTP fields are present) should be visible");
         a.assertAll();
     }
 
@@ -373,7 +379,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.clickSendOTP();
         page.enterRecoveryOTP("1234");
         ReportManager.getTest().log(Status.INFO, "Verifying OTP fields auto-advance populated");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "OTP auto-advance should work correctly");
+        a.assertTrue(page.isOTPTimerVisible(), "After entering OTP digits, should still be on OTP page (auto-advance working)");
         a.assertAll();
     }
 
@@ -388,7 +394,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.clickSendOTP();
         page.enterRecoveryOTP("1234");
         ReportManager.getTest().log(Status.INFO, "Verifying OTP paste support");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "OTP paste support should work");
+        a.assertTrue(page.isOTPTimerVisible(), "After pasting OTP, should still be on OTP page (paste support working)");
         a.assertAll();
     }
 
@@ -418,7 +424,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryOTP("1234");
         page.clickVerify();
         ReportManager.getTest().log(Status.INFO, "Verifying timer is no longer shown after verification");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Timer should stop after OTP verification");
+        a.assertTrue(page.isResetFormVisible(), "Reset form should be visible after OTP verification (timer stopped)");
         a.assertAll();
     }
 
@@ -434,7 +440,9 @@ public class AccountRecoveryTests extends BaseTest {
         page.clickBack();
         page.navigateToForgotPassword();
         ReportManager.getTest().log(Status.INFO, "Verifying form is cleared after back navigation");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Form should be cleared when navigating back");
+        String clearedUrl = BrowserManager.getPage().url();
+        a.assertContains(clearedUrl, "toskie.com", "After form clear and back navigation, should be on toskie.com (actual: " + clearedUrl + ")");
+        a.assertFalse(clearedUrl.contains("404") || clearedUrl.contains("error"), "Form clear navigation should not lead to error (actual: " + clearedUrl + ")");
         a.assertAll();
     }
 
@@ -448,7 +456,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
         ReportManager.getTest().log(Status.INFO, "Verifying API payload for password reset");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Reset API payload should be correctly sent");
+        a.assertTrue(page.isOTPTimerVisible(), "OTP timer should be visible after sending reset API payload");
         a.assertAll();
     }
 
@@ -477,7 +485,7 @@ public class AccountRecoveryTests extends BaseTest {
         page.enterRecoveryEmail("registered@toskie.com");
         page.clickSendOTP();
         ReportManager.getTest().log(Status.INFO, "Verifying multiple recovery attempts handled gracefully");
-        a.assertTrue(!BrowserManager.getPage().url().isEmpty(), "Multiple recovery attempts should be handled gracefully");
+        a.assertTrue(page.isOTPTimerVisible(), "After multiple recovery attempts, should be in OTP state (timer visible)");
         a.assertAll();
     }
 }

@@ -20,25 +20,25 @@ public class LoginPage {
         this.loc  = new LoginPageLocators(BrowserManager.getPage());
     }
 
-    // ─── QA fast-login (API bypass — no UI OTP) ──────────────────────────────
+    // ─── QA fast-login (API bypass -- no UI OTP) ──────────────────────────────
 
     public void loginWithQABypass(String mobile) {
         ReportManager.getTest().log(Status.INFO, "QA Bypass Login for mobile: " + mobile);
-        // Use DOMCONTENTLOADED — NETWORKIDLE never fires when the app has active WebSocket/polling connections
+        // Use DOMCONTENTLOADED -- NETWORKIDLE never fires when the app has active WebSocket/polling connections
         try {
             BrowserManager.getPage().waitForLoadState(LoadState.DOMCONTENTLOADED,
                     new com.microsoft.playwright.Page.WaitForLoadStateOptions().setTimeout(10000));
         } catch (Exception ignored) {}
         BrowserManager.getPage().waitForTimeout(2000);
 
-        // Login button is optional — app may navigate past the landing page automatically after onboarding
+        // Login button is optional -- app may navigate past the landing page automatically after onboarding
         try {
             if (loc.loginButton.isVisible(new com.microsoft.playwright.Locator.IsVisibleOptions().setTimeout(3000))) {
                 util.forceClick(loc.loginButton, "Login Button");
                 BrowserManager.getPage().waitForTimeout(1500);
             }
         } catch (Exception e) {
-            ReportManager.getTest().log(Status.INFO, "Login button not visible — proceeding with QA API bypass directly");
+            ReportManager.getTest().log(Status.INFO, "Login button not visible -- proceeding with QA API bypass directly");
         }
 
         util.loginViaQAGraphQL(mobile);
@@ -61,12 +61,12 @@ public class LoginPage {
             BrowserManager.getPage().waitForTimeout(2000);
             String finalUrl = BrowserManager.getPage().url();
             if (finalUrl.contains("dashboard")) {
-                ReportManager.getTest().log(Status.PASS, "QA bypass login successful — landed at: " + finalUrl);
+                ReportManager.getTest().log(Status.PASS, "QA bypass login successful -- landed at: " + finalUrl);
                 return;
             }
         }
-        // Last resort: the app may use a different dashboard path — log current URL for diagnosis
-        ReportManager.getTest().log(Status.PASS, "QA bypass login complete — landed at: " + BrowserManager.getPage().url());
+        // Last resort: the app may use a different dashboard path -- log current URL for diagnosis
+        ReportManager.getTest().log(Status.PASS, "QA bypass login complete -- landed at: " + BrowserManager.getPage().url());
     }
 
     public void loginWithDefaultCredentials() {
@@ -131,7 +131,7 @@ public class LoginPage {
         try {
             util.click(loc.resendOtpButton, "Resend OTP");
         } catch (Exception e) {
-            // Resend button may be disabled during countdown — that's OK, OTP screen is still visible
+            // Resend button may be disabled during countdown -- that's OK, OTP screen is still visible
             ReportManager.getTest().log(Status.INFO, "Resend OTP click skipped (button may be in timer countdown): " + e.getMessage());
         }
         BrowserManager.getPage().waitForTimeout(2000);

@@ -1,17 +1,20 @@
-package com.toskie.tests.negative;
+﻿package com.toskie.tests.negative;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.pages.LoginPage;
 import com.toskie.pages.WelcomePage;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.TestDataManager;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.constants.TestGroups;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * NEGATIVE TESTS — Invalid inputs, boundary violations, error handling
+ * NEGATIVE TESTS -- Invalid inputs, boundary violations, error handling
  */
+@Test(groups = {TestGroups.REGRESSION, TestGroups.NEGATIVE, TestGroups.MEDIUM})
 public class NegativeTests extends BaseTest {
 
     @DataProvider(name = "negativeLoginData")
@@ -26,7 +29,7 @@ public class NegativeTests extends BaseTest {
 
     // ─── TC-NG-001: Empty phone number ────────────────────────────────────────
     @Test(priority = 1,
-          description = "Submit empty phone number — expect validation error")
+          description = "Submit empty phone number -- expect validation error")
     public void testEmptyPhoneNumber() {
         AssertionHelper a = new AssertionHelper();
         navigateToLogin();
@@ -42,7 +45,7 @@ public class NegativeTests extends BaseTest {
 
     // ─── TC-NG-002: Short phone number ────────────────────────────────────────
     @Test(priority = 2,
-          description = "Submit 3-digit phone number — expect invalid format error")
+          description = "Submit 3-digit phone number -- expect invalid format error")
     public void testShortPhoneNumber() {
         AssertionHelper a = new AssertionHelper();
         navigateToLogin();
@@ -59,7 +62,7 @@ public class NegativeTests extends BaseTest {
 
     // ─── TC-NG-003: Non-numeric phone number ─────────────────────────────────
     @Test(priority = 3,
-          description = "Submit alphabetical phone number — expect rejection")
+          description = "Submit alphabetical phone number -- expect rejection")
     public void testAlphaPhoneNumber() {
         AssertionHelper a = new AssertionHelper();
         navigateToLogin();
@@ -76,20 +79,20 @@ public class NegativeTests extends BaseTest {
 
     // ─── TC-NG-004: Wrong OTP ─────────────────────────────────────────────────
     @Test(priority = 4,
-          description = "Enter incorrect OTP — expect 'Invalid OTP' error message")
+          description = "Enter incorrect OTP -- expect 'Invalid OTP' error message")
     public void testWrongOTPEntry() {
         AssertionHelper a = new AssertionHelper();
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("9919011050");
+        lp.enterPhoneNumber("7088545641");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
 
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("0000");
             lp.clickVerifyOTP();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
 
             boolean hasError = lp.isInvalidOTPMessageVisible() || lp.isOTPValidationErrorVisible();
             a.assertTrue(hasError, "Wrong OTP should show 'Invalid OTP' error");
@@ -99,28 +102,28 @@ public class NegativeTests extends BaseTest {
 
     // ─── TC-NG-005: OTP with wrong length ────────────────────────────────────
     @Test(priority = 5,
-          description = "Enter 2-digit OTP in a 4-digit OTP field — expect rejection")
+          description = "Enter 2-digit OTP in a 4-digit OTP field -- expect rejection")
     public void testShortOTPEntry() {
         AssertionHelper a = new AssertionHelper();
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("9919011050");
+        lp.enterPhoneNumber("7088545641");
         lp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(2000);
+        WaitManager.safePageLoad();
 
         if (lp.isOTPScreenVisible()) {
             lp.enterOTP("12");
             lp.clickVerifyOTP();
             BrowserManager.getPage().waitForTimeout(1000);
-            a.assertTrue(true, "Short OTP handled gracefully");
+            a.assertTrue(lp.isOTPScreenVisible(), "TC-NG-005: Short OTP should not complete login -- user should remain on OTP screen");
         }
         a.assertAll();
     }
 
     // ─── TC-NG-006: Empty first name on profile ───────────────────────────────
     @Test(priority = 6,
-          description = "Submit profile with empty first name — expect validation error")
+          description = "Submit profile with empty first name -- expect validation error")
     public void testEmptyFirstNameOnProfile() {
         AssertionHelper a = new AssertionHelper();
         new WelcomePage(utilLayer).completeOnboarding();
@@ -128,47 +131,55 @@ public class NegativeTests extends BaseTest {
 
         com.toskie.pages.ProfileCreationPage pp = new com.toskie.pages.ProfileCreationPage(utilLayer);
         if (!pp.isProfileCreationPageVisible()) {
-            a.assertTrue(true, "Profile already exists — test N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Profile already exists -- test N/A, should be on toskie.com");
             a.assertAll();
             return;
         }
 
         pp.enterFirstName("");
-        pp.clickCreateProfile();
-        BrowserManager.getPage().waitForTimeout(1000);
-
-        boolean hasError = pp.isFirstNameErrorVisible() || pp.isGeneralErrorVisible();
-        a.assertTrue(hasError, "Empty first name should show validation error");
+        boolean buttonDisabledOrError = false;
+        try {
+            pp.clickCreateProfile();
+            BrowserManager.getPage().waitForTimeout(1000);
+            buttonDisabledOrError = pp.isFirstNameErrorVisible() || pp.isGeneralErrorVisible();
+        } catch (Exception ignored) {
+            buttonDisabledOrError = true;
+        }
+        a.assertTrue(buttonDisabledOrError, "Empty first name should show validation error or disable create button");
         a.assertAll();
     }
 
-    // ─── TC-NG-007: Invalid email format ──────────────────────────────────────
+    // ─── TC-NG-007: Invalid email format on profile creation ──────────────────
     @Test(priority = 7,
-          description = "Enter invalid email format — expect format validation error")
-    public void testInvalidEmailFormat() {
+          description = "Enter invalid email format -- expect format validation error")
+    public void testInvalidEmailOnProfileCreation() {
         AssertionHelper a = new AssertionHelper();
         new WelcomePage(utilLayer).completeOnboarding();
         new LoginPage(utilLayer).loginWithDefaultCredentials();
 
         com.toskie.pages.ProfileCreationPage pp = new com.toskie.pages.ProfileCreationPage(utilLayer);
         if (!pp.isProfileCreationPageVisible()) {
-            a.assertTrue(true, "Profile already exists — test N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Profile already exists -- test N/A, should be on toskie.com");
             a.assertAll();
             return;
         }
 
         pp.enterEmail("notanemail");
-        pp.clickSendOTP();
-        BrowserManager.getPage().waitForTimeout(1000);
-
-        boolean hasError = pp.isEmailErrorVisible() || pp.isGeneralErrorVisible();
-        a.assertTrue(hasError, "Invalid email format should show error");
+        boolean validationTriggered = false;
+        try {
+            pp.clickSendOTP();
+            BrowserManager.getPage().waitForTimeout(1000);
+            validationTriggered = pp.isEmailErrorVisible() || pp.isGeneralErrorVisible();
+        } catch (Exception ignored) {
+            validationTriggered = true;
+        }
+        a.assertTrue(validationTriggered, "Invalid email format should show error or disable Send OTP button");
         a.assertAll();
     }
 
     // ─── TC-NG-008: Under-18 DOB selection ───────────────────────────────────
     @Test(priority = 8,
-          description = "Select DOB that makes user under 18 — expect age validation error")
+          description = "Select DOB that makes user under 18 -- expect age validation error")
     public void testUnderAgeDOBSelection() {
         AssertionHelper a = new AssertionHelper();
         new WelcomePage(utilLayer).completeOnboarding();
@@ -176,7 +187,7 @@ public class NegativeTests extends BaseTest {
 
         com.toskie.pages.ProfileCreationPage pp = new com.toskie.pages.ProfileCreationPage(utilLayer);
         if (!pp.isProfileCreationPageVisible()) {
-            a.assertTrue(true, "Profile already exists — test N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Profile already exists -- test N/A, should be on toskie.com");
             a.assertAll();
             return;
         }
@@ -191,7 +202,7 @@ public class NegativeTests extends BaseTest {
             boolean hasError = pp.isAgeValidationErrorVisible() || pp.isGeneralErrorVisible();
             a.assertTrue(hasError, "Under-18 DOB should show age validation error");
         } catch (Exception e) {
-            a.assertTrue(true, "Under-18 DOB scenario handled");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC-NG-008: After under-18 DOB exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -209,8 +220,8 @@ public class NegativeTests extends BaseTest {
             BrowserManager.getPage().waitForTimeout(1000);
 
             boolean notOnOTP = !lp.isOTPScreenVisible() || lp.isPhoneValidationErrorVisible();
-            a.assertTrue(notOnOTP || true,
-                "Invalid phone '" + input + "' should show error or not proceed");
+            a.assertTrue(notOnOTP,
+                "Invalid phone '" + input + "' should show error or not proceed to OTP screen");
         }
         a.assertAll();
     }

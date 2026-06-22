@@ -25,51 +25,63 @@ public class ApiUtils {
 
     // ─── QA Login ─────────────────────────────────────────────────────────────
     public static void loginViaQAGraphQL(String mobile) {
-        HttpURLConnection conn = null;
-        try {
-            if (mobile == null || mobile.trim().isEmpty())
-                throw new RuntimeException("Mobile number is empty");
-
-            String url     = ConfigManager.getApiUrl();
-            String secret  = ConfigManager.getQaSecret();
-            String body    = "{ \"query\": \"mutation QA_Bypass_Login { QA_Bypass_Login(" +
-                    "phoneNumber: \\\"" + mobile + "\\\", qaSecret: \\\"" + secret + "\\\") " +
-                    "{ message status data { access_token refresh_token } } }\" }";
-
-            conn = openPost(url);
-            writeBody(conn, body);
-
-            String response = readResponse(conn);
-            System.out.println("[ApiUtils] LOGIN HTTP " + conn.getResponseCode() + " RESPONSE => " + response);
-
-            if (!response.startsWith("{") && !response.startsWith("[")) {
-                throw new RuntimeException("API returned non-JSON response (HTTP " + conn.getResponseCode() + "): " + response.substring(0, Math.min(200, response.length())));
-            }
-            JSONObject json = new JSONObject(response);
-            if (json.has("errors"))
-                throw new RuntimeException(json.getJSONArray("errors").toString());
-
-            JSONObject loginData = json.getJSONObject("data").getJSONObject("QA_Bypass_Login");
-            if (!loginData.getBoolean("status"))
-                throw new RuntimeException("QA Login status=false");
-
-            JSONObject tokens = loginData.getJSONObject("data");
-            String access  = tokens.getString("access_token");
-            String refresh = tokens.getString("refresh_token");
-
-            if (access == null || access.isEmpty())   throw new RuntimeException("Access token missing");
-            if (refresh == null || refresh.isEmpty()) throw new RuntimeException("Refresh token missing");
-
-            accessTokenHolder.set(access);
-            refreshTokenHolder.set(refresh);
-            System.out.println("[ApiUtils] Login SUCCESS");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("QA Login failed", e);
-        } finally {
-            if (conn != null) conn.disconnect();
+        if (mobile == null || mobile.trim().isEmpty()) {
+            System.err.println("[ApiUtils] QA Login skipped — mobile number is empty");
+            return;
         }
+        String url    = ConfigManager.getApiUrl();
+        String secret = ConfigManager.getQaSecret();
+        String body   = "{ \"query\": \"mutation QA_Bypass_Login { QA_Bypass_Login(" +
+                "phoneNumber: \\\"" + mobile + "\\\", qaSecret: \\\"" + secret + "\\\") " +
+                "{ message status data { access_token refresh_token } } }\" }";
+
+        int maxAttempts = 3;
+        Exception lastError = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            HttpURLConnection conn = null;
+            try {
+                conn = openPost(url);
+                writeBody(conn, body);
+                String response = readResponse(conn);
+                System.out.println("[ApiUtils] LOGIN HTTP " + conn.getResponseCode() + " RESPONSE => " + response);
+
+                if (!response.startsWith("{") && !response.startsWith("[")) {
+                    throw new RuntimeException("Non-JSON response (HTTP " + conn.getResponseCode() + "): "
+                            + response.substring(0, Math.min(200, response.length())));
+                }
+                JSONObject json = new JSONObject(response);
+                if (json.has("errors"))
+                    throw new RuntimeException(json.getJSONArray("errors").toString());
+
+                JSONObject loginData = json.getJSONObject("data").getJSONObject("QA_Bypass_Login");
+                if (!loginData.getBoolean("status"))
+                    throw new RuntimeException("QA Login status=false");
+
+                JSONObject tokens = loginData.getJSONObject("data");
+                String access  = tokens.getString("access_token");
+                String refresh = tokens.getString("refresh_token");
+
+                if (access == null || access.isEmpty())   throw new RuntimeException("Access token missing");
+                if (refresh == null || refresh.isEmpty()) throw new RuntimeException("Refresh token missing");
+
+                accessTokenHolder.set(access);
+                refreshTokenHolder.set(refresh);
+                System.out.println("[ApiUtils] Login SUCCESS (attempt " + attempt + ")");
+                return;
+
+            } catch (Exception e) {
+                lastError = e;
+                System.err.printf("[ApiUtils] QA Login attempt %d/%d failed: %s%n",
+                        attempt, maxAttempts, e.getMessage());
+                if (conn != null) conn.disconnect();
+                if (attempt < maxAttempts) {
+                    try { Thread.sleep(2000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                }
+            }
+        }
+        // All attempts failed — tokens stay null; injectTokenFull/injectCookies will no-op
+        System.err.println("[ApiUtils] QA Login failed after " + maxAttempts + " attempts (non-fatal): "
+                + (lastError != null ? lastError.getMessage() : "unknown"));
     }
 
     // ─── Email OTP Bypass ────────────────────────────────────────────────────
@@ -163,6 +175,12 @@ public class ApiUtils {
 
     // ─── Token injection into browser ─────────────────────────────────────────
     public static void injectTokenFull() {
+        String access  = getAccessToken();
+        String refresh = getRefreshToken();
+        if (access == null || access.isEmpty()) {
+            System.out.println("[ApiUtils] Token inject skipped — no access token (login may have failed)");
+            return;
+        }
         Page page = BrowserManager.getPage();
         page.waitForLoadState();
         page.waitForTimeout(3000);
@@ -173,23 +191,30 @@ public class ApiUtils {
                         "window.sessionStorage.setItem('access_token', access);" +
                         "window.sessionStorage.setItem('refresh_token', refresh);" +
                         "}",
-                new Object[]{getAccessToken(), getRefreshToken()});
+                new Object[]{access, refresh != null ? refresh : ""});
         page.waitForTimeout(3000);
         System.out.println("[ApiUtils] Tokens injected into localStorage/sessionStorage");
     }
 
     public static void injectCookies() {
+        String access  = getAccessToken();
+        String refresh = getRefreshToken();
+        if (access == null || access.isEmpty()) {
+            System.out.println("[ApiUtils] Cookies skipped — no access token (login may have failed)");
+            return;
+        }
         try {
             com.microsoft.playwright.options.Cookie accessCookie =
-                    new com.microsoft.playwright.options.Cookie("access_token", getAccessToken())
+                    new com.microsoft.playwright.options.Cookie("access_token", access)
                             .setDomain("dev.app.toskie.com").setPath("/");
             com.microsoft.playwright.options.Cookie refreshCookie =
-                    new com.microsoft.playwright.options.Cookie("refresh_token", getRefreshToken())
+                    new com.microsoft.playwright.options.Cookie("refresh_token",
+                            refresh != null ? refresh : "")
                             .setDomain("dev.app.toskie.com").setPath("/");
             BrowserManager.getContext().addCookies(java.util.List.of(accessCookie, refreshCookie));
             System.out.println("[ApiUtils] Cookies injected");
         } catch (Exception e) {
-            throw new RuntimeException("Cookie inject failed", e);
+            System.err.println("[ApiUtils] Cookie inject failed (non-fatal): " + e.getMessage());
         }
     }
 

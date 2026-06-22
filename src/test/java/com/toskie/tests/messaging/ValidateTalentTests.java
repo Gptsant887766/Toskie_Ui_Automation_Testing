@@ -3,6 +3,7 @@ import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.constants.TestGroups;
 import com.toskie.utils.AssertionHelper;
+import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
@@ -14,8 +15,7 @@ public class ValidateTalentTests extends BaseTest {
     public void testTalentDataInConversation() {
         init();
         ReportManager.getTest().log(Status.INFO, "Validating talent info in messaging context");
-        a.assertTrue(true, "Talent data validated in conversation");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Validate talent in conversation test -- should be on toskie.com");
         a.assertAll();
     }
 }
-

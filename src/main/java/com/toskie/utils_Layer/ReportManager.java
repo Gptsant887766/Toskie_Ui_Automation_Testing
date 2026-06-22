@@ -54,7 +54,7 @@ public class ReportManager {
     private static ExtentReports extentReports;
     private static String        reportPath;
 
-    // Per-thread test node — thread-safe for parallel TestNG runs
+    // Per-thread test node -- thread-safe for parallel TestNG runs
     private static final ThreadLocal<ExtentTest> extentTestHolder = new ThreadLocal<>();
 
     // ── Extent test node access ───────────────────────────────────────────────
@@ -96,13 +96,14 @@ public class ReportManager {
 
     public static String getReportPath() { return reportPath; }
 
-    public static void flush() {
+    public static synchronized void flush() {
         if (extentReports != null) extentReports.flush();
     }
 
     // ── Charts ────────────────────────────────────────────────────────────────
     public static void generatePieChart(int passed, int failed, int skipped) {
         try {
+            System.setProperty("java.awt.headless", "true");
             new File(BASE + "/Reports/Charts").mkdirs();
             DefaultPieDataset<String> ds = new DefaultPieDataset<>();
             ds.setValue("Passed",  passed);
@@ -122,6 +123,7 @@ public class ReportManager {
 
     public static void generateBarChart(int passed, int failed, int skipped) {
         try {
+            System.setProperty("java.awt.headless", "true");
             new File(BASE + "/Reports/Charts").mkdirs();
             DefaultCategoryDataset ds = new DefaultCategoryDataset();
             ds.addValue(passed,  "Passed",  "Passed");
@@ -181,7 +183,7 @@ public class ReportManager {
             System.out.println("[ReportManager] PDF saved: " + pdfPath);
         } catch (Exception e) {
             System.err.println("[ReportManager] PDF generation FAILED: " + e.getClass().getSimpleName()
-                    + " — " + e.getMessage());
+                    + " -- " + e.getMessage());
             e.printStackTrace();
         } finally {
             if (document != null) {
@@ -203,7 +205,7 @@ public class ReportManager {
             .setBackgroundColor(C_NAVY).setPadding(18).setBorder(Border.NO_BORDER)
             .add(new Paragraph("TOSKIE WEB AUTOMATION")
                 .setFont(bold).setFontSize(22).setFontColor(C_WHITE).setTextAlignment(TextAlignment.CENTER))
-            .add(new Paragraph("QA Execution Report — Management Dashboard")
+            .add(new Paragraph("QA Execution Report -- Management Dashboard")
                 .setFont(reg).setFontSize(11).setFontColor(new DeviceRgb(180, 200, 235)).setTextAlignment(TextAlignment.CENTER))
             .add(new Paragraph("Generated: " + new SimpleDateFormat("dd MMM yyyy, hh:mm:ss a").format(new Date()))
                 .setFont(reg).setFontSize(8).setFontColor(new DeviceRgb(140, 165, 210)).setTextAlignment(TextAlignment.CENTER)));
@@ -315,10 +317,24 @@ public class ReportManager {
         addSectionHeader(doc, "MODULE COVERAGE", C_GRAY);
 
         Map<String, List<String>> modules = new LinkedHashMap<>();
-        modules.put("Welcome",  Arrays.asList("WelcomePageTestCases", "WelcomeToToskieLandingTestCase"));
-        modules.put("Login",    Arrays.asList("LoginTestCases", "LoginPageTestCases"));
-        modules.put("Profile",  Arrays.asList("ToskieCreatePrifileTestCases", "ProfileCreationTestCases"));
-        modules.put("E2E",      Collections.singletonList("EndToEndFlowTestCases"));
+        modules.put("Auth / Login",     Arrays.asList("AuthLoginTests", "AuthApiTests", "RegistrationTests", "AccountRecoveryTests"));
+        modules.put("Profile Creation", Arrays.asList("PersonalInfoStepTests", "BioStepTests", "SkillStepTests", "ExperienceStepTests", "QualificationStepTests", "ProjectStepTests", "GalleryStepTests", "SurveyPageTests", "ProfileCompleteStatusTests", "ProfileVisibilityTests"));
+        modules.put("Dashboard",        Arrays.asList("UserProfileTests", "TalentProfileTests", "TalentProfileApiTests", "DashboardAboutTests", "DashboardCRUDTests", "UpdateProfilePhotoTests", "SkillsApiTests", "ProjectsApiTests", "GalleryApiTests", "ReviewDashboardTests", "ShareProfileTests", "OpenToConnectTests"));
+        modules.put("Posts / Feed",     Arrays.asList("FeedTests", "AddPostTests", "TextPostTests", "AIPostTests", "ExploreTests", "PostDetailTests", "LikeBookmarkTests", "SavedPostTests", "ShareButtonTests", "GalleryExploreDetailTests", "SwitchProfileTests", "AddressManagementTests", "VideoPostTests"));
+        modules.put("Search",           Arrays.asList("TalentSearchUITests", "TalentSearchApiTests", "TalentAddressSearchTests", "DeleteRecentSearchTests"));
+        modules.put("Messaging",        Arrays.asList("MessageRequestTests", "ConversationListTests", "FetchRequestsTests", "RequestAcceptDeclineTests", "CallListingsTests", "LikeModalTests", "SimilarTalentsTests", "ValidateTalentTests"));
+        modules.put("WebSocket",        Arrays.asList("WebSocketConnectionTests", "WebSocketMessageTests", "BulkMessageReadTests", "TimezoneWebSocketTests"));
+        modules.put("Regression",       Arrays.asList("HomeTests", "LoginTests", "LogoutTests", "ProfileTests", "SearchTests", "BookingTests", "ChatTests", "NotificationTests", "SettingsTests"));
+        modules.put("API",              Arrays.asList("APIValidationTests", "WebSocketTests", "BlogApiTests", "LandingPageApiTests"));
+        modules.put("AI / Activity",    Arrays.asList("AIBioTests", "ActivityHistoryTests"));
+        modules.put("Reviews",          Collections.singletonList("ReviewTests"));
+        modules.put("Misc",             Arrays.asList("ChangeLocationTests", "ViewerListTests", "UserTipsTests", "PrivacyPolicyTests", "FetchContactsReviewTests", "GalleryViewApiTests", "ProjectViewApiTests", "ViewPostApiTests"));
+        modules.put("Security",         Collections.singletonList("SecurityTests"));
+        modules.put("Accessibility",    Collections.singletonList("AccessibilityTests"));
+        modules.put("Performance",      Collections.singletonList("PerformanceTests"));
+        modules.put("Subscription",     Collections.singletonList("SubscriptionTests"));
+        modules.put("E2E",              Arrays.asList("EndToEndTests", "NegativeTests", "EdgeCaseTests"));
+        modules.put("Smoke",            Collections.singletonList("SmokeTests"));
 
         Table t = new Table(UnitValue.createPercentArray(
                 new float[]{18, 37, 9, 9, 9, 9, 14})).useAllAvailableWidth();
@@ -367,7 +383,7 @@ public class ReportManager {
         Table t = new Table(UnitValue.createPercentArray(new float[]{40, 60})).useAllAvailableWidth();
         t.addCell(dc(bold, "Framework Health Score", C_LGRAY, TextAlignment.LEFT, C_GRAY));
         t.addCell(new Cell().setBackgroundColor(C_LGRAY).setBorder(new SolidBorder(C_BORDER, 1)).setPadding(6)
-            .add(new Paragraph(health + "%  —  " + statusText)
+            .add(new Paragraph(health + "%  --  " + statusText)
                 .setFont(bold).setFontSize(13).setFontColor(statusColor)));
         t.addCell(dc(bold, "Pass Rate",              C_WHITE, TextAlignment.LEFT, C_GRAY));
         t.addCell(dc(reg,  String.format("%.1f%%", total > 0 ? (passed * 100.0 / total) : 0), C_WHITE, TextAlignment.LEFT, C_DKGRAY));
@@ -387,7 +403,7 @@ public class ReportManager {
 
         if (!pie.exists() && !bar.exists()) {
             PdfFont reg = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-            doc.add(new Paragraph("Charts not available — run with headful mode to generate charts.")
+            doc.add(new Paragraph("Charts not available -- chart files were not generated during this run.")
                 .setFont(reg).setFontSize(8).setFontColor(C_DKGRAY));
             doc.add(gap());
             return;
@@ -507,21 +523,21 @@ public class ReportManager {
 
         List<String[]> recs = new ArrayList<>();
         if (failed == 0 && skipped == 0) {
-            recs.add(new String[]{"Coverage",          "All 46 active tests passing. Expand to smoke/regression suites for full coverage."});
+            recs.add(new String[]{"Coverage",          "All " + total + " active tests passing. Expand coverage to all 477 automated test methods."});
         }
         if (failed > 0) {
             recs.add(new String[]{"Critical Failures", "Investigate and fix " + failed + " failing test(s) before next deployment."});
         }
         if (skipped > 0) {
-            recs.add(new String[]{"Skipped Tests",     skipped + " test(s) skipped — check @BeforeMethod dependencies and browser launch."});
+            recs.add(new String[]{"Skipped Tests",     skipped + " test(s) skipped -- check @BeforeMethod dependencies and browser launch."});
         }
-        recs.add(new String[]{"Parallel Execution", "Keep parallel=\"none\" — profile creation is resource-intensive. Upgrade CPU/network for parallelism."});
+        recs.add(new String[]{"Parallel Execution", "Keep parallel=\"none\" -- profile creation is resource-intensive. Upgrade CPU/network for parallelism."});
         recs.add(new String[]{"Smoke Suite",        "Run testng-smoke.xml before every deployment for rapid sanity check."});
-        recs.add(new String[]{"Regression Suite",   "Extended suites (Booking, Chat, Home, Search, Settings) not yet executed — implement and run."});
-        recs.add(new String[]{"Security Suite",     "SecurityTests.java not executed — add SQL injection, XSS, and auth bypass checks."});
-        recs.add(new String[]{"Performance Suite",  "PerformanceTests.java not executed — add page load time and API response time benchmarks."});
-        recs.add(new String[]{"Negative Tests",     "NegativeTests.java not executed — add invalid input, boundary, and error state validation."});
-        recs.add(new String[]{"API Validation",     "APIValidationTests.java not executed — validate GraphQL schema and response contracts."});
+        recs.add(new String[]{"Regression Suite",   "Extended suites (Booking, Chat, Home, Search, Settings) not yet executed -- implement and run."});
+        recs.add(new String[]{"Security Suite",     "SecurityTests.java not executed -- add SQL injection, XSS, and auth bypass checks."});
+        recs.add(new String[]{"Performance Suite",  "PerformanceTests.java not executed -- add page load time and API response time benchmarks."});
+        recs.add(new String[]{"Negative Tests",     "NegativeTests.java not executed -- add invalid input, boundary, and error state validation."});
+        recs.add(new String[]{"API Validation",     "APIValidationTests.java not executed -- validate GraphQL schema and response contracts."});
 
         boolean alt = false;
         int i = 1;
@@ -554,7 +570,7 @@ public class ReportManager {
             {"API URL",             ConfigManager.getApiUrl()},
             {"Report To",           "Abhishek Satyam"},
             {"QA Automation Tester","Santosh Kumar Gupta"},
-            {"Suite File",          "testng.xml — Toskie Suite"},
+            {"Suite File",          "testng.xml -- Toskie Suite"},
             {"Execution Date",      suiteStartMs > 0 ? new SimpleDateFormat("dd MMM yyyy, hh:mm:ss a").format(new Date(suiteStartMs)) : "N/A"},
             {"Total Duration",      formatDuration(suiteElapsedMs)},
             {"Git Branch",          "main"},
@@ -594,7 +610,7 @@ public class ReportManager {
                 .setFontColor(C_WHITE).setTextAlignment(TextAlignment.CENTER));
     }
 
-    /** Data cell with explicit text color — always use this for colored text. */
+    /** Data cell with explicit text color -- always use this for colored text. */
     private static Cell dc(PdfFont font, String text, DeviceRgb bg,
                             TextAlignment align, DeviceRgb textColor) {
         return new Cell()
@@ -674,7 +690,7 @@ public class ReportManager {
         if (error == null || error.isEmpty()) return "Check test logic and add assertions.";
         String e = error.toLowerCase();
         if (e.contains("timeout"))                          return "Increase wait timeout or add waitFor(VISIBLE) before assertion.";
-        if (e.contains("locator") || e.contains("selector")) return "Update XPath/CSS selector — UI element may have changed.";
+        if (e.contains("locator") || e.contains("selector")) return "Update XPath/CSS selector -- UI element may have changed.";
         if (e.contains("assertion"))                        return "Verify expected vs actual values; update test data if app changed.";
         if (e.contains("network")  || e.contains("http"))  return "Check API endpoint availability and QA secret validity.";
         if (e.contains("null"))                             return "Add null guard; verify QA login and token injection before navigation.";

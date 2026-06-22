@@ -164,7 +164,7 @@ public class AssertionHelper {
         if (actualMs <= thresholdMs) {
             pass(pageName + " loaded in " + actualMs + "ms (threshold: " + thresholdMs + "ms)");
         } else {
-            fail(pageName + " took " + actualMs + "ms (threshold: " + thresholdMs + "ms) — PERFORMANCE VIOLATION");
+            fail(pageName + " took " + actualMs + "ms (threshold: " + thresholdMs + "ms) -- PERFORMANCE VIOLATION");
         }
     }
 
@@ -172,7 +172,7 @@ public class AssertionHelper {
         if (actualMs <= thresholdMs) {
             pass(apiName + " responded in " + actualMs + "ms (threshold: " + thresholdMs + "ms)");
         } else {
-            fail(apiName + " took " + actualMs + "ms (threshold: " + thresholdMs + "ms) — SLOW API");
+            fail(apiName + " took " + actualMs + "ms (threshold: " + thresholdMs + "ms) -- SLOW API");
         }
     }
 

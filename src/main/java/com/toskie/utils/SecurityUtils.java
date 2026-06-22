@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Security testing utilities — XSS, SQLi, CSRF, auth bypass, token security.
+ * Security testing utilities -- XSS, SQLi, CSRF, auth bypass, token security.
  */
 public class SecurityUtils {
 
@@ -113,7 +113,7 @@ public class SecurityUtils {
                 .evaluate("() => localStorage.getItem('" + tokenName + "')");
             if (value != null && !value.toString().isEmpty()) {
                 ReportManager.getTest().log(Status.WARNING,
-                    "Token '" + tokenName + "' stored in localStorage — consider httpOnly cookies instead.");
+                    "Token '" + tokenName + "' stored in localStorage -- consider httpOnly cookies instead.");
             } else {
                 ReportManager.getTest().log(Status.PASS,
                     "Token '" + tokenName + "' not in localStorage.");
@@ -196,7 +196,7 @@ public class SecurityUtils {
             String origin = resp.headers().get("access-control-allow-origin");
             if ("*".equals(origin)) {
                 ReportManager.getTest().log(Status.WARNING,
-                    "Wildcard CORS on: " + resp.url() + " — review if intentional.");
+                    "Wildcard CORS on: " + resp.url() + " -- review if intentional.");
             }
         });
     }

@@ -3,6 +3,7 @@ import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.constants.TestGroups;
 import com.toskie.utils.AssertionHelper;
+import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
 import org.testng.annotations.Test;
 
@@ -14,8 +15,7 @@ public class SimilarTalentsTests extends BaseTest {
     public void testSimilarTalentsVisible() {
         init();
         ReportManager.getTest().log(Status.INFO, "Checking similar talents section");
-        a.assertTrue(true, "Similar talents section rendered");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Similar talents test -- should be on toskie.com");
         a.assertAll();
     }
 }
-

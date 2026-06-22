@@ -28,14 +28,26 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- Default suite: override with -DsuiteXmlFile=testng-smoke.xml etc. -->
-        <suiteXmlFile>testng-master.xml</suiteXmlFile>
+        <!-- Suite XML — overridden by each Maven profile -->
+        <suiteXmlFile>src/test/resources/ToskieMasterSuite.xml</suiteXmlFile>
 
         <!-- DEPENDENCY VERSIONS -->
         <playwright.version>1.53.0</playwright.version>
 <testng.version>7.9.0</testng.version>
         <extent.version>5.0.9</extent.version>
         <lombok.version>1.18.38</lombok.version>
+        <allure.version>2.29.0</allure.version>
+        <aspectj.version>1.9.22.1</aspectj.version>
+
+        <!-- ─── CI/CD overridable defaults ─────────────────────────────────── -->
+        <!-- Override on the command line: mvn test -Pqa -Dbrowser=firefox      -->
+        <!-- Or let the Maven profile set them automatically (see <profiles>)   -->
+        <browser>chrome</browser>
+        <headless>true</headless>
+        <env>dev</env>
+        <baseUrl>https://dev.app.toskie.com/</baseUrl>
+        <apiUrl>https://toskie-api.wasd.in/graphql</apiUrl>
+        <max.retries>3</max.retries>
 
     </properties>
 
@@ -172,6 +184,34 @@
             <version>7.2.5</version>
         </dependency>
 
+        <!-- ================================================= -->
+        <!-- ALLURE TESTNG INTEGRATION                        -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <!-- AspectJ weaver — enables @Step annotation processing at runtime -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
+        <!-- ================================================= -->
+        <!-- AXE-CORE ACCESSIBILITY (Playwright) -->
+        <!-- ================================================= -->
+
+        <dependency>
+            <groupId>com.deque.html.axe-core</groupId>
+            <artifactId>playwright</artifactId>
+            <version>4.10.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <!-- ================= BUILD ================= -->
@@ -231,24 +271,137 @@
 
                 <configuration>
 
-                    <!-- TESTNG XML -->
+                    <!-- Suite XML is set per Maven profile; override with -DsuiteXmlFile=... -->
                     <suiteXmlFiles>
-
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-
                     </suiteXmlFiles>
 
                     <!-- JVM ARG -->
                     <argLine>
                         --add-opens java.base/java.lang=ALL-UNNAMED
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
+
+                    <!-- Pass Maven profile properties + CI overrides as JVM system properties -->
+                    <systemPropertyVariables>
+                        <environment>${env}</environment>
+                        <browser>${browser}</browser>
+                        <headless>${headless}</headless>
+                        <baseUrl>${baseUrl}</baseUrl>
+                        <apiUrl>${apiUrl}</apiUrl>
+                        <max.retries>${max.retries}</max.retries>
+                    </systemPropertyVariables>
 
                 </configuration>
 
             </plugin>
 
+            <!-- ================================================= -->
+            <!-- ALLURE MAVEN PLUGIN                             -->
+            <!-- ================================================= -->
+
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                    <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- ================================================= -->
+            <!-- EXEC MAVEN PLUGIN                                   -->
+            <!-- Used to install Playwright browsers in CI:          -->
+            <!--   mvn exec:java \                                   -->
+            <!--     -Dexec.mainClass=com.microsoft.playwright.CLI \ -->
+            <!--     -Dexec.args="install chromium"                  -->
+            <!-- ================================================= -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+
         </plugins>
 
     </build>
+
+    <!-- ==================== MAVEN PROFILES ==================== -->
+    <!--
+      Activate with:  mvn test -Pqa
+      Each profile sets the target URLs, default suite, retry count, and env
+      label. Values are forwarded to ConfigReader via <systemPropertyVariables>.
+      Secrets (testMobile, testEmail, qaSecret, …) are NOT set here;
+      they must come from -D flags or CI environment variables.
+
+      Commands:
+        DEV   : mvn test -Pdev
+        QA    : mvn test -Pqa
+        STAGE : mvn test -Pstage
+        PROD  : mvn test -Pprod
+    -->
+
+    <profiles>
+
+        <!-- ───── DEV ─────────────────────────────────────────────────────── -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env>dev</env>
+                <baseUrl>https://dev.app.toskie.com/</baseUrl>
+                <apiUrl>https://toskie-api.wasd.in/graphql</apiUrl>
+                <suiteXmlFile>src/test/resources/suites/smoke.xml</suiteXmlFile>
+                <headless>true</headless>
+                <max.retries>3</max.retries>
+            </properties>
+        </profile>
+
+        <!-- ───── QA ──────────────────────────────────────────────────────── -->
+        <profile>
+            <id>qa</id>
+            <properties>
+                <env>qa</env>
+                <baseUrl>https://qa.app.toskie.com/</baseUrl>
+                <apiUrl>https://qa-api.toskie.wasd.in/graphql</apiUrl>
+                <suiteXmlFile>src/test/resources/suites/regression.xml</suiteXmlFile>
+                <headless>true</headless>
+                <max.retries>2</max.retries>
+            </properties>
+        </profile>
+
+        <!-- ───── STAGE ───────────────────────────────────────────────────── -->
+        <profile>
+            <id>stage</id>
+            <properties>
+                <env>stage</env>
+                <baseUrl>https://stage.app.toskie.com/</baseUrl>
+                <apiUrl>https://stage-api.toskie.wasd.in/graphql</apiUrl>
+                <suiteXmlFile>src/test/resources/ToskieMasterSuite.xml</suiteXmlFile>
+                <headless>true</headless>
+                <max.retries>1</max.retries>
+            </properties>
+        </profile>
+
+        <!-- ───── PROD ────────────────────────────────────────────────────── -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+                <baseUrl>https://app.toskie.com/</baseUrl>
+                <apiUrl>https://api.toskie.com/graphql</apiUrl>
+                <!-- Smoke ONLY — no destructive, write, or auth-bypass tests in PROD -->
+                <suiteXmlFile>src/test/resources/suites/smoke.xml</suiteXmlFile>
+                <headless>true</headless>
+                <max.retries>0</max.retries>
+            </properties>
+        </profile>
+
+    </profiles>
 
 </project>

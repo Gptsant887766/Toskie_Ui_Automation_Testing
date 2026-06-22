@@ -1,5 +1,7 @@
 package com.toskie.tests.regression;
+import com.microsoft.playwright.options.LoadState;
 
+import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
 import com.toskie.locators.NotificationsLocators;
 import com.toskie.pages.HomePage;
@@ -13,7 +15,7 @@ import org.testng.annotations.Test;
 import com.aventstack.extentreports.Status;
 
 /**
- * NOTIFICATION TESTS — TC_NT_001 to TC_NT_008
+ * NOTIFICATION TESTS -- TC_NT_001 to TC_NT_008
  * Covers: page load, list display, mark-read, empty state, real-time
  */
 public class NotificationTests extends BaseTest {
@@ -23,14 +25,14 @@ public class NotificationTests extends BaseTest {
         BrowserManager.getPage().navigate(
             com.toskie.utils_Layer.ConfigManager.getBaseUrl());
         com.toskie.utils_Layer.WaitManager.safePageLoad();
-        BrowserManager.getPage().waitForTimeout(3000);
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
         ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
         if (pp.isProfileCreationPageVisible()) {
             try { pp.createProfileWithDefaultData(); } catch (Exception ignored) {}
             BrowserManager.getPage().navigate(
                 com.toskie.utils_Layer.ConfigManager.getBaseUrl());
             com.toskie.utils_Layer.WaitManager.safePageLoad();
-            BrowserManager.getPage().waitForTimeout(2000);
+            WaitManager.safePageLoad();
         }
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
@@ -47,7 +49,7 @@ public class NotificationTests extends BaseTest {
         } catch (Exception e) {
             try {
                 BrowserManager.getPage().navigate(BrowserManager.getPage().url().split("#")[0] + "/notifications");
-                BrowserManager.getPage().waitForTimeout(2000);
+                WaitManager.safePageLoad();
             } catch (Exception ignored) {}
         }
     }
@@ -113,7 +115,7 @@ public class NotificationTests extends BaseTest {
                 || BrowserManager.getPage().content().toLowerCase().contains("notification");
             a.assertTrue(emptyAccepted, "TC_NT_003 PASS: Empty state or notification content present");
         } else {
-            a.assertTrue(true, "TC_NT_003: Notifications present – empty state N/A");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_003: Notifications present -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -137,13 +139,13 @@ public class NotificationTests extends BaseTest {
                     a.assertTrue(unreadAfter <= unreadBefore,
                         "TC_NT_004 PASS: Unread count decreased after mark all read");
                 } else {
-                    a.assertTrue(true, "TC_NT_004: Mark All Read not visible – test N/A");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_004: Mark All Read not visible -- should be on toskie.com");
                 }
             } catch (Exception e) {
-                a.assertTrue(true, "TC_NT_004: Mark All Read interaction attempted");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_004: After mark all read exception, should be on toskie.com");
             }
         } else {
-            a.assertTrue(true, "TC_NT_004: No notifications to mark");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_004: No notifications to mark -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -164,10 +166,10 @@ public class NotificationTests extends BaseTest {
                 String urlAfter = BrowserManager.getPage().url();
                 a.assertNotEmpty(urlAfter, "TC_NT_005 PASS: URL after notification click");
             } catch (Exception e) {
-                a.assertTrue(true, "TC_NT_005: Notification click attempted");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_005: After notification click exception, should be on toskie.com");
             }
         } else {
-            a.assertTrue(true, "TC_NT_005: No notifications to click");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_005: No notifications to click -- should be on toskie.com");
         }
         a.assertAll();
     }
@@ -183,7 +185,7 @@ public class NotificationTests extends BaseTest {
         ReportManager.getTest().log(Status.INFO,
             "TC_NT_006: Notification badge visible: " + badgeVisible);
         // Badge may or may not be visible based on notification state
-        a.assertTrue(true, "TC_NT_006: Notification badge checked");
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_006: Notification badge checked (visible=" + badgeVisible + "), should be on toskie.com");
         a.assertAll();
     }
 
@@ -200,18 +202,18 @@ public class NotificationTests extends BaseTest {
             if (loc.unreadTab.isVisible()) {
                 utilLayer.click(loc.unreadTab, "Unread Tab");
                 BrowserManager.getPage().waitForTimeout(1000);
-                a.assertTrue(true, "TC_NT_007 PASS: Unread tab clicked");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_007: After clicking Unread tab, should remain on toskie.com");
 
                 if (loc.allNotificationsTab.isVisible()) {
                     utilLayer.click(loc.allNotificationsTab, "All Tab");
                     BrowserManager.getPage().waitForTimeout(1000);
-                    a.assertTrue(true, "TC_NT_007 PASS: All tab clicked");
+                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_007: After clicking All tab, should remain on toskie.com");
                 }
             } else {
-                a.assertTrue(true, "TC_NT_007: Filter tabs not present – test N/A");
+                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_007: Filter tabs not present -- should be on toskie.com");
             }
         } catch (Exception e) {
-            a.assertTrue(true, "TC_NT_007: Filter tabs interaction attempted");
+            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_007: After filter tabs exception, should be on toskie.com");
         }
         a.assertAll();
     }
@@ -224,8 +226,8 @@ public class NotificationTests extends BaseTest {
         loginAndGetHome();
 
         // Trigger an action that generates a notification (login or booking)
-        BrowserManager.getPage().waitForTimeout(3000);
-        a.assertTrue(true, "TC_NT_008: Real-time notification check — badge state observed");
+        WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+        a.assertContains(BrowserManager.getPage().url(), "toskie.com", "TC_NT_008: After real-time notification wait, should be on toskie.com");
         a.assertAll();
     }
 }

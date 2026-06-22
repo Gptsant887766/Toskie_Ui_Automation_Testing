@@ -15,9 +15,16 @@ public class SkillsApiTests extends BaseTest {
     @Test(groups = {TestGroups.API, TestGroups.P1}, description = "Skills loaded from API correctly")
     public void testSkillsLoadFromApi() {
         init();
-        ReportManager.getTest().log(Status.INFO, "Checking skills loaded via API");
-        a.assertTrue(skillsPage.getSkillCount() >= 0, "Skills should load without error");
+        int count = skillsPage.getSkillCount();
+        ReportManager.getTest().log(Status.INFO, "Skill count: " + count);
+        boolean emptyState = com.toskie.utils_Layer.BrowserManager.getPage()
+                .locator("[class*='empty'], [class*='no-skill'], :has-text('No skills'), :has-text('Add a skill')")
+                .count() > 0;
+        if (count == 0 && !emptyState) {
+            ReportManager.getTest().log(Status.WARNING, "SKILLS-API-1: No skills and no empty-state UI — QA account may have no skills data");
+        }
+        a.assertTrue(count >= 0,
+                "SKILLS-API-1: Skills section count should be non-negative (count=" + count + ", emptyState=" + emptyState + ")");
         a.assertAll();
     }
 }
-

@@ -28,7 +28,7 @@ public class DatabaseValidator {
 
         if (url == null || url.trim().isEmpty()) {
             ReportManager.getTest().log(Status.WARNING,
-                "[DB] db.url not configured in config.properties — DB validation skipped.");
+                "[DB] db.url not configured in config.properties -- DB validation skipped.");
             return;
         }
         try {
@@ -173,6 +173,6 @@ public class DatabaseValidator {
 
     private void skipLog(String method) {
         ReportManager.getTest().log(Status.WARNING,
-            "[DB] " + method + " skipped — no DB connection.");
+            "[DB] " + method + " skipped -- no DB connection.");
     }
 }

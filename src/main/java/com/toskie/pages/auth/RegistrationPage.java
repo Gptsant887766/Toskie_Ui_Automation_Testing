@@ -80,10 +80,10 @@ public class RegistrationPage {
         } catch (Exception ignored) {}
     }
 
-    /** OTP bypass via QA API — use when mobile/SMS OTP cannot be received in dev environment. */
+    /** OTP bypass via QA API -- use when mobile/SMS OTP cannot be received in dev environment. */
     public void bypassOTPWithQALogin() {
         try {
-            ReportManager.getTest().log(Status.INFO, "Mobile OTP bypass via QA API (dev environment — no real OTP)");
+            ReportManager.getTest().log(Status.INFO, "Mobile OTP bypass via QA API (dev environment -- no real OTP)");
             util.loginViaQAGraphQL(com.toskie.utils_Layer.ConfigManager.getTestMobile());
             util.injectTokenFull();
             util.injectCookies();
@@ -103,7 +103,7 @@ public class RegistrationPage {
             Object token = BrowserManager.getPage().evaluate(
                 "localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token')");
             if (token != null && !"null".equals(String.valueOf(token)) && !String.valueOf(token).trim().isEmpty()) {
-                ReportManager.getTest().log(Status.INFO, "OTP section check: QA bypass token detected — OTP bypassed");
+                ReportManager.getTest().log(Status.INFO, "OTP section check: QA bypass token detected -- OTP bypassed");
                 return true;
             }
         } catch (Exception ignored) {}

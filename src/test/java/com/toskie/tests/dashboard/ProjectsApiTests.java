@@ -15,9 +15,16 @@ public class ProjectsApiTests extends BaseTest {
     @Test(groups = {TestGroups.API, TestGroups.P1}, description = "Projects loaded from API correctly")
     public void testProjectsLoadFromApi() {
         init();
-        ReportManager.getTest().log(Status.INFO, "Checking projects loaded via API");
-        a.assertTrue(projectsPage.getProjectCount() >= 0, "Projects should load without error");
+        int count = projectsPage.getProjectCount();
+        ReportManager.getTest().log(Status.INFO, "Project count: " + count);
+        boolean emptyState = com.toskie.utils_Layer.BrowserManager.getPage()
+                .locator("[class*='empty'], [class*='no-project'], :has-text('No projects'), :has-text('Add your first')")
+                .count() > 0;
+        if (count == 0 && !emptyState) {
+            ReportManager.getTest().log(Status.WARNING, "PROJECTS-API-1: No projects and no empty-state UI — QA account may have no projects data");
+        }
+        a.assertTrue(count >= 0,
+                "PROJECTS-API-1: Projects count should be non-negative (count=" + count + ", emptyState=" + emptyState + ")");
         a.assertAll();
     }
 }
-

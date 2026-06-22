@@ -192,7 +192,7 @@ public class WebSocketValidator {
     public void assertReconnectionAfterNetworkInterrupt() {
         int initialCount = activeConnections.size();
         ReportManager.getTest().log(Status.INFO,
-            "WebSocket reconnection test — initial connections: " + initialCount);
+            "WebSocket reconnection test -- initial connections: " + initialCount);
         // The actual network interrupt + wait would be done in the test body
         // This just validates that connections are re-established
         BrowserManager.getPage().waitForTimeout(5000);
