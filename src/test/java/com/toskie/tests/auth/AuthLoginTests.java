@@ -89,9 +89,9 @@ public class AuthLoginTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── 7. Invalid email format ─────────────────────────────────────────────
+    // ─── 7. Invalid email format on login form ───────────────────────────────
     @Test(priority = 7, groups = {"smoke", "p0"}, description = "Malformed phone number shows error")
-    public void testInvalidEmailFormat() {
+    public void testInvalidEmailOnLoginForm() {
         AssertionHelper a = new AssertionHelper();
         ReportManager.getTest().log(Status.INFO, "Testing: Malformed phone number shows error");
         com.toskie.pages.LoginPage loginPage = new com.toskie.pages.LoginPage(utilLayer);
@@ -155,9 +155,9 @@ public class AuthLoginTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── 11. Valid OTP verification ──────────────────────────────────────────
+    // ─── 11. Login OTP verification ──────────────────────────────────────────
     @Test(priority = 11, groups = {"smoke", "p0"}, description = "Valid OTP verification succeeds")
-    public void testValidOTPVerification() {
+    public void testLoginOTPVerification() {
         AssertionHelper a = new AssertionHelper();
         ReportManager.getTest().log(Status.INFO, "Testing: Valid OTP verification succeeds");
         new com.toskie.pages.LoginPage(utilLayer).loginWithDefaultCredentials();

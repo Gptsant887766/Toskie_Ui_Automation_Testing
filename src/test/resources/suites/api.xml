@@ -1,0 +1,38 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  ╔═══════════════════════════════════════════════════════════════════════╗
+  ║  API SUITE                                                            ║
+  ║  Filter  : No group filter — api package is the scope boundary        ║
+  ║  Classes : APIValidationTests, WebSocketTests                         ║
+  ║  Thread  : 10 parallel classes                                        ║
+  ║  Runtime : ~15–25 minutes                                             ║
+  ║  Trigger : Post-deployment API contract validation                    ║
+  ║  Env     : Any → mvn test -Pqa -DsuiteXmlFile=suites/api.xml         ║
+  ║  IDE     : Right-click → Run As TestNG Suite                          ║
+  ╚═══════════════════════════════════════════════════════════════════════╝
+-->
+<suite name="Toskie — API Suite" verbose="1"
+       parallel="classes" thread-count="10"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <!--
+      Package-based scope — no group filter.
+      The api package tests do not carry individual group annotations,
+      so package selection is the correct scope boundary.
+      Covers: APIValidationTests (GraphQL contract), WebSocketTests (WS handshake).
+    -->
+    <test name="API — Contract and GraphQL Validation" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests.api"/>
+        </packages>
+    </test>
+
+</suite>

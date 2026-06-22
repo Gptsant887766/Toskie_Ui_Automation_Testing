@@ -1,4 +1,4 @@
-package com.toskie.tests.profile;
+﻿package com.toskie.tests.profile;
 
 import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
@@ -54,7 +54,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-001: Gallery step page loads correctly after login")
     public void testGalleryStepLoads() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();
@@ -73,7 +73,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-002: Uploading a single image increments the gallery image count by 1")
     public void testUploadSingleImageIncreasesCount() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();
@@ -98,7 +98,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-003: Uploading two images sequentially results in at least 2 images in gallery")
     public void testMultiUploadAddsBothImages() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();
@@ -127,7 +127,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-004: Deleting a gallery image decrements the image count by 1")
     public void testDeleteImageDecreasesCount() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();
@@ -164,7 +164,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-005: Once max upload limit is reached, the limit message is displayed")
     public void testMaxLimitMessageShownWhenFull() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();
@@ -190,7 +190,7 @@ public class GalleryManagementTests extends BaseTest {
           description = "GAL-006: Clicking Skip on gallery step proceeds to the next profile wizard step")
     public void testGallerySkipNavigatesForward() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
         navigateToGalleryStep();

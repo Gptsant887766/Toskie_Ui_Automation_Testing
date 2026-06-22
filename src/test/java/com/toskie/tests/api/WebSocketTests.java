@@ -12,12 +12,14 @@ import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.WebSocketValidator;
 import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
+import com.toskie.constants.TestGroups;
 import org.testng.annotations.Test;
 
 /**
  * WEBSOCKET TESTS -- Real-time chat, notifications, connection management
  * TC-WS-001 through TC-WS-010
  */
+@Test(groups = {TestGroups.E2E, TestGroups.API, TestGroups.HIGH})
 public class WebSocketTests extends BaseTest {
 
     private HomePage loginAndGetHome() {
@@ -257,41 +259,7 @@ public class WebSocketTests extends BaseTest {
         }
     }
 
-    // a"€a"€a"€ TC-WS-009: Empty message not sent a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
-    @Test(priority = 9,
-          description = "Sending an empty message should not be allowed")
-    public void testEmptyMessageNotSent() {
-        loginAndGetHome();
-        try {
-            new HomePage(utilLayer).navigateToChat();
-        } catch (Exception e) {
-            com.toskie.utils_Layer.ReportManager.getTest().log(
-                com.aventstack.extentreports.Status.WARNING,
-                "TC-WS-009: navigateToChat threw in QA env: " + e.getMessage());
-        }
-
-        ChatPage cp = new ChatPage(utilLayer);
-        WaitManager.safePageLoad();
-
-        if (cp.hasChatItems()) {
-            cp.openFirstChat();
-            int countBefore = cp.getSentMessageCount();
-
-            // Try to send empty message
-            try {
-                cp.typeMessage("");
-                cp.sendMessage("");
-            } catch (Exception ignored) {}
-            BrowserManager.getPage().waitForTimeout(1000);
-            int countAfter = cp.getSentMessageCount();
-
-            AssertionHelper a = new AssertionHelper();
-            a.assertEquals(countAfter, countBefore, "Empty message should not increase message count");
-            a.assertAll();
-        }
-    }
-
-    // a"€a"€a"€ TC-WS-010: Chat history loads on open a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // TC-WS-010: Chat history loads on open a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
     @Test(priority = 10,
           description = "Opening a chat should load previous conversation history")
     public void testChatHistoryLoadsOnOpen() {

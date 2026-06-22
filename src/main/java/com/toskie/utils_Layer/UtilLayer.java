@@ -43,12 +43,20 @@ public class UtilLayer<RouteHandler> {
     public final AtomicInteger skipped = new AtomicInteger(0);
 
     // ─── Suite / per-test timing ─────────────────────────────────────────────
-    private long suiteStartTime = 0;
+    // volatile: written once in @BeforeSuite (main thread), read from 10 worker threads
+    private volatile long suiteStartTime = 0;
     private final ThreadLocal<Long> testStartTime = ThreadLocal.withInitial(() -> 0L);
 
-    public final List<String[]> testResults   = Collections.synchronizedList(new ArrayList<>());
-    public final List<String>   screenshotPaths = Collections.synchronizedList(new ArrayList<>());
-    public final List<String>   stepLogs        = Collections.synchronizedList(new ArrayList<>());
+    // testResults: suite-wide accumulator — synchronizedList + add-only = thread-safe
+    public final List<String[]> testResults = Collections.synchronizedList(new ArrayList<>());
+
+    // screenshotPaths / stepLogs: per-test state cleared in @BeforeMethod.
+    // Must be ThreadLocal: with parallel="classes" each of the 10 threads calls
+    // resetOnlyLogs() at test start — a shared list.clear() wipes other threads' data.
+    private final ThreadLocal<List<String>> screenshotPaths =
+            ThreadLocal.withInitial(ArrayList::new);
+    private final ThreadLocal<List<String>> stepLogs =
+            ThreadLocal.withInitial(ArrayList::new);
 
     // ─── Delegate: browser ───────────────────────────────────────────────────
     /** Thread-safe: returns the Page for the calling thread. */
@@ -135,9 +143,15 @@ public class UtilLayer<RouteHandler> {
     }
 
     public void resetOnlyLogs() {
-        stepLogs.clear();
-        screenshotPaths.clear();
+        // ThreadLocal.get().clear() only affects the calling thread's list.
+        // Contrast with the old shared.clear() which wiped all threads' data.
+        stepLogs.get().clear();
+        screenshotPaths.get().clear();
     }
+
+    // Accessors used by page objects / report generation
+    public List<String> getScreenshotPaths() { return screenshotPaths.get(); }
+    public List<String> getStepLogs()        { return stepLogs.get(); }
 
     public void markSuiteStart()    { suiteStartTime = System.currentTimeMillis(); }
     public void markTestStart()     { testStartTime.set(System.currentTimeMillis()); }

@@ -183,19 +183,15 @@ public class PerformanceTests extends BaseTest {
           description = "Search results page must render within 3s of submitting query")
     public void testSearchResultsLoadTime() {
         PerformanceUtils perf = new PerformanceUtils();
-        new WelcomePage(utilLayer).completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-
-        com.toskie.pages.ProfileCreationPage pp =
-            new com.toskie.pages.ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) {
-            try {
-                pp.createProfileWithDefaultData();
-            } catch (Exception e) {
-                ReportManager.getTest().log(Status.WARNING, "TC-PF-009: Profile creation timed out in QA env — continuing with search SLA test: " + e.getMessage());
-            }
+        ApiUtils.loginViaQAGraphQL(ConfigManager.get("testMobile"));
+        ApiUtils.injectTokenFull();
+        ApiUtils.injectCookies();
+        try {
+            BrowserManager.getPage().navigate(AppConstants.SEARCH_URL);
+            com.toskie.utils_Layer.WaitManager.safePageLoad();
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "TC-PF-009: Search URL navigation failed: " + e.getMessage());
         }
-
         perf.startTimer("search_results");
         new com.toskie.pages.SearchPage(utilLayer).searchFor("plumber");
         perf.stopTimerAndAssert("search_results", 3000);

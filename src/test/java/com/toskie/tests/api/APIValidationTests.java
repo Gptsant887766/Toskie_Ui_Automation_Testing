@@ -10,6 +10,7 @@ import com.toskie.utils.NetworkValidator;
 import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ConfigManager;
 import com.toskie.utils_Layer.ReportManager;
+import com.toskie.constants.TestGroups;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
@@ -22,6 +23,7 @@ import java.util.Scanner;
  * API VALIDATION TESTS -- GraphQL mutations, schema, response validation
  * TC-API-001 through TC-API-015
  */
+@Test(groups = {TestGroups.API, TestGroups.CRITICAL})
 public class APIValidationTests extends BaseTest {
 
     private static final String API_URL = "https://toskie-api.wasd.in/graphql";

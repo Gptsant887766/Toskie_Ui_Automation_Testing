@@ -96,7 +96,7 @@ public class ReportManager {
 
     public static String getReportPath() { return reportPath; }
 
-    public static void flush() {
+    public static synchronized void flush() {
         if (extentReports != null) extentReports.flush();
     }
 

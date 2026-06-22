@@ -1,4 +1,4 @@
-package com.toskie.tests.messaging;
+﻿package com.toskie.tests.messaging;
 
 import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
@@ -21,7 +21,7 @@ public class MessagingSendReceiveTests extends BaseTest {
           description = "MSG-SR-001: User can type and send a text message in an open conversation")
     public void testSendTextMessage() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
 
         BrowserManager.getPage().navigate(AppConstants.MESSAGING_URL);
@@ -64,7 +64,7 @@ public class MessagingSendReceiveTests extends BaseTest {
           description = "MSG-SR-002: After sending, the message appears in the chat thread")
     public void testSentMessageAppearsInChat() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
 
         BrowserManager.getPage().navigate(AppConstants.MESSAGING_URL);
@@ -110,7 +110,7 @@ public class MessagingSendReceiveTests extends BaseTest {
           description = "MSG-SR-003: Message input field can be cleared without sending")
     public void testMessageInputClear() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
 
         BrowserManager.getPage().navigate(AppConstants.MESSAGING_URL);
@@ -157,7 +157,7 @@ public class MessagingSendReceiveTests extends BaseTest {
           description = "MSG-SR-004: Clicking send with an empty message must not add a new empty message bubble")
     public void testEmptyMessageNotSent() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
 
         BrowserManager.getPage().navigate(AppConstants.MESSAGING_URL);
@@ -195,7 +195,7 @@ public class MessagingSendReceiveTests extends BaseTest {
           description = "MSG-SR-005: Sending a message updates the last-message preview in the conversation list")
     public void testConversationListUpdatesAfterSend() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
 
         BrowserManager.getPage().navigate(AppConstants.MESSAGING_URL);

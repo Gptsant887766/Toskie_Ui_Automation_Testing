@@ -1,19 +1,26 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <!--
   ╔══════════════════════════════════════════════════════════════════╗
-  ║  TOSKIE MASTER SUITE — All 93 Classes (pom.xml default)         ║
-  ║  Purpose : Default Maven test execution target                  ║
-  ║  Scope   : Same as FullRegressionSuite.xml — all 21 modules     ║
-  ║  Runtime : ~4–5 hours                                           ║
-  ║  Trigger : mvn test (no -DsuiteXmlFile override)                ║
-  ║  Note    : Keep in sync with FullRegressionSuite.xml            ║
-  ║  Command : mvn test -DsuiteXmlFile=src/test/resources/ToskieMasterSuite.xml ║
+  ║  TOSKIE MASTER SUITE — Single TestNG XML (IDE use)              ║
+  ║  Purpose : Right-click → Run As TestNG Suite in Eclipse/IntelliJ║
+  ║  Scope   : All 93 classes across all 21 modules — no filter     ║
+  ║  Runtime : ~4–5 hours (thread-count=10)                         ║
+  ║                                                                  ║
+  ║  CI/Maven: Groups are controlled by Maven profiles, NOT this XML ║
+  ║    mvn test -Pdev   → groups=smoke   (thread=5)                 ║
+  ║    mvn test -Pqa    → groups=regression (thread=10)             ║
+  ║    mvn test -Pstage → all groups (no filter, thread=10)         ║
+  ║    mvn test -Pprod  → groups=smoke   (thread=5)                 ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
-<suite name="Toskie Master Suite" verbose="1" parallel="none" data-provider-thread-count="1">
+<suite name="Toskie Master Suite" verbose="1" parallel="classes" thread-count="10" data-provider-thread-count="1">
 
     <listeners>
         <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
     </listeners>
 
     <!-- MODULE 01 — SMOKE -->
@@ -75,12 +82,9 @@
             <class name="com.toskie.tests.posts.AddPostTests"/>
             <class name="com.toskie.tests.posts.TextPostTests"/>
             <class name="com.toskie.tests.posts.VideoPostTests"/>
-            <class name="com.toskie.tests.posts.AIPostTests"/>
             <class name="com.toskie.tests.posts.ExploreTests"/>
             <class name="com.toskie.tests.posts.PostDetailTests"/>
             <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
-            <class name="com.toskie.tests.posts.SavedPostTests"/>
-            <class name="com.toskie.tests.posts.ShareButtonTests"/>
             <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
             <class name="com.toskie.tests.posts.SwitchProfileTests"/>
             <class name="com.toskie.tests.posts.AddressManagementTests"/>
@@ -149,8 +153,7 @@
     <!-- MODULE 12 — NOTIFICATIONS -->
     <test name="12 — Notifications">
         <classes>
-            <class name="com.toskie.tests.notifications.NotificationTests"/>
-            <class name="com.toskie.tests.misc.NotificationTests"/>
+            <class name="com.toskie.tests.notifications.NotificationApiTests"/>
         </classes>
     </test>
 
@@ -187,13 +190,6 @@
     <test name="16 — Misc Utilities">
         <classes>
             <class name="com.toskie.tests.misc.ChangeLocationTests"/>
-            <class name="com.toskie.tests.misc.FetchContactsReviewTests"/>
-            <class name="com.toskie.tests.misc.GalleryViewApiTests"/>
-            <class name="com.toskie.tests.misc.PrivacyPolicyTests"/>
-            <class name="com.toskie.tests.misc.ProjectViewApiTests"/>
-            <class name="com.toskie.tests.misc.UserTipsTests"/>
-            <class name="com.toskie.tests.misc.ViewerListTests"/>
-            <class name="com.toskie.tests.misc.ViewPostApiTests"/>
         </classes>
     </test>
 

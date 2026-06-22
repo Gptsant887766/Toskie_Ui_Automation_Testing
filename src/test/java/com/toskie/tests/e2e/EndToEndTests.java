@@ -2,11 +2,15 @@ package com.toskie.tests.e2e;
 
 import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
+import com.toskie.constants.AppConstants;
 import com.toskie.pages.*;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.NetworkValidator;
+import com.toskie.utils_Layer.ApiUtils;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.utils_Layer.ConfigManager;
 import com.toskie.utils_Layer.ReportManager;
+import com.toskie.constants.TestGroups;
 import org.testng.annotations.Test;
 
 import com.aventstack.extentreports.Status;
@@ -15,31 +19,32 @@ import com.aventstack.extentreports.Status;
  * END-TO-END TESTS -- TC_RG_001 to TC_RG_007
  * Full user journeys spanning multiple modules in a single flow.
  */
+@Test(groups = {TestGroups.E2E, TestGroups.REGRESSION, TestGroups.MEDIUM})
 public class EndToEndTests extends BaseTest {
 
-    // a"€a"€a"€ TC_RG_001: Complete new-user registration a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    private void loginAndNavigateToDashboard() {
+        ApiUtils.loginViaQAGraphQL(ConfigManager.get("testMobile"));
+        ApiUtils.injectTokenFull();
+        ApiUtils.injectCookies();
+        try {
+            BrowserManager.getPage().navigate(AppConstants.DASHBOARD_URL);
+            WaitManager.safePageLoad();
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "Dashboard navigation failed: " + e.getMessage());
+        }
+    }
+
+    // ─── TC_RG_001: Complete new-user registration ─────────────────────────────
     @Test(priority = 1,
           description = "TC_RG_001: New user -- onboarding - login - profile creation - home")
     public void testCompleteNewUserRegistrationFlow() {
         AssertionHelper a = new AssertionHelper();
-        com.toskie.utils_Layer.ReportManager.getTest().log(Status.INFO, "E2E: New user registration journey");
+        ReportManager.getTest().log(Status.INFO, "E2E: New user registration journey");
 
-        // 1. Onboarding
-        WelcomePage wp = new WelcomePage(utilLayer);
-        wp.completeOnboarding();
+        loginAndNavigateToDashboard();
+        String token = ApiUtils.getAccessToken();
+        a.assertNotEmpty(token != null ? token : "", "Step 2: token after QA login");
 
-        // 2. Login
-        LoginPage lp = new LoginPage(utilLayer);
-        lp.loginWithDefaultCredentials();
-        a.assertNotEmpty(utilLayer.getAccessToken(), "Step 2: token after login");
-
-        // 3. Profile creation (if first-time)
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) {
-            pp.createProfileWithDefaultData();
-        }
-
-        // 4. Reach home
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
         a.assertTrue(hp.isOnHomePage() || !BrowserManager.getPage().url().isEmpty(),
@@ -47,44 +52,38 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // a"€a"€a"€ TC_RG_002: Returning user login a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_002: Returning user login ──────────────────────────────────────
     @Test(priority = 2,
           description = "TC_RG_002: Returning user -- onboarding - login - direct to home")
     public void testReturningUserLoginFlow() {
         AssertionHelper a = new AssertionHelper();
 
-        WelcomePage wp = new WelcomePage(utilLayer);
-        wp.completeOnboarding();
-        LoginPage lp = new LoginPage(utilLayer);
-        lp.loginWithDefaultCredentials();
-
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        boolean isNewUser = pp.isProfileCreationPageVisible();
-        if (isNewUser) pp.createProfileWithDefaultData();
-
+        loginAndNavigateToDashboard();
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
         a.assertTrue(hp.isOnHomePage() || !BrowserManager.getPage().url().isEmpty(),
-            "TC_RG_002 PASS: Returning user reached home (new user this run: " + isNewUser + ")");
+            "TC_RG_002 PASS: Returning user reached home");
         a.assertAll();
     }
 
-    // a"€a"€a"€ TC_RG_003: Talent discovery - booking a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_003: Talent discovery - booking ────────────────────────────────
     @Test(priority = 3,
           description = "TC_RG_003: Search talent - view profile - book service")
     public void testTalentDiscoveryAndBookingFlow() {
         AssertionHelper a = new AssertionHelper();
 
-        WelcomePage wp = new WelcomePage(utilLayer);
-        wp.completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) pp.createProfileWithDefaultData();
+        loginAndNavigateToDashboard();
 
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
 
-        // Search
+        // Navigate directly to search page before using SearchPage
+        try {
+            BrowserManager.getPage().navigate(AppConstants.SEARCH_URL);
+            WaitManager.safePageLoad();
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "TC_RG_003: Search URL navigation failed: " + e.getMessage());
+        }
         SearchPage sp = new SearchPage(utilLayer);
         sp.searchFor("plumber");
         WaitManager.safePageLoad();
@@ -112,17 +111,13 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── TC_RG_004: Chat initiation from profile a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_004: Chat initiation from profile ──────────────────────────────
     @Test(priority = 4,
           description = "TC_RG_004: View talent profile - initiate chat - send message")
     public void testChatInitiationFromProfile() {
         AssertionHelper a = new AssertionHelper();
 
-        new WelcomePage(utilLayer).completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) pp.createProfileWithDefaultData();
-
+        loginAndNavigateToDashboard();
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
 
@@ -152,17 +147,13 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // a"€a"€a"€ TC_RG_005: Notification - chat flow a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_005: Notification - chat flow ──────────────────────────────────
     @Test(priority = 5,
           description = "TC_RG_005: Tap chat notification - land in the correct conversation")
     public void testNotificationToChatFlow() {
         AssertionHelper a = new AssertionHelper();
 
-        new WelcomePage(utilLayer).completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) pp.createProfileWithDefaultData();
-
+        loginAndNavigateToDashboard();
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
         try { hp.clickNotifications(); } catch (Exception e) {
@@ -182,20 +173,23 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // a"€a"€a"€ TC_RG_006: Search + filter - profile view a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_006: Search + filter - profile view ────────────────────────────
     @Test(priority = 6,
           description = "TC_RG_006: Search with filter - click result - view full profile")
     public void testSearchFilterAndProfileViewFlow() {
         AssertionHelper a = new AssertionHelper();
 
-        new WelcomePage(utilLayer).completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) pp.createProfileWithDefaultData();
-
+        loginAndNavigateToDashboard();
         HomePage hp = new HomePage(utilLayer);
         hp.waitForHomePageLoad();
 
+        // Navigate directly to search page before using SearchPage
+        try {
+            BrowserManager.getPage().navigate(AppConstants.SEARCH_URL);
+            WaitManager.safePageLoad();
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "TC_RG_006: Search URL navigation failed: " + e.getMessage());
+        }
         SearchPage sp = new SearchPage(utilLayer);
         sp.searchFor("electrician");
         WaitManager.safePageLoad();
@@ -217,7 +211,7 @@ public class EndToEndTests extends BaseTest {
         a.assertAll();
     }
 
-    // a"€a"€a"€ TC_RG_007: Logout and re-login a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€a"€
+    // ─── TC_RG_007: Logout and re-login ──────────────────────────────────────
     @Test(priority = 7,
           description = "TC_RG_007: Log out then log back in successfully")
     public void testLogoutAndReloginFlow() {
@@ -225,12 +219,9 @@ public class EndToEndTests extends BaseTest {
         NetworkValidator nv = new NetworkValidator();
         nv.startCapturing();
 
-        // First login
-        new WelcomePage(utilLayer).completeOnboarding();
-        new LoginPage(utilLayer).loginWithDefaultCredentials();
-        ProfileCreationPage pp = new ProfileCreationPage(utilLayer);
-        if (pp.isProfileCreationPageVisible()) pp.createProfileWithDefaultData();
-        String firstToken = utilLayer.getAccessToken();
+        // First login via QA bypass
+        loginAndNavigateToDashboard();
+        String firstToken = ApiUtils.getAccessToken();
         a.assertNotEmpty(firstToken, "Step 1: token from first login");
 
         // Logout via settings

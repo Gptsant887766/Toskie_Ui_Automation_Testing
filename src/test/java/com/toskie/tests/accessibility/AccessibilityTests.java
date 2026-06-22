@@ -10,6 +10,7 @@ import com.toskie.pages.WelcomePage;
 import com.toskie.utils.AccessibilityUtils;
 import com.toskie.utils_Layer.BrowserManager;
 import com.toskie.utils_Layer.ReportManager;
+import com.toskie.constants.TestGroups;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * ACCESSIBILITY TESTS -- WCAG 2.1 AA compliance
  * TC-ACC-001 through TC-ACC-012
  */
+@Test(groups = {TestGroups.REGRESSION, TestGroups.ACCESSIBILITY, TestGroups.MEDIUM})
 public class AccessibilityTests extends BaseTest {
 
     private void runAxeAudit(String pageName) {

@@ -50,18 +50,40 @@ public class BaseTest {
         utilLayer.resetOnlyLogs();
         utilLayer.createTest(method.getName());
 
-        // Retry once if browser launch / initial navigation fails
-        try {
-            utilLayer.launchBrowser(browser);
-            utilLayer.openUrl(baseUrl);
-            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
-        } catch (Exception firstAttempt) {
-            System.out.println("[BaseTest] @BeforeMethod first attempt failed: " + firstAttempt.getMessage() + " — retrying...");
-            ReportManager.getTest().log(Status.WARNING, "Browser setup first attempt failed — retrying: " + firstAttempt.getMessage());
-            try { utilLayer.tearDown(); } catch (Exception ignored) {}
-            utilLayer.launchBrowser(browser);
-            utilLayer.openUrl(baseUrl);
-            WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+        // Tag each test with its suite name and module block so ExtentReport groups by suite
+        String suiteName = context.getSuite().getName();
+        String moduleName = context.getCurrentXmlTest().getName();
+        ReportManager.getTest().assignCategory(suiteName);
+        if (moduleName != null && !moduleName.equals(suiteName)) {
+            ReportManager.getTest().assignCategory(moduleName);
+        }
+
+        // Retry up to 3 times with delay — handles transient DNS / network errors
+        // (ERR_NAME_NOT_RESOLVED, ERR_NETWORK_CHANGED, ERR_CONNECTION_RESET)
+        int maxSetupAttempts = 3;
+        Exception lastSetupError = null;
+        for (int attempt = 1; attempt <= maxSetupAttempts; attempt++) {
+            try {
+                utilLayer.launchBrowser(browser);
+                utilLayer.openUrl(baseUrl);
+                WaitManager.waitForPageLoad(LoadState.DOMCONTENTLOADED);
+                lastSetupError = null;
+                break;
+            } catch (Exception e) {
+                lastSetupError = e;
+                System.out.printf("[BaseTest] @BeforeMethod attempt %d/%d failed: %s%n",
+                        attempt, maxSetupAttempts, e.getMessage());
+                ReportManager.getTest().log(Status.WARNING,
+                        "Browser setup attempt " + attempt + "/" + maxSetupAttempts + " failed: " + e.getMessage());
+                try { utilLayer.tearDown(); } catch (Exception ignored) {}
+                if (attempt < maxSetupAttempts) {
+                    // Wait 3 seconds to let DNS / network recover before next attempt
+                    try { Thread.sleep(3000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                }
+            }
+        }
+        if (lastSetupError != null) {
+            throw new RuntimeException("Browser setup failed after " + maxSetupAttempts + " attempts", lastSetupError);
         }
 
         ReportManager.getTest().log(Status.INFO, "Application opened: " + baseUrl);

@@ -1,4 +1,4 @@
-package com.toskie.tests.regression;
+﻿package com.toskie.tests.regression;
 import com.microsoft.playwright.options.LoadState;
 
 import com.aventstack.extentreports.Status;
@@ -88,7 +88,7 @@ public class LoginTests extends BaseTest {
         if (lp.isLoginButtonVisible()) {
             // Login button found -- exercise the OTP flow
             lp.clickLoginButton();
-            lp.enterPhoneNumber("9919011050");
+            lp.enterPhoneNumber("8808992219");
             lp.clickSendOTP();
             a.assertTrue(lp.isOTPScreenVisible(), "OTP input screen should appear after phone submission");
         } else {
@@ -108,7 +108,7 @@ public class LoginTests extends BaseTest {
         LoginPage lp = new LoginPage(utilLayer);
         if (lp.isLoginButtonVisible()) {
             lp.clickLoginButton();
-            lp.enterPhoneNumber("9919011050");
+            lp.enterPhoneNumber("8808992219");
             lp.clickSendOTP();
             WaitManager.safePageLoad();
             a.assertTrue(lp.isOTPScreenVisible(), "OTP input screen must be visible after sending OTP");
@@ -127,7 +127,7 @@ public class LoginTests extends BaseTest {
           description = "Verify JWT token structure (3-part base64 encoded)")
     public void testTokenStructure() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         String token = utilLayer.getAccessToken();
 
         a.assertNotNull(token, "Access token should not be null");
@@ -197,10 +197,10 @@ public class LoginTests extends BaseTest {
           description = "Verify login generates new token each time (no token reuse)")
     public void testNewTokenEachLogin() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         String token1 = utilLayer.getAccessToken();
 
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         String token2 = utilLayer.getAccessToken();
 
         a.assertNotEmpty(token1, "First token");

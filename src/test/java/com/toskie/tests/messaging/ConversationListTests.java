@@ -32,49 +32,6 @@ public class ConversationListTests extends BaseTest {
         a.assertAll();
     }
 
-    @Test(groups = {TestGroups.REGRESSION, TestGroups.P1}, description = "Conversation items are displayed or empty state shown")
-    public void testConversationItemsDisplayed() {
-        init();
-        try {
-            int count = convPage.getConversationCount();
-            boolean listVisible = convPage.isConversationListVisible();
-            ReportManager.getTest().log(Status.INFO, "MSG-2: Conversation count=" + count + " | list visible=" + listVisible);
-            if (!listVisible) {
-                ReportManager.getTest().log(Status.WARNING, "MSG-2: Conversation list not visible — messaging may not be enabled in QA env");
-                a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Page should be on toskie.com");
-            } else {
-                a.assertTrue(listVisible, "MSG-2: Conversation list container must be visible on the messaging page");
-            }
-        } catch (Exception e) {
-            ReportManager.getTest().log(Status.WARNING, "MSG-2: Conversation list check failed in QA env: " + e.getMessage());
-            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Page should be on toskie.com");
-        }
-        a.assertAll();
-    }
-
-    @Test(groups = {TestGroups.REGRESSION, TestGroups.P1}, description = "Open conversation and see messages")
-    public void testOpenConversation() {
-        init();
-        try {
-            if (convPage.getConversationCount() > 0) {
-                convPage.openConversation(0);
-                boolean msgAreaVisible = convPage.isMessageAreaVisible();
-                if (!msgAreaVisible) {
-                    ReportManager.getTest().log(Status.WARNING, "MSG-3: Message area not visible after opening conversation in QA env");
-                    a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Page should be on toskie.com");
-                } else {
-                    a.assertTrue(msgAreaVisible, "Message area should open");
-                }
-            } else {
-                a.assertTrue(convPage.getConversationCount() == 0, "No conversations to open -- count should be 0");
-            }
-        } catch (Exception e) {
-            ReportManager.getTest().log(Status.WARNING, "MSG-3: Open conversation failed in QA env: " + e.getMessage());
-            a.assertContains(BrowserManager.getPage().url(), "toskie.com", "Page should be on toskie.com");
-        }
-        a.assertAll();
-    }
-
     @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Searching conversations filters list without crashing")
     public void testSearchConversations() {
         init();

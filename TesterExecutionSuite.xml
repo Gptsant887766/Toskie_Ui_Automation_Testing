@@ -1,0 +1,268 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  TESTER EXECUTION SUITE  — Master Control File                              ║
+  ║                                                                              ║
+  ║  Usage: Enable exactly ONE <test> block by setting enabled="true".          ║
+  ║         Set all others to enabled="false".                                   ║
+  ║                                                                              ║
+  ║  Run command:  mvn test -DsuiteXmlFile=TesterExecutionSuite.xml              ║
+  ║                                                                              ║
+  ║  Available Suites:                                                           ║
+  ║    1. Smoke Suite      — P0 gate, ~5–8 min,   groups=smoke                  ║
+  ║    2. Sanity Suite     — Core platform, ~20–30 min                           ║
+  ║    3. Regression Suite — All functional, ~2.5–3 hrs                         ║
+  ║    4. End-to-End Suite — Full user journeys, ~30–45 min                     ║
+  ║    5. Master Suite     — All 93 classes, ~4–5 hrs                           ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<suite name="Toskie — Tester Execution Suite" verbose="1"
+       parallel="classes" thread-count="3"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SUITE 1 — SMOKE  (enabled="true" to run)
+         P0 gate: fastest CI check — smoke-tagged tests only
+         Runtime: ~5–8 minutes | Trigger: every commit / every PR
+         Note: Uses explicit class list + group filter (package scan
+               does not resolve smoke group correctly with Surefire 3.2.5)
+         ═══════════════════════════════════════════════════════════════ -->
+    <test name="1 — Smoke Suite" enabled="true" preserve-order="false">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.regression.LoginTests"/>
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SUITE 2 — SANITY  (enabled="false" — switch to true to run)
+         Core platform: smoke + auth + dashboard + search
+         Runtime: ~20–30 minutes | Trigger: post-deployment
+         ═══════════════════════════════════════════════════════════════ -->
+    <test name="2 — Sanity Suite" enabled="false" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests.smoke"/>
+            <package name="com.toskie.tests.auth"/>
+            <package name="com.toskie.tests.dashboard"/>
+            <package name="com.toskie.tests.search"/>
+        </packages>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SUITE 3 — REGRESSION  (enabled="false" — switch to true to run)
+         All functional modules excluding websocket + performance
+         Runtime: ~2.5–3 hours | Trigger: nightly / feature merge
+         ═══════════════════════════════════════════════════════════════ -->
+    <test name="3 — Regression Suite" enabled="false" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests.smoke"/>
+            <package name="com.toskie.tests.auth"/>
+            <package name="com.toskie.tests.profile"/>
+            <package name="com.toskie.tests.dashboard"/>
+            <package name="com.toskie.tests.posts"/>
+            <package name="com.toskie.tests.search"/>
+            <package name="com.toskie.tests.messaging"/>
+            <package name="com.toskie.tests.api"/>
+            <package name="com.toskie.tests.landing"/>
+            <package name="com.toskie.tests.blog"/>
+            <package name="com.toskie.tests.reviews"/>
+            <package name="com.toskie.tests.activity"/>
+            <package name="com.toskie.tests.notifications"/>
+            <package name="com.toskie.tests.ai"/>
+            <package name="com.toskie.tests.subscription"/>
+            <package name="com.toskie.tests.regression"/>
+            <package name="com.toskie.tests.misc"/>
+            <package name="com.toskie.tests.negative"/>
+            <package name="com.toskie.tests.edge"/>
+            <package name="com.toskie.tests.security"/>
+            <package name="com.toskie.tests.accessibility"/>
+        </packages>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SUITE 4 — END-TO-END  (enabled="false" — switch to true to run)
+         Full user journeys: login → profile → post → search → E2E
+         Runtime: ~30–45 minutes | Trigger: release candidate validation
+         ═══════════════════════════════════════════════════════════════ -->
+    <test name="4 — End-to-End Suite" enabled="false" preserve-order="true">
+        <classes>
+            <!-- Authentication Entry Points -->
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <!-- Profile Journey -->
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <!-- Dashboard & Social -->
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+            <!-- Search & Discovery -->
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <!-- Messaging -->
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <!-- End-to-End Flows -->
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SUITE 5 — MASTER  (enabled="false" — switch to true to run)
+         All 93 test classes, all 21 modules, no filter
+         Runtime: ~4–5 hours | Trigger: release sign-off
+         ═══════════════════════════════════════════════════════════════ -->
+    <test name="5 — Master Suite" enabled="false" preserve-order="false"
+          thread-count="5">
+        <classes>
+            <!-- MODULE 01 — SMOKE -->
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <!-- MODULE 02 — AUTHENTICATION -->
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+            <!-- MODULE 03 — PROFILE CREATION -->
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.ProjectStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <class name="com.toskie.tests.profile.SurveyPageTests"/>
+            <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
+            <class name="com.toskie.tests.profile.ProfileVisibilityTests"/>
+            <class name="com.toskie.tests.profile.GalleryManagementTests"/>
+            <!-- MODULE 04 — DASHBOARD -->
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileApiTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardCRUDTests"/>
+            <class name="com.toskie.tests.dashboard.UpdateProfilePhotoTests"/>
+            <class name="com.toskie.tests.dashboard.SkillsApiTests"/>
+            <class name="com.toskie.tests.dashboard.ProjectsApiTests"/>
+            <class name="com.toskie.tests.dashboard.GalleryApiTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
+            <class name="com.toskie.tests.dashboard.ShareProfileTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+            <!-- MODULE 05 — POSTS AND FEED -->
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.VideoPostTests"/>
+            <class name="com.toskie.tests.posts.AIPostTests"/>
+            <class name="com.toskie.tests.posts.ExploreTests"/>
+            <class name="com.toskie.tests.posts.PostDetailTests"/>
+            <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
+            <class name="com.toskie.tests.posts.SavedPostTests"/>
+            <class name="com.toskie.tests.posts.ShareButtonTests"/>
+            <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
+            <class name="com.toskie.tests.posts.SwitchProfileTests"/>
+            <class name="com.toskie.tests.posts.AddressManagementTests"/>
+            <!-- MODULE 06 — SEARCH -->
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+            <class name="com.toskie.tests.search.DeleteRecentSearchTests"/>
+            <!-- MODULE 07 — MESSAGING -->
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <class name="com.toskie.tests.messaging.FetchRequestsTests"/>
+            <class name="com.toskie.tests.messaging.RequestAcceptDeclineTests"/>
+            <class name="com.toskie.tests.messaging.CallListingsTests"/>
+            <class name="com.toskie.tests.messaging.LikeModalTests"/>
+            <class name="com.toskie.tests.messaging.SimilarTalentsTests"/>
+            <class name="com.toskie.tests.messaging.ValidateTalentTests"/>
+            <class name="com.toskie.tests.messaging.MessagingSendReceiveTests"/>
+            <!-- MODULE 08 — WEBSOCKET -->
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+            <class name="com.toskie.tests.websocket.BulkMessageReadTests"/>
+            <class name="com.toskie.tests.websocket.TimezoneWebSocketTests"/>
+            <!-- MODULE 09 — API VALIDATION -->
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.api.WebSocketTests"/>
+            <!-- MODULE 10 — LANDING AND BLOG -->
+            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
+            <class name="com.toskie.tests.blog.BlogApiTests"/>
+            <!-- MODULE 11 — REVIEWS AND ACTIVITY -->
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+            <!-- MODULE 12 — NOTIFICATIONS -->
+            <class name="com.toskie.tests.notifications.NotificationTests"/>
+            <class name="com.toskie.tests.misc.NotificationTests"/>
+            <!-- MODULE 13 — AI FEATURES -->
+            <class name="com.toskie.tests.ai.AIBioTests"/>
+            <!-- MODULE 14 — SUBSCRIPTION -->
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+            <!-- MODULE 15 — CORE PLATFORM REGRESSION -->
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.regression.LoginTests"/>
+            <class name="com.toskie.tests.regression.LogoutTests"/>
+            <class name="com.toskie.tests.regression.ProfileTests"/>
+            <class name="com.toskie.tests.regression.SearchTests"/>
+            <class name="com.toskie.tests.regression.BookingTests"/>
+            <class name="com.toskie.tests.regression.ChatTests"/>
+            <class name="com.toskie.tests.regression.NotificationTests"/>
+            <class name="com.toskie.tests.regression.SettingsTests"/>
+            <!-- MODULE 16 — MISC UTILITIES -->
+            <class name="com.toskie.tests.misc.ChangeLocationTests"/>
+            <class name="com.toskie.tests.misc.FetchContactsReviewTests"/>
+            <class name="com.toskie.tests.misc.GalleryViewApiTests"/>
+            <class name="com.toskie.tests.misc.PrivacyPolicyTests"/>
+            <class name="com.toskie.tests.misc.ProjectViewApiTests"/>
+            <class name="com.toskie.tests.misc.UserTipsTests"/>
+            <class name="com.toskie.tests.misc.ViewerListTests"/>
+            <class name="com.toskie.tests.misc.ViewPostApiTests"/>
+            <!-- MODULE 17 — NEGATIVE AND EDGE CASES -->
+            <class name="com.toskie.tests.negative.NegativeTests"/>
+            <class name="com.toskie.tests.edge.EdgeCaseTests"/>
+            <!-- MODULE 18 — END-TO-END FLOWS -->
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
+            <!-- MODULE 19 — SECURITY -->
+            <class name="com.toskie.tests.security.SecurityTests"/>
+            <class name="com.toskie.tests.security.JwtSecurityTests"/>
+            <class name="com.toskie.tests.security.IdorTests"/>
+            <!-- MODULE 20 — ACCESSIBILITY -->
+            <class name="com.toskie.tests.accessibility.AccessibilityTests"/>
+            <!-- MODULE 21 — PERFORMANCE -->
+            <class name="com.toskie.tests.performance.PerformanceTests"/>
+        </classes>
+    </test>
+
+</suite>

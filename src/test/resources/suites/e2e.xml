@@ -1,0 +1,87 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  ╔═══════════════════════════════════════════════════════════════════════╗
+  ║  END-TO-END SUITE                                                     ║
+  ║  Scope   : Full user journeys — login → profile → post → search →    ║
+  ║            messaging → E2E flows                                       ║
+  ║  Thread  : 3 parallel classes (ordered flows need more isolation)     ║
+  ║  Runtime : ~30–45 minutes                                             ║
+  ║  Trigger : Release candidate validation | Sprint sign-off             ║
+  ║  Env     : STAGE → mvn test -Pstage                                   ║
+  ║            DEV   → mvn test -DsuiteXmlFile=src/test/resources/suites/e2e.xml ║
+  ║  IDE     : Right-click → Run As TestNG Suite                          ║
+  ╚═══════════════════════════════════════════════════════════════════════╝
+-->
+<suite name="Toskie — End-to-End Suite" verbose="1"
+       parallel="classes" thread-count="3"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <!-- Journey 1 — Authentication & Registration -->
+    <test name="E2E-01 — Auth Journey" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+        </classes>
+    </test>
+
+    <!-- Journey 2 — Profile Creation Wizard -->
+    <test name="E2E-02 — Profile Creation Journey" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
+        </classes>
+    </test>
+
+    <!-- Journey 3 — Dashboard & Social Feed -->
+    <test name="E2E-03 — Dashboard and Social Journey" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+        </classes>
+    </test>
+
+    <!-- Journey 4 — Search & Discovery -->
+    <test name="E2E-04 — Search and Discovery Journey" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+        </classes>
+    </test>
+
+    <!-- Journey 5 — Messaging -->
+    <test name="E2E-05 — Messaging Journey" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <class name="com.toskie.tests.messaging.FetchRequestsTests"/>
+        </classes>
+    </test>
+
+    <!-- Journey 6 — Full E2E Flows -->
+    <test name="E2E-06 — Full End-to-End Flows" preserve-order="true">
+        <classes>
+            <class name="com.toskie.tests.e2e.EndToEndTests"/>
+        </classes>
+    </test>
+
+</suite>

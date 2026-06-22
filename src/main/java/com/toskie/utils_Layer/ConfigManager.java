@@ -1,40 +1,29 @@
 package com.toskie.utils_Layer;
 
-import java.io.InputStream;
-import java.util.Properties;
+import com.toskie.config.ConfigReader;
 
 /**
- * Loads all configuration from config.properties.
- * System properties always override file values (so -Dbrowser=firefox works).
+ * Legacy config facade — now delegates to ConfigReader so that all code
+ * (legacy and enterprise) uses the same three-tier priority chain:
+ *   1. System property   (-DbaseUrl=…)
+ *   2. Environment var   (ENVIRONMENT=qa → loads environments/qa.properties)
+ *   3. config.properties (base defaults)
+ *
+ * No callers need to change — this class preserves the original public API.
+ * New code should import ConfigReader directly.
  */
-public class ConfigManager {
+public final class ConfigManager {
 
-    private static final Properties props = new Properties();
+    private ConfigManager() {}
 
-    static {
-        try (InputStream is = ConfigManager.class.getClassLoader()
-                .getResourceAsStream("config.properties")) {
-            if (is != null) {
-                props.load(is);
-            } else {
-                System.err.println("[ConfigManager] config.properties not found on classpath.");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load config.properties", e);
-        }
-    }
-
-    public static String get(String key) {
-        return System.getProperty(key, props.getProperty(key));
-    }
-
-    public static String getBrowser()     { return get("browser"); }
-    public static String getBaseUrl()     { return get("baseUrl"); }
-    public static boolean getHeadless()   { return Boolean.parseBoolean(get("headless")); }
-    public static String getTestMobile()  { return get("testMobile"); }
-    public static String getTestEmail()   { return get("testEmail"); }
-    public static String getApiUrl()      { return get("apiUrl"); }
-    public static String getQaSecret()    { return get("qaSecret"); }
-    public static String getDeviceId()    { return get("deviceId"); }
-    public static String getFingerprint() { return get("fingerprint"); }
+    public static String  getBrowser()     { return ConfigReader.getBrowser();    }
+    public static String  getBaseUrl()     { return ConfigReader.getBaseUrl();    }
+    public static boolean getHeadless()    { return ConfigReader.isHeadless();    }
+    public static String  getTestMobile()  { return ConfigReader.getTestMobile(); }
+    public static String  getTestEmail()   { return ConfigReader.getTestEmail();  }
+    public static String  getApiUrl()      { return ConfigReader.getApiUrl();     }
+    public static String  getQaSecret()    { return ConfigReader.getQaSecret();   }
+    public static String  getDeviceId()    { return ConfigReader.getDeviceId();   }
+    public static String  getFingerprint() { return ConfigReader.getFingerprint();}
+    public static String  get(String key)  { return ConfigReader.get(key);        }
 }

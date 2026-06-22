@@ -1,58 +1,121 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <!--
-  parallel="none"  → all test methods run sequentially on a single thread.
-  Profile creation tests each launch a full browser + 40s flow; running them
-  concurrently (parallel="methods") saturates CPU/network and causes
-  Timeout 60000ms / ERR_NETWORK_IO_SUSPENDED failures.
-
-  BrowserManager, ApiUtils, and ReportManager are all ThreadLocal-safe and
-  can support parallel="tests" if machine resources allow in the future.
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║            TOSKIE QA — TESTER EXECUTION FILE                               ║
+  ╠══════════════════════════════════════════════════════════════════════════════╣
+  ║                                                                              ║
+  ║  HOW TO RUN                                                                  ║
+  ║  ─────────────────────────────────────────────────────────────────────────  ║
+  ║  Step 1 : Set  enabled="true"   on the suite you want to run                ║
+  ║  Step 2 : Set  enabled="false"  on all other suites                         ║
+  ║  Step 3 : Right-click this file → Run As → TestNG Suite                     ║
+  ║                                                                              ║
+  ╠══════════════════════════════════════════════════════════════════════════════╣
+  ║  Suite        │ What runs                          │ Thread │ Runtime       ║
+  ║  ─────────────┼────────────────────────────────────┼────────┼─────────────  ║
+  ║  Smoke        │ group=smoke  (~86 tests)            │   5    │  5–8 min      ║
+  ║  Sanity       │ smoke + auth + dashboard + search   │   5    │  20–30 min    ║
+  ║  Regression   │ All 22 functional packages          │  10    │  2.5–3 hrs    ║
+  ║  End to End   │ e2e package (full user journeys)    │   5    │  30–45 min    ║
+  ║  Master       │ All 93 classes — all 21 modules     │  10    │  4–5 hrs      ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
-<suite name="Toskie Suite" parallel="none" thread-count="1" verbose="2">
 
-    <test name="Welcome Page Tests">
-        <classes>
-            <class name="com.toskie.WelcomePageTestCases"/>
-        </classes>
+<suite name="Toskie QA — Tester Execution" verbose="2"
+       parallel="classes" thread-count="10"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  SUITE 1 — SMOKE                                          enabled=true  -->
+    <!--  Fastest CI gate. Verifies the app is alive.                           -->
+    <!--  Runs only @Test(groups={"smoke"}) methods.                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <test name="01 — Smoke Suite" enabled="true" preserve-order="false">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="com.toskie.tests"/>
+        </packages>
     </test>
 
-    <test name="Welcome Landing Test">
-        <classes>
-            <class name="com.toskie.WelcomeToToskieLandingTestCase"/>
-        </classes>
-        
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  SUITE 2 — SANITY                                        enabled=false  -->
+    <!--  Post-deployment gate. Covers core user journeys.                      -->
+    <!--  Packages: smoke · auth · dashboard · search                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <test name="02 — Sanity Suite" enabled="false" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests.smoke"/>
+            <package name="com.toskie.tests.auth"/>
+            <package name="com.toskie.tests.dashboard"/>
+            <package name="com.toskie.tests.search"/>
+        </packages>
     </test>
 
-    <test name="Login Test">
-        <classes>
-            <class name="com.toskie.LoginTestCases"/>
-        </classes>
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  SUITE 3 — REGRESSION                                    enabled=false  -->
+    <!--  Full functional regression. All 22 modules.                           -->
+    <!--  Excludes: performance (slow) · websocket (real-time infra)            -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <test name="03 — Regression Suite" enabled="false" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests.smoke"/>
+            <package name="com.toskie.tests.auth"/>
+            <package name="com.toskie.tests.profile"/>
+            <package name="com.toskie.tests.dashboard"/>
+            <package name="com.toskie.tests.posts"/>
+            <package name="com.toskie.tests.search"/>
+            <package name="com.toskie.tests.messaging"/>
+            <package name="com.toskie.tests.api"/>
+            <package name="com.toskie.tests.landing"/>
+            <package name="com.toskie.tests.blog"/>
+            <package name="com.toskie.tests.reviews"/>
+            <package name="com.toskie.tests.activity"/>
+            <package name="com.toskie.tests.notifications"/>
+            <package name="com.toskie.tests.ai"/>
+            <package name="com.toskie.tests.subscription"/>
+            <package name="com.toskie.tests.regression"/>
+            <package name="com.toskie.tests.misc"/>
+            <package name="com.toskie.tests.negative"/>
+            <package name="com.toskie.tests.edge"/>
+            <package name="com.toskie.tests.security"/>
+            <package name="com.toskie.tests.accessibility"/>
+            <package name="com.toskie.tests.e2e"/>
+        </packages>
     </test>
 
-    <test name="Login Page Tests">
-        <classes>
-            <class name="com.toskie.LoginPageTestCases"/>
-        </classes>
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  SUITE 4 — END TO END                                    enabled=false  -->
+    <!--  Complete user journey flows from start to finish.                     -->
+    <!--  preserve-order=true — steps must run in sequence.                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <test name="04 — End to End Suite" enabled="false" preserve-order="true">
+        <packages>
+            <package name="com.toskie.tests.e2e"/>
+        </packages>
     </test>
 
-    <test name="Create Profile Test">
-        <classes>
-            <class name="com.toskie.ToskieCreatePrifileTestCases"/>
-        </classes>
-    </test>
-
-    <test name="Profile Creation Tests">
-        <classes>
-            <class name="com.toskie.ProfileCreationTestCases"/>
-        </classes>
-    </test>
-
-    <test name="End-to-End Flow Tests">
-        <classes>
-            <class name="com.toskie.EndToEndFlowTestCases"/>
-        </classes>
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  SUITE 5 — MASTER                                        enabled=false  -->
+    <!--  Complete suite — all 93 classes across all 21 modules.                -->
+    <!--  Same as ToskieMasterSuite.xml. Use for STAGE / full release run.      -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <test name="05 — Master Suite" enabled="false" preserve-order="false">
+        <packages>
+            <package name="com.toskie.tests"/>
+        </packages>
     </test>
 
 </suite>

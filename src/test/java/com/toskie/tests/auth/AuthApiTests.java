@@ -1,4 +1,4 @@
-package com.toskie.tests.auth;
+﻿package com.toskie.tests.auth;
 
 import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
@@ -38,7 +38,7 @@ public class AuthApiTests extends BaseTest {
     @Test(priority = 2, groups = {"smoke", "p0", "api"}, description = "Valid auth token allows access to dashboard")
     public void testValidTokenAllowsAccess() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         BrowserManager.getPage().navigate(AppConstants.DASHBOARD_URL);
         WaitManager.safePageLoad();
@@ -91,7 +91,7 @@ public class AuthApiTests extends BaseTest {
     @Test(priority = 5, groups = {"smoke", "p0", "api"}, description = "Login API returns an access_token on success")
     public void testLoginAPIReturnsToken() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         String token = utilLayer.getAccessToken();
         a.assertNotEmpty(token, "access_token should be present after QA GraphQL login");
         a.assertFalse(utilLayer.isTokenExpired(), "Token returned by login API should not be expired");
@@ -117,7 +117,7 @@ public class AuthApiTests extends BaseTest {
     @Test(priority = 7, groups = {"p1", "api"}, description = "Refresh token flow issues a new non-expired access token")
     public void testRefreshTokenFlow() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         String firstToken = utilLayer.getAccessToken();
         a.assertNotEmpty(firstToken, "Initial access token must be present");
         a.assertFalse(utilLayer.isTokenExpired(), "Initial access token must not be expired");

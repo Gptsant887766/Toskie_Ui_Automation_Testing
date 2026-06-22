@@ -1,0 +1,40 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Toskie — Sanity Suite" verbose="1"
+       parallel="classes" thread-count="3"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <test name="Sanity — Core Platform" preserve-order="false">
+        <classes>
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardCRUDTests"/>
+            <class name="com.toskie.tests.dashboard.GalleryApiTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+            <class name="com.toskie.tests.dashboard.ProjectsApiTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
+            <class name="com.toskie.tests.dashboard.ShareProfileTests"/>
+            <class name="com.toskie.tests.dashboard.SkillsApiTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileApiTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.dashboard.UpdateProfilePhotoTests"/>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <class name="com.toskie.tests.search.DeleteRecentSearchTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+        </classes>
+    </test>
+
+</suite>

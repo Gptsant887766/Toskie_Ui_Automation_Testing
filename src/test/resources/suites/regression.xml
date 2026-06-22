@@ -1,0 +1,115 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Toskie — Regression Suite" verbose="1"
+       parallel="classes" thread-count="3"
+       data-provider-thread-count="1">
+
+    <listeners>
+        <listener class-name="com.toskie.utils_Layer.RetryTransformer"/>
+        <listener class-name="com.toskie.listeners.ExecutionListener"/>
+        <listener class-name="com.toskie.listeners.SuiteListener"/>
+        <listener class-name="com.toskie.listeners.TestListener"/>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <test name="Regression — Full Functional" preserve-order="false">
+        <classes>
+            <!-- Smoke + Auth -->
+            <class name="com.toskie.tests.smoke.SmokeTests"/>
+            <class name="com.toskie.tests.auth.AuthLoginTests"/>
+            <class name="com.toskie.tests.auth.RegistrationTests"/>
+            <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
+            <class name="com.toskie.tests.auth.AuthApiTests"/>
+            <!-- Profile -->
+            <class name="com.toskie.tests.profile.BioStepTests"/>
+            <class name="com.toskie.tests.profile.ExperienceStepTests"/>
+            <class name="com.toskie.tests.profile.GalleryManagementTests"/>
+            <class name="com.toskie.tests.profile.GalleryStepTests"/>
+            <class name="com.toskie.tests.profile.PersonalInfoStepTests"/>
+            <class name="com.toskie.tests.profile.ProfileCompleteStatusTests"/>
+            <class name="com.toskie.tests.profile.ProfileVisibilityTests"/>
+            <class name="com.toskie.tests.profile.ProjectStepTests"/>
+            <class name="com.toskie.tests.profile.QualificationStepTests"/>
+            <class name="com.toskie.tests.profile.SkillStepTests"/>
+            <class name="com.toskie.tests.profile.SurveyPageTests"/>
+            <!-- Dashboard -->
+            <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>
+            <class name="com.toskie.tests.dashboard.DashboardCRUDTests"/>
+            <class name="com.toskie.tests.dashboard.GalleryApiTests"/>
+            <class name="com.toskie.tests.dashboard.OpenToConnectTests"/>
+            <class name="com.toskie.tests.dashboard.ProjectsApiTests"/>
+            <class name="com.toskie.tests.dashboard.ReviewDashboardTests"/>
+            <class name="com.toskie.tests.dashboard.ShareProfileTests"/>
+            <class name="com.toskie.tests.dashboard.SkillsApiTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileApiTests"/>
+            <class name="com.toskie.tests.dashboard.TalentProfileTests"/>
+            <class name="com.toskie.tests.dashboard.UpdateProfilePhotoTests"/>
+            <class name="com.toskie.tests.dashboard.UserProfileTests"/>
+            <!-- Posts -->
+            <class name="com.toskie.tests.posts.FeedTests"/>
+            <class name="com.toskie.tests.posts.AddPostTests"/>
+            <class name="com.toskie.tests.posts.TextPostTests"/>
+            <class name="com.toskie.tests.posts.VideoPostTests"/>
+            <class name="com.toskie.tests.posts.ExploreTests"/>
+            <class name="com.toskie.tests.posts.PostDetailTests"/>
+            <class name="com.toskie.tests.posts.LikeBookmarkTests"/>
+            <class name="com.toskie.tests.posts.GalleryExploreDetailTests"/>
+            <class name="com.toskie.tests.posts.SwitchProfileTests"/>
+            <class name="com.toskie.tests.posts.AddressManagementTests"/>
+            <!-- Search -->
+            <class name="com.toskie.tests.search.TalentSearchUITests"/>
+            <class name="com.toskie.tests.search.TalentSearchApiTests"/>
+            <class name="com.toskie.tests.search.TalentAddressSearchTests"/>
+            <class name="com.toskie.tests.search.DeleteRecentSearchTests"/>
+            <!-- Messaging -->
+            <class name="com.toskie.tests.messaging.MessageRequestTests"/>
+            <class name="com.toskie.tests.messaging.ConversationListTests"/>
+            <class name="com.toskie.tests.messaging.FetchRequestsTests"/>
+            <class name="com.toskie.tests.messaging.RequestAcceptDeclineTests"/>
+            <class name="com.toskie.tests.messaging.CallListingsTests"/>
+            <class name="com.toskie.tests.messaging.LikeModalTests"/>
+            <class name="com.toskie.tests.messaging.SimilarTalentsTests"/>
+            <class name="com.toskie.tests.messaging.ValidateTalentTests"/>
+            <class name="com.toskie.tests.messaging.MessagingSendReceiveTests"/>
+            <!-- WebSocket -->
+            <class name="com.toskie.tests.websocket.WebSocketConnectionTests"/>
+            <class name="com.toskie.tests.websocket.WebSocketMessageTests"/>
+            <class name="com.toskie.tests.websocket.BulkMessageReadTests"/>
+            <class name="com.toskie.tests.websocket.TimezoneWebSocketTests"/>
+            <!-- API -->
+            <class name="com.toskie.tests.api.APIValidationTests"/>
+            <class name="com.toskie.tests.api.WebSocketTests"/>
+            <!-- Landing + Blog + Reviews + Activity -->
+            <class name="com.toskie.tests.landing.LandingPageApiTests"/>
+            <class name="com.toskie.tests.blog.BlogApiTests"/>
+            <class name="com.toskie.tests.reviews.ReviewTests"/>
+            <class name="com.toskie.tests.activity.ActivityHistoryTests"/>
+            <!-- Notifications -->
+            <class name="com.toskie.tests.notifications.NotificationApiTests"/>
+            <!-- AI -->
+            <class name="com.toskie.tests.ai.AIBioTests"/>
+            <!-- Subscription -->
+            <class name="com.toskie.tests.subscription.SubscriptionTests"/>
+            <!-- Core Regression -->
+            <class name="com.toskie.tests.regression.HomeTests"/>
+            <class name="com.toskie.tests.regression.LoginTests"/>
+            <class name="com.toskie.tests.regression.LogoutTests"/>
+            <class name="com.toskie.tests.regression.ProfileTests"/>
+            <class name="com.toskie.tests.regression.SearchTests"/>
+            <class name="com.toskie.tests.regression.BookingTests"/>
+            <class name="com.toskie.tests.regression.ChatTests"/>
+            <class name="com.toskie.tests.regression.NotificationTests"/>
+            <class name="com.toskie.tests.regression.SettingsTests"/>
+            <!-- Misc -->
+            <class name="com.toskie.tests.misc.ChangeLocationTests"/>
+            <!-- Negative + Edge -->
+            <class name="com.toskie.tests.negative.NegativeTests"/>
+            <class name="com.toskie.tests.edge.EdgeCaseTests"/>
+            <!-- Security + Accessibility -->
+            <class name="com.toskie.tests.security.SecurityTests"/>
+            <class name="com.toskie.tests.security.JwtSecurityTests"/>
+            <class name="com.toskie.tests.security.IdorTests"/>
+            <class name="com.toskie.tests.accessibility.AccessibilityTests"/>
+        </classes>
+    </test>
+
+</suite>

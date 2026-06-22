@@ -1,4 +1,4 @@
-package com.toskie.tests.security;
+﻿package com.toskie.tests.security;
 
 import com.aventstack.extentreports.Status;
 import com.toskie.BaseTest_Layer.BaseTest;
@@ -25,7 +25,7 @@ public class IdorTests extends BaseTest {
           description = "IDOR-001: Authenticated user must not read another user's private profile fields")
     public void testCannotAccessAnotherUsersPrivateProfileData() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
 
@@ -99,7 +99,7 @@ public class IdorTests extends BaseTest {
           description = "IDOR-003: Substituting another user's ID in a URL must not expose their private data")
     public void testBOLAOnUserIdInURL() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
 
@@ -135,7 +135,7 @@ public class IdorTests extends BaseTest {
           description = "IDOR-004: Attempting to update another user's profile via API must be rejected")
     public void testCannotModifyAnotherUsersProfile() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
 
@@ -180,7 +180,7 @@ public class IdorTests extends BaseTest {
           description = "IDOR-005: Fetching messages for another user's conversation must return 403 or empty")
     public void testMessagesEndpointRequiresOwnership() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
 
@@ -225,7 +225,7 @@ public class IdorTests extends BaseTest {
           description = "IDOR-006: Fetching bookings for another user must return 403 or empty")
     public void testBookingsEndpointRequiresOwnership() {
         AssertionHelper a = new AssertionHelper();
-        utilLayer.loginViaQAGraphQL("9919011050");
+        utilLayer.loginViaQAGraphQL("8808992219");
         utilLayer.injectTokenFull();
         WaitManager.safePageLoad();
 

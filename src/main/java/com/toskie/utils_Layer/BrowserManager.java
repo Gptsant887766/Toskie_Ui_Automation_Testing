@@ -23,22 +23,52 @@ public class BrowserManager {
     public static BrowserContext getContext()    { return ctxHolder.get(); }
     public static Page           getPage()       { return pgHolder.get(); }
 
-    // ─── Setters (package-private, used by launchBrowser / launchDevice) ────
-    static void setPage(Page p)             { pgHolder.set(p); }
-    static void setContext(BrowserContext c){ ctxHolder.set(c); }
+    // ─── Setters — public so PlaywrightFactory can sync state ──────────────
+    public static void setPlaywright(Playwright pw) { pwHolder.set(pw); }
+    public static void setBrowser(Browser br)       { brHolder.set(br); }
+    public static void setContext(BrowserContext c) { ctxHolder.set(c); }
+    public static void setPage(Page p)              { pgHolder.set(p);  }
 
     // ─── Launch ───────────────────────────────────────────────────────────────
+    /** Returns true when running inside any known CI/CD or Docker environment. */
+    private static boolean isCI() {
+        return System.getenv("CI")             != null
+            || System.getenv("JENKINS_HOME")   != null
+            || System.getenv("GITHUB_ACTIONS") != null
+            || System.getenv("GITLAB_CI")      != null
+            || "true".equalsIgnoreCase(System.getenv("HEADLESS"))
+            || "true".equalsIgnoreCase(System.getProperty("headless"));
+    }
+
     public static void launchBrowser(String browserName) {
         Playwright pw = Playwright.create();
         pwHolder.set(pw);
 
-        boolean headless = ConfigManager.getHeadless();
+        boolean headless = ConfigManager.getHeadless() || isCI();
+
+        List<String> args = new java.util.ArrayList<>();
+        if (headless) {
+            // Required for Chrome/Chromium in Docker/Linux CI environments
+            args.add("--no-sandbox");
+            args.add("--disable-dev-shm-usage");
+            args.add("--disable-gpu");
+            args.add("--disable-extensions");
+        } else {
+            args.add("--start-maximized");
+        }
+        args.add("--use-fake-ui-for-media-stream");
+        args.add("--use-fake-device-for-media-stream");
+        // Bypass system DNS for the test domain — prevents ERR_NAME_NOT_RESOLVED
+        // when the home router DNS is overwhelmed by parallel thread DNS queries.
+        // IP confirmed: dev.app.toskie.com → 3.6.102.54 (same as toskie-api.wasd.in)
+        args.add("--host-resolver-rules=MAP dev.app.toskie.com 3.6.102.54," +
+                 "MAP toskie-api.wasd.in 3.6.102.54");
+        // Disable DNS prefetch to reduce unnecessary DNS load under parallel execution
+        args.add("--dns-prefetch-disable");
+
         BrowserType.LaunchOptions opts = new BrowserType.LaunchOptions()
                 .setHeadless(headless)
-                .setArgs(List.of(
-                        "--start-maximized",
-                        "--use-fake-ui-for-media-stream",
-                        "--use-fake-device-for-media-stream"));
+                .setArgs(args);
 
         Browser browser;
         switch (browserName.toLowerCase()) {

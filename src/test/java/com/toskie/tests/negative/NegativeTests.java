@@ -1,4 +1,4 @@
-package com.toskie.tests.negative;
+﻿package com.toskie.tests.negative;
 
 import com.toskie.utils_Layer.WaitManager;
 import com.toskie.BaseTest_Layer.BaseTest;
@@ -7,12 +7,14 @@ import com.toskie.pages.WelcomePage;
 import com.toskie.utils.AssertionHelper;
 import com.toskie.utils.TestDataManager;
 import com.toskie.utils_Layer.BrowserManager;
+import com.toskie.constants.TestGroups;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * NEGATIVE TESTS -- Invalid inputs, boundary violations, error handling
  */
+@Test(groups = {TestGroups.REGRESSION, TestGroups.NEGATIVE, TestGroups.MEDIUM})
 public class NegativeTests extends BaseTest {
 
     @DataProvider(name = "negativeLoginData")
@@ -83,7 +85,7 @@ public class NegativeTests extends BaseTest {
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("9919011050");
+        lp.enterPhoneNumber("8808992219");
         lp.clickSendOTP();
         WaitManager.safePageLoad();
 
@@ -106,7 +108,7 @@ public class NegativeTests extends BaseTest {
         navigateToLogin();
 
         LoginPage lp = new LoginPage(utilLayer);
-        lp.enterPhoneNumber("9919011050");
+        lp.enterPhoneNumber("8808992219");
         lp.clickSendOTP();
         WaitManager.safePageLoad();
 
@@ -147,10 +149,10 @@ public class NegativeTests extends BaseTest {
         a.assertAll();
     }
 
-    // ─── TC-NG-007: Invalid email format ──────────────────────────────────────
+    // ─── TC-NG-007: Invalid email format on profile creation ──────────────────
     @Test(priority = 7,
           description = "Enter invalid email format -- expect format validation error")
-    public void testInvalidEmailFormat() {
+    public void testInvalidEmailOnProfileCreation() {
         AssertionHelper a = new AssertionHelper();
         new WelcomePage(utilLayer).completeOnboarding();
         new LoginPage(utilLayer).loginWithDefaultCredentials();

@@ -17,9 +17,18 @@ public class AddressManagementTests extends BaseTest {
     private AssertionHelper a;
 
     private void init() {
-        addrPage = new AddressManagementPage(utilLayer);
         a = new AssertionHelper();
         ApiUtils.loginViaQAGraphQL(ConfigManager.get("testMobile"));
+        ApiUtils.injectTokenFull();
+        ApiUtils.injectCookies();
+        try {
+            BrowserManager.getPage().navigate(
+                com.toskie.constants.AppConstants.SETTINGS_URL);
+            com.toskie.utils_Layer.WaitManager.safePageLoad();
+        } catch (Exception e) {
+            ReportManager.getTest().log(Status.WARNING, "Address init: settings navigation failed: " + e.getMessage());
+        }
+        addrPage = new AddressManagementPage(utilLayer);
     }
 
     @Test(groups = {TestGroups.REGRESSION, TestGroups.P2}, description = "Fetch and display existing addresses")
