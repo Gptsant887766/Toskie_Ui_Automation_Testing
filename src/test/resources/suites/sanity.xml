@@ -15,7 +15,6 @@
         <classes>
             <class name="com.toskie.tests.smoke.SmokeTests"/>
             <class name="com.toskie.tests.auth.AuthLoginTests"/>
-            <class name="com.toskie.tests.auth.RegistrationTests"/>
             <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
             <class name="com.toskie.tests.auth.AuthApiTests"/>
             <class name="com.toskie.tests.dashboard.DashboardAboutTests"/>

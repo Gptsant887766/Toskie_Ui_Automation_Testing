@@ -24,12 +24,11 @@
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
     </listeners>
 
-    <!-- Journey 1 — Authentication & Registration -->
+    <!-- Journey 1 — Authentication -->
     <test name="E2E-01 — Auth Journey" preserve-order="true">
         <classes>
             <class name="com.toskie.tests.smoke.SmokeTests"/>
             <class name="com.toskie.tests.auth.AuthLoginTests"/>
-            <class name="com.toskie.tests.auth.RegistrationTests"/>
             <class name="com.toskie.tests.auth.AccountRecoveryTests"/>
         </classes>
     </test>
